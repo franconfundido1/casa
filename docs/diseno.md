@@ -44,28 +44,20 @@ Círculo de 24 px con zona de toque de 44 px; el ícono de adentro, de 16 px en 
 Modelo: Hábitos (`habitos-*.png`). Blanco, negro y grises, y 2 cosas propias que la hacen reconocible sin agregar color:
 
 - **Una letra propia solo para lo grande:** los títulos, el número de «Tengo X min» y el nombre de la tarea en curso. Todo lo demás, con la letra del sistema.
-- **El círculo como firma:** el mismo círculo es el estado de cada tarea, la acción grande de la tarea en curso y el ícono de la app (círculo blanco sobre negro, sin texto: `bocetos/icono-180.png`).
+- **El círculo como firma:** el mismo círculo es el estado de cada tarea, la acción grande de la tarea en curso y el ícono de la app: el círculo lleno de «hecha», blanco sobre negro, sin texto (`bocetos/icono-180.png`).
 
 ## Letra
 
 - **Texto:** `-apple-system` (SF Pro en el iPhone).
-- **Lo grande:** una letra propia, embebida (archivo `woff2` en la página, sin Google Fonts), con licencia SIL OFL. Nada de Jost (es la de Akordia) ni de las letras que usan todas las apps hechas con IA (Inter, Space Grotesk y parecidas). Hay 3 opciones para comparar en la portada de los bocetos; queda 1 sola cuando la elija el usuario:
-
-| Opción | Peso | Carácter |
-|---|---|---|
-| League Spartan | 700 | Geométrica: la «o» es un círculo |
-| Young Serif | 400 | Con serifa, cálida, de casa |
-| Comfortaa | 700 | Redonda, hecha de círculos |
-
-Cada letra tiene su `--ajuste-propia` para que las 3 se vean del mismo tamaño.
+- **Lo grande: League Spartan 700** (SIL OFL), embebida (archivo `woff2` en la página, sin Google Fonts). Geométrica: la «o» es un círculo, como la firma. Elegida en el iPhone entre 3 opciones (Young Serif y Comfortaa quedaron afuera). Nada de Jost (es la de Akordia) ni de las letras de todas las apps hechas con IA (Inter, Space Grotesk y parecidas).
 
 Escala (Dynamic Type de iOS en tamaño por defecto, salvo lo grande):
 
 | Variable | Tamaño / alto de línea | Letra | Uso |
 |---|---|---|---|
-| `--letra-enorme` | 42 / 1,1 | propia | Nombre de la tarea en curso; los minutos de «Tengo X min» |
-| `--letra-titulo-grande` | 36 / 1,15 | propia | Título de la pestaña («Hoy», «Tareas») |
-| `--letra-titulo` | 28 / 1,2 | propia | «Listo por ahora» |
+| `--letra-enorme` | 42 / 1,1 | League Spartan | Nombre de la tarea en curso; los minutos de «Tengo X min» |
+| `--letra-titulo-grande` | 36 / 1,15 | League Spartan | Título de la pestaña («Hoy», «Tareas») |
+| `--letra-titulo` | 28 / 1,2 | League Spartan | «Listo por ahora» |
 | `--letra-titulo-2` | 22 / 28 | sistema, bold | Nombre en la hoja de editar; minutos de la tarea en curso (regular) |
 | `--letra-encabezado` | 17 / 22 | sistema, semibold | Botones, título de la hoja |
 | `--letra-seccion` | 13 / 18 | sistema, semibold | Encabezado de sección («Las 3 de hoy», «Tocan»): chico y gris, como en iOS |
@@ -206,4 +198,4 @@ En `bocetos/`, con datos de `vision.md` (miércoles 18 de noviembre, 18:40). Se 
 - `hoy.html#curso`: la tarea en curso.
 - `tareas.html`: las 9 tareas en 3 secciones (Tocan, Más adelante, Hechas hoy).
 - `tareas.html#editar`: la hoja de editar (Verdulería).
-- `index.html`: la portada: las 3 letras para elegir, los links, el ícono y la muestra de estados y colores. En los bocetos, la pestaña Ajustes lleva acá.
+- `index.html`: la portada: los links, el ícono y la muestra de estados y colores. En los bocetos, la pestaña Ajustes lleva acá.

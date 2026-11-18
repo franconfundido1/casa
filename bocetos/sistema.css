@@ -1,12 +1,7 @@
 /* Sistema de diseño (docs/diseno.md). Solo modo oscuro, blanco, negro y grises. */
 
-/* Letra propia, solo para lo grande. Las 3 opciones (SIL OFL), embebidas; se elige 1 en la portada. */
+/* Letra propia, solo para lo grande: League Spartan 700 (SIL OFL), embebida. */
 @font-face { font-family: "League Spartan"; src: url(fuentes/league-spartan-700.woff2) format("woff2"); font-weight: 700; font-display: block; }
-@font-face { font-family: "Young Serif"; src: url(fuentes/young-serif-400.woff2) format("woff2"); font-weight: 400; font-display: block; }
-@font-face { font-family: "Comfortaa"; src: url(fuentes/comfortaa-700.woff2) format("woff2"); font-weight: 700; font-display: block; }
-:root, [data-letra="spartan"] { --letra-propia: "League Spartan"; --peso-propia: 700; --ajuste-propia: 0px; }
-[data-letra="young"] { --letra-propia: "Young Serif"; --peso-propia: 400; --ajuste-propia: -2px; }
-[data-letra="comfortaa"] { --letra-propia: "Comfortaa"; --peso-propia: 700; --ajuste-propia: -3px; }
 
 :root {
   color-scheme: dark;
@@ -24,10 +19,10 @@
   --borrar: #FF453A;
 
   --letra: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --propia: var(--letra-propia), var(--letra);
-  --letra-enorme: var(--peso-propia) calc(42px + var(--ajuste-propia))/1.1 var(--propia);
-  --letra-titulo-grande: var(--peso-propia) calc(36px + var(--ajuste-propia))/1.15 var(--propia);
-  --letra-titulo: var(--peso-propia) calc(28px + var(--ajuste-propia))/1.2 var(--propia);
+  --propia: "League Spartan", var(--letra);
+  --letra-enorme: 700 42px/1.1 var(--propia);
+  --letra-titulo-grande: 700 36px/1.15 var(--propia);
+  --letra-titulo: 700 28px/1.2 var(--propia);
   --letra-titulo-2: 700 22px/28px var(--letra);
   --letra-encabezado: 600 17px/22px var(--letra);
   --letra-seccion: 600 13px/18px var(--letra);
