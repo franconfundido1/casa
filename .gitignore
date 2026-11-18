@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+node_modules/
+vendor/
+.capturas/
+# copias de seguridad de la app: tienen tus datos
+*.json
+!salida/*.json
