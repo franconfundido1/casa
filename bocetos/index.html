@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Bocetos · casa</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .pantalla { padding-bottom: calc(var(--abajo) + var(--esp-7)); }
+  .muestra { width: 28px; height: 28px; border-radius: 50%; margin: 0 var(--esp-2); flex: none; border: .5px solid var(--borde-flota); }
+  .fila .valor svg { width: 18px; height: 18px; color: var(--texto-3); }
+  a.fila { padding-left: var(--esp-4); }
+</style>
+</head>
+<body>
+<main class="pantalla">
+  <div class="barra-arriba"></div>
+  <div class="titulo"><small>Paso C · para mirar en el iPhone</small><h1>Bocetos</h1></div>
+
+  <section class="grupo">
+    <h2>Pantallas</h2>
+    <div class="bloque" id="pantallas"></div>
+    <p class="nota">Datos de ejemplo: miércoles 18 de noviembre, 18:40.</p>
+  </section>
+
+  <section class="grupo">
+    <h2>Estados</h2>
+    <div class="bloque" id="estados"></div>
+  </section>
+
+  <section class="grupo">
+    <h2>Colores</h2>
+    <div class="bloque" id="colores"></div>
+    <p class="nota">1 trabajo cada uno. Detalle en docs/diseno.md.</p>
+  </section>
+</main>
+<script src="boceto.js"></script>
+<script>
+  const pantallas = [
+    ['Hoy', 'Las 3 de hoy y «Tengo X minutos»', 'hoy.html'],
+    ['Tarea en curso', 'Hecha, a medias y saltear', 'hoy.html#curso'],
+    ['Tareas', 'Las 9 de arranque y el menú «⋯»', 'tareas.html'],
+    ['Editar tarea', 'La hoja, con Verdulería', 'tareas.html#editar'],
+  ];
+  document.getElementById('pantallas').innerHTML = pantallas.map(([n, l, h]) =>
+    `<a class="fila sin-circulo" href="${h}"><span class="texto"><span class="nombre">${n}</span><span class="linea">${l}</span></span><span class="valor">${ic('caret-right')}</span></a>`).join('');
+
+  const estados = [
+    ['Toca', 'toca'], ['No toca todavía', 'no'], ['Hecha', 'hecha'],
+    ['Salteada', 'salteada'], ['A medias', 'a-medias'], ['Esperando', 'esperando'],
+  ];
+  document.getElementById('estados').innerHTML = estados.map(([n, e]) =>
+    fila({ nombre: n, linea: 'Cada 3 días · 10 min', estado: e })).join('');
+
+  const colores = [
+    ['--acento', 'Lo que toca, botón principal'], ['--hecha', 'Hecha'], ['--a-medias', 'A medias'],
+    ['--borrar', 'Solo «Borrar tarea»'], ['--texto', 'Texto'], ['--texto-2', 'Línea gris, encabezados'],
+    ['--texto-3', 'Apagado'], ['--flotante', 'Lo que flota'], ['--superficie', 'Grupos'], ['--fondo', 'Fondo'],
+  ];
+  document.getElementById('colores').innerHTML = colores.map(([v, n]) =>
+    `<div class="fila"><span class="muestra" style="background: var(${v})"></span><span class="texto"><span class="nombre">${n}</span><span class="linea">${v}</span></span></div>`).join('');
+</script>
+</body>
+</html>
