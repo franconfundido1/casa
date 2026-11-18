@@ -2,7 +2,7 @@
 
 Capturas del usuario en su iPhone (`docs/referencias/`). Ante una duda de diseño, se mira cómo lo resuelven estas apps. Las notas son de Claude; los comentarios del usuario van en «Lo que dice Franco».
 
-Falta: Recordatorios de Apple (la referencia más pura de las Human Interface Guidelines) y, si se puede, Things 3.
+Falta de Recordatorios: una lista abierta y un recordatorio abierto (la hoja de detalle). Things 3, si se puede.
 
 ## Todoist (modo oscuro)
 
@@ -18,7 +18,7 @@ Lo que la hace sentir app:
 - Encabezados de sección cortos, en negrita, con el «+» a la derecha.
 
 Lo que no:
-- El botón redondo flotante para agregar (es de Android, no de iOS).
+- El botón redondo flotante para agregar no es el problema (Recordatorios, de Apple, lo usa en iOS 26); lo que sobra es que sea rojo fuerte y tape contenido.
 - Emojis en el contenido y el cartel de «Prueba Pro».
 - Mucha información por fila (proyecto, enlace, etiquetas).
 
@@ -39,16 +39,32 @@ Lo que no:
 - Rachas y emojis de fuego (esta app no es un juego).
 - Todo en minúscula y la pantalla de inicio vacía en 2/3.
 
+## Recordatorios de Apple (modo oscuro, iOS 26)
+
+`recordatorios-inicio.png`
+
+Lo que la hace sentir app (es la referencia de cómo diseña Apple):
+- **No tiene barra de pestañas.** Todo sale de 1 pantalla de inicio y se entra a cada lista; lo demás va en la cápsula de arriba (buscar, nueva lista, «⋯»).
+- **Botones de arriba agrupados en una cápsula**, igual que Todoist: es el patrón de iOS 26.
+- **Botón «+» redondo flotante abajo a la derecha**, en el color de acento: en iOS 26 es de Apple, no solo de Android.
+- **Tarjetas de las listas inteligentes:** cada una con su color, 1 ícono, 1 número grande y el nombre. El color identifica la lista (1 trabajo por color).
+- Título grande en negrita («Mis listas») y filas agrupadas con ícono en un círculo de color, el número en gris y la flecha «›».
+- Fondo negro puro en modo oscuro; los bloques, en gris muy oscuro, sin sombra.
+
+Lo que no:
+- Los degradés de las tarjetas (en una web quedan «premium genérico»; colores lisos).
+- La lista sugerida (promoción dentro de la app).
+
 ## Lo que se lleva esta app
 
 - Monocromo + 1 acento con 1 trabajo: «esto es lo que toca».
 - Listas agrupadas con separadores que empiezan después del ícono.
 - La hoja de «Hábitos» para editar una tarea: selector de frecuencia, contador de minutos con − y +, botón principal apagado hasta que esté completa.
 - El estado con círculos y color (toca, hecha, salteada, a medias), no con palabras.
-- Barra de pestañas con ícono **y** etiqueta.
-- Sin botón flotante, sin emojis, sin rachas, sin tarjetas con sombra.
+- Si hay barra de pestañas, con ícono **y** etiqueta. Puede no hacer falta (como en Recordatorios).
+- Sin emojis, sin rachas, sin tarjetas con sombra, sin degradés.
 
 ## A decidir
 
-- Barra de pestañas: ¿cápsula flotante como iOS 26 (Todoist) o la barra clásica pegada abajo? La cápsula sin vidrio puede quedar bien; imitar el vidrio de iOS 26 en una web es riesgoso.
+- ¿Barra de pestañas o, como Recordatorios, ninguna: Hoy como única pantalla, y Tareas y Ajustes desde la cápsula de arriba? Si hay barra: ¿cápsula flotante (iOS 26) o clásica? Imitar el vidrio de iOS 26 en una web es riesgoso.
 - ¿Modo oscuro desde el día 1?
