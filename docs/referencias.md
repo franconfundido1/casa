@@ -2,7 +2,7 @@
 
 Capturas del usuario en su iPhone (`docs/referencias/`). Ante una duda de diseño, se mira cómo lo resuelven estas apps. Las notas son de Claude; los comentarios del usuario van en «Lo que dice Franco».
 
-Falta de Recordatorios: una lista abierta y un recordatorio abierto (la hoja de detalle). Things 3, si se puede.
+Falta de Recordatorios: un recordatorio abierto (la hoja de detalle). Things 3, si se puede.
 
 ## Todoist (modo oscuro)
 
@@ -41,7 +41,7 @@ Lo que no:
 
 ## Recordatorios de Apple (modo oscuro, iOS 26)
 
-`recordatorios-inicio.png`
+`recordatorios-inicio.png`, `recordatorios-lista.png`, `recordatorios-menu.png`
 
 Lo que la hace sentir app (es la referencia de cómo diseña Apple):
 - **No tiene barra de pestañas.** Todo sale de 1 pantalla de inicio y se entra a cada lista; lo demás va en la cápsula de arriba (buscar, nueva lista, «⋯»).
@@ -50,6 +50,9 @@ Lo que la hace sentir app (es la referencia de cómo diseña Apple):
 - **Tarjetas de las listas inteligentes:** cada una con su color, 1 ícono, 1 número grande y el nombre. El color identifica la lista (1 trabajo por color).
 - Título grande en negrita («Mis listas») y filas agrupadas con ícono en un círculo de color, el número en gris y la flecha «›».
 - Fondo negro puro en modo oscuro; los bloques, en gris muy oscuro, sin sombra.
+- **La lista abierta:** «‹» en un círculo arriba a la izquierda; a la derecha, la cápsula (compartir y «⋯»). Título enorme **en el color de la lista**, y el «+» en el mismo color: el color de acento sale de la lista.
+- **La fila:** círculo vacío para marcar, el nombre en blanco y **1 línea gris de datos** (cuándo, cada cuánto con un ícono de repetir). Sin separadores entre filas: las separa el aire. Un dato especial va en una pastilla con ícono.
+- **El menú «⋯»:** sale del botón y flota (con sombra, desenfoca lo de atrás). Filas con ícono y texto, una línea fina entre grupos, «›» si abre otra cosa, y el valor elegido en gris debajo («Ordenar por / Manual»). Es un menú, no una hoja.
 
 Lo que no:
 - Los degradés de las tarjetas (en una web quedan «premium genérico»; colores lisos).
@@ -59,6 +62,8 @@ Lo que no:
 
 - Monocromo + 1 acento con 1 trabajo: «esto es lo que toca».
 - Listas agrupadas con separadores que empiezan después del ícono.
+- La fila de Recordatorios para cada tarea: círculo, nombre y 1 línea gris («cada 3 días · 10 min»).
+- El menú «⋯» flotante de Recordatorios para lo que se usa poco (Tareas, Ajustes, copia de seguridad).
 - La hoja de «Hábitos» para editar una tarea: selector de frecuencia, contador de minutos con − y +, botón principal apagado hasta que esté completa.
 - El estado con círculos y color (toca, hecha, salteada, a medias), no con palabras.
 - Si hay barra de pestañas, con ícono **y** etiqueta. Puede no hacer falta (como en Recordatorios).
