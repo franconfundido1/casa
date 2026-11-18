@@ -81,3 +81,4 @@ Lo que no (de la hoja): es larguísima. La de esta app tiene que entrar en 1 pan
 - Solo modo oscuro.
 - Sin acento: blanco, negro y grises, como Hábitos. Lo que toca se marca con blanco y tamaño; los estados, con relleno e ícono. Solo el rojo de iOS para borrar.
 - Listas sin cajas, directo sobre el negro (como Recordatorios); las cajas, solo en la hoja.
+- **Cambio de rumbo:** en lo visual manda la app de hábitos, dada vuelta a modo oscuro (blanco lleno sobre negro, contraste total, formas llenas y grandes, League Spartan para todo, títulos en minúscula). De Apple quedan las zonas seguras, las hojas, la barra de pestañas abajo y lo de «se siente app».

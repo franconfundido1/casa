@@ -1,7 +1,8 @@
 // Comportamiento compartido de los bocetos (no es el código de la app).
 const ic = (id, clase = '') => `<svg class="ic ${clase}" aria-hidden="true"><use href="iconos.svg#${id}"/></svg>`;
 
-const circulo = () => `<span class="estado"><i>${ic('check-bold', 'i-check')}${ic('arrow-right-bold', 'i-salteada')}${ic('clock', 'i-reloj')}</i></span>`;
+const circuloIconos = () => `${ic('check-bold', 'i-check')}${ic('arrow-right-bold', 'i-salteada')}${ic('clock', 'i-reloj')}`;
+const circulo = () => `<span class="estado"><i>${circuloIconos()}</i></span>`;
 
 function fila({ nombre, linea, estado }) {
   return `<button class="fila" data-estado="${estado}">${circulo()}<span class="texto"><span class="nombre">${nombre}</span><span class="linea">${linea}</span></span></button>`;
@@ -9,10 +10,14 @@ function fila({ nombre, linea, estado }) {
 
 // Contador − y +. Devuelve get y set.
 function contador(el, { valor, min, max, paso, unidad, alCambiar }) {
+  el.innerHTML = `<button data-menos aria-label="Menos">${ic('minus-bold')}</button>
+    <div class="cifra"><b class="num"></b><span></span></div>
+    <button data-mas aria-label="Más">${ic('plus-bold')}</button>`;
   const menos = el.querySelector('[data-menos]'), mas = el.querySelector('[data-mas]');
-  const cifra = el.querySelector('[data-valor]');
+  const cifra = el.querySelector('.cifra');
   const pintar = () => {
-    cifra.textContent = typeof unidad === 'function' ? unidad(valor) : `${valor}${unidad || ''}`;
+    cifra.querySelector('b').textContent = valor;
+    cifra.querySelector('span').textContent = typeof unidad === 'function' ? unidad(valor) : unidad;
     cifra.classList.remove('cambia'); void cifra.offsetWidth; cifra.classList.add('cambia');
     menos.disabled = valor - paso < min; mas.disabled = valor + paso > max;
     alCambiar && alCambiar(valor);
@@ -23,18 +28,15 @@ function contador(el, { valor, min, max, paso, unidad, alCambiar }) {
   return { get: () => valor, set: v => { valor = v; pintar(); } };
 }
 
-// Selector: la marca se desliza a la opción elegida.
-function selector(el, alCambiar) {
+// Elegir 1 entre pastillas o círculos: lo elegido queda blanco lleno.
+function elegir(el, alCambiar) {
   const ops = [...el.querySelectorAll('button')];
-  const marca = el.querySelector('.marca');
-  marca.style.width = `calc((100% - 6px) / ${ops.length})`;
-  const elegir = (i, avisar = true) => {
-    ops.forEach((b, j) => b.setAttribute('aria-pressed', j === i));
-    marca.style.transform = `translateX(${i * 100}%)`;
-    avisar && alCambiar && alCambiar(ops[i].dataset.op);
+  const marcar = (op, avisar = true) => {
+    ops.forEach(b => b.setAttribute('aria-pressed', b.dataset.op === op));
+    avisar && alCambiar && alCambiar(op);
   };
-  ops.forEach((b, i) => b.onclick = () => elegir(i));
-  return { elegir: op => elegir(ops.findIndex(b => b.dataset.op === op), false) };
+  ops.forEach(b => b.onclick = () => marcar(b.dataset.op));
+  return { marcar };
 }
 
 function abrirHoja(hoja) { hoja.classList.add('abierta'); }

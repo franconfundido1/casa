@@ -1,108 +1,97 @@
 # Sistema de diseño
 
-Solo modo oscuro, en blanco, negro y grises. Cada decisión dice de qué referencia sale (`docs/referencias.md`). Los valores viven como variables CSS en `bocetos/sistema.css`; el código de la app los copia de ahí (no hay valores sueltos).
+**Modelo: la app de hábitos** (`docs/referencias/habitos-*.png`), **dada vuelta a modo oscuro**: blanco lleno sobre negro. Cuando choca con Apple, en lo visual manda la de hábitos. De Apple quedan solo las zonas seguras, las hojas que suben desde abajo, la barra de pestañas abajo y todo lo de «se siente app».
 
-Los valores en px son puntos de iOS (390×844 de referencia). Lo que vale es cómo se ve en el iPhone, instalado desde Safari: las capturas de Linux no tienen la letra de Apple.
+Los valores viven como variables CSS en `bocetos/sistema.css`; el código de la app los copia de ahí (no hay valores sueltos). Los px son puntos de iOS (390×844 de referencia). Lo que vale es cómo se ve en el iPhone, instalado desde Safari.
 
-## Colores: sin acento
+## Identidad
 
-Hábitos: casi monocromo, y se entiende igual. Lo que toca se marca con **blanco y tamaño**, no con un color. Cada gris tiene 1 trabajo.
+- **Contraste total.** Lo elegido es **blanco lleno con letra negra** (el «20» de «tengo», «Cada», la pestaña elegida, el botón principal, el «+»). Lo no elegido es **solo contorno fino gris o texto gris**. Sin pastillas ni cajas grises de relleno.
+- **Formas llenas y grandes:** círculos de estado grandes y gruesos, opciones en círculos, íconos rellenos donde importan.
+- **League Spartan para todo** (no solo los títulos). Títulos en minúscula, como «hábitos»: «hoy», «tareas».
+- **El círculo como firma:** el mismo círculo es el estado de cada tarea, la acción grande de la tarea en curso, el círculo de arriba de la hoja y el ícono de la app (el círculo lleno de «hecha», blanco sobre negro, sin texto: `bocetos/icono-180.png`).
+- **Mucho aire:** pocas cosas por pantalla, filas altas, márgenes de 20 px.
 
-| Variable | Valor | Trabajo | De dónde sale |
-|---|---|---|---|
-| `--fondo` | `#000000` | Fondo de todas las pantallas; las listas van directo encima | Recordatorios: negro puro |
-| `--flotante` | `#1C1C1E` | Hoja y barra de pestañas (sólida) | Recordatorios: la hoja de detalle |
-| `--superficie` | `#2C2C2E` | Grupos con caja, **solo dentro de la hoja** | Recordatorios: los grupos de la hoja de detalle |
-| `--relleno` | `rgba(118,118,128,.24)` | Fondo de controles: selector, − y +, ×, botón apagado | iOS (`tertiarySystemFill`) |
-| `--marca-selector` | `#636366` | La opción elegida del selector | iOS: control segmentado oscuro |
-| `--separador` | `rgba(84,84,88,.65)` | Líneas finas entre filas | iOS (`separator`) |
-| `--texto` | `#FFFFFF` | Nombres, títulos, lo que toca, la pestaña elegida | Todas |
-| `--texto-2` | `rgba(235,235,245,.6)` | La línea gris, encabezados, notas, pestañas no elegidas, salteada | Recordatorios: la línea gris de datos |
-| `--texto-3` | `rgba(235,235,245,.3)` | Lo apagado: lo que no toca, botón desactivado | Hábitos: «Crear hábito» apagado |
-| `--principal` / `--sobre-principal` | `#FFFFFF` / `#000000` | Botón principal: blanco con letra negra | Hábitos: el botón negro sobre blanco, invertido |
-| `--borrar` | `#FF453A` | **Única excepción de color:** solo «Borrar tarea» | iOS: rojo = destructivo |
+## Colores
 
-Sin degradés, sin desenfoque ni transparencias (en el iPhone la barra se teñía del color de lo que tenía atrás).
+| Variable | Valor | Trabajo |
+|---|---|---|
+| `--fondo` | `#000000` | Fondo de todo, también de la hoja y de la barra de pestañas; la letra sobre lo blanco lleno |
+| `--texto` | `#FFFFFF` | Texto, lo elegido (lleno), lo que toca (contorno) |
+| `--texto-2` | `#8E8E93` | Texto gris (línea de la fila, encabezados, notas), lo no elegido, el lleno de «salteada» |
+| `--texto-3` | `#48484A` | Lo apagado: un − o + en el tope, el texto de ejemplo |
+| `--linea` | `#3A3A3C` | Contornos finos de lo no elegido, separadores, borde de la hoja, lo que no toca |
+| `--borrar` | `#FF453A` | **Única excepción de color:** solo «Borrar tarea» (el rojo de iOS) |
+| `--velo` | `rgba(44,44,46,.6)` | Lo de atrás de una hoja abierta (como el gris de la de hábitos, dado vuelta) |
+
+Sin degradés, sin desenfoque, sin transparencias, sin sombras (sobre negro no se ven; lo que flota se separa con el borde fino `--linea`).
 
 ## Estados de una tarea
 
-El círculo de la izquierda dice el estado con **relleno e ícono, no con color** (Hábitos: círculos llenos o vacíos).
+Se distinguen por **relleno e ícono**, no por color. Círculo de 30 px con trazo de 2 px, dentro de 44 px de toque.
 
 | Estado | Círculo | Nombre |
 |---|---|---|
 | Toca | Contorno blanco | Blanco |
-| No toca todavía | Contorno gris apagado (`--texto-3`) | Gris |
+| No toca todavía | Contorno gris fino (`--linea`) | Gris |
 | Hecha | Lleno blanco con ✓ negro | Gris |
-| A medias | Contorno blanco, lleno por la mitad | Blanco |
+| A medias | Contorno blanco, lleno blanco por la mitad | Blanco |
 | Salteada | Lleno gris (`--texto-2`) con flecha → negra | Gris |
 | Esperando | Contorno gris punteado con reloj gris | Gris; la línea dice desde qué hora |
 
-Círculo de 24 px con zona de toque de 44 px; el ícono de adentro, de 16 px en `bold` para que se vea (con trazo fino parecía un círculo roto). En la tarea en curso, el mismo círculo a 112 px.
-
-## Identidad: minimalismo propio
-
-Modelo: Hábitos (`habitos-*.png`). Blanco, negro y grises, y 2 cosas propias que la hacen reconocible sin agregar color:
-
-- **Una letra propia solo para lo grande:** los títulos, el número de «Tengo X min» y el nombre de la tarea en curso. Todo lo demás, con la letra del sistema.
-- **El círculo como firma:** el mismo círculo es el estado de cada tarea, la acción grande de la tarea en curso y el ícono de la app: el círculo lleno de «hecha», blanco sobre negro, sin texto (`bocetos/icono-180.png`).
+En la tarea en curso, el mismo círculo a 120 px con trazo de 3 px.
 
 ## Letra
 
-- **Texto:** `-apple-system` (SF Pro en el iPhone).
-- **Lo grande: League Spartan 700** (SIL OFL), embebida (archivo `woff2` en la página, sin Google Fonts). Geométrica: la «o» es un círculo, como la firma. Elegida en el iPhone entre 3 opciones (Young Serif y Comfortaa quedaron afuera). Nada de Jost (es la de Akordia) ni de las letras de todas las apps hechas con IA (Inter, Space Grotesk y parecidas).
+**League Spartan** (SIL OFL), embebida: 1 archivo variable con todos los pesos (`bocetos/fuentes/league-spartan-variable.woff2`), sin Google Fonts. Para todo el texto. La de hábitos usa una geométrica parecida; ésta tiene la «o» redonda, como la firma. Nada de Jost (es la de Akordia) ni de las letras de todas las apps hechas con IA (Inter, Space Grotesk y parecidas).
 
-Escala (Dynamic Type de iOS en tamaño por defecto, salvo lo grande):
-
-| Variable | Tamaño / alto de línea | Letra | Uso |
+| Variable | Tamaño / alto | Peso | Uso |
 |---|---|---|---|
-| `--letra-enorme` | 42 / 1,1 | League Spartan | Nombre de la tarea en curso; los minutos de «Tengo X min» |
-| `--letra-titulo-grande` | 36 / 1,15 | League Spartan | Título de la pestaña («Hoy», «Tareas») |
-| `--letra-titulo` | 28 / 1,2 | League Spartan | «Listo por ahora» |
-| `--letra-titulo-2` | 22 / 28 | sistema, bold | Nombre en la hoja de editar; minutos de la tarea en curso (regular) |
-| `--letra-encabezado` | 17 / 22 | sistema, semibold | Botones, título de la hoja |
-| `--letra-seccion` | 13 / 18 | sistema, semibold | Encabezado de sección («Las 3 de hoy», «Tocan»): chico y gris, como en iOS |
-| `--letra-cuerpo` | 17 / 22 | sistema | Nombre de la tarea en la fila |
-| `--letra-secundaria` | 15 / 20 | sistema | La línea gris de la fila; botones de texto |
-| `--letra-nota` | 13 / 18 | sistema | Notas, fecha arriba del título |
-| `--letra-pestana` | 11 / 13 | sistema, medium | Etiqueta de la pestaña |
+| `--letra-enorme` | 44 / 1,1 | 700 | Nombre de la tarea en curso |
+| `--letra-titulo-grande` | 40 / 1,1 | 700 | Título de la pantalla, en minúscula |
+| `--letra-titulo` | 30 / 1,15 | 700 | Nombre en la hoja; «listo por ahora» |
+| `--letra-numero` | 36 / 1 | 600 | El número de los contadores |
+| `--letra-encabezado` | 18 / 24 | 600 | Botones, pastillas, opciones |
+| `--letra-cuerpo` | 18 / 24 | 500 | Nombre de la tarea en la fila |
+| `--letra-secundaria` | 16 / 20 | 400 | La línea gris de la fila; botones de texto |
+| `--letra-seccion` | 15 / 20 | 400 | Encabezado de sección, en minúscula y gris («las 3 de hoy», como el «nov» de hábitos) |
+| `--letra-nota` | 14 / 18 | 400 | Notas, la unidad debajo de un número |
+| `--letra-pestana` | 12 / 14 | 500 | Etiqueta de la pestaña |
 
-Números con cifras siempre, y `tabular-nums` en minutos y horas (no bailan al cambiar).
+Números con cifras siempre, y `tabular-nums` en minutos y horas.
 
 ## Menos texto
 
-- 1 sola línea gris por fila, corta. En Tareas: «cada 3 días · 10 min». En Hoy: solo «10 min» (lo que espera: «desde las 19:30», porque la hora es lo único que importa ahí).
-- Nada que el círculo ya diga («hace 5 días», «Entran 2 tareas», «A medias: mañana va primero»: afuera).
-- Una nota solo cuando hay que decidir algo: «No entra ninguna. La más corta: Barrer, 10 min.»
+- 1 sola línea gris por fila, corta. En Tareas: «cada 3 días · 10 min». En Hoy: solo «10 min» (lo que espera: «desde las 19:30»).
+- Cada dato en 1 solo lugar: el «20» de «tengo» está solo en su círculo elegido.
+- Una nota solo cuando hace falta: «No entra ninguna. La más corta: Barrer, 10 min.»; en la hoja, la nota de la frecuencia solo con «Entre».
 
 ## Espacios y medidas
 
 | Variable | Valor | Uso |
 |---|---|---|
-| `--esp-1` … `--esp-8` | 4, 8, 12, 16, 20, 24, 32, 40 | Única escala de márgenes y separaciones |
-| `--margen` | 16 | Margen de los costados |
-| `--toque` | 44 | Mínimo de cualquier cosa que se toca (HIG) |
-| `--alto-boton` | 50 | Botón principal |
-| `--alto-fila` | 52 | Fila de 1 línea; la de 2 líneas crece sola |
-| `--circulo` / `--circulo-grande` | 24 / 112 | Círculo de estado en la fila / en la tarea en curso |
-| `--radio-grupo` | 20 | Grupos de la hoja |
-| `--radio-hoja` | 38 | Esquinas de arriba de la hoja (iOS 26) |
-| `--radio-capsula` | 999 | Botones, barra de pestañas, selector |
-
-## Sombra
-
-Solo en la hoja (lo único que flota): `--sombra-flota` más un borde de 0,5 px `--borde-flota`. Sobre negro la sombra sola no se ve; el borde fino es lo que usa Recordatorios. Todo lo demás, plano.
+| `--esp-1` … `--esp-8` | 4, 8, 12, 16, 20, 24, 32, 40 | Única escala de separaciones |
+| `--margen` | 20 | Margen de los costados |
+| `--toque` | 44 | Mínimo de cualquier cosa que se toca |
+| `--alto-boton` | 56 | Botón principal |
+| `--alto-pastilla` | 48 | Pastillas («Cada», «Entre») |
+| `--alto-fila` | 68 | Fila de tarea |
+| `--circulo` / `--circulo-opcion` / `--circulo-grande` | 30 / 56 / 120 | Estado en la fila / opción de minutos / tarea en curso |
+| `--trazo` / `--trazo-estado` | 1 / 2 | Contorno fino / contorno del círculo de estado |
+| `--radio-hoja` | 38 | Esquinas de arriba de la hoja |
+| `--radio-capsula` | 999 | Botones, pastillas, pestaña elegida |
 
 ## Íconos
 
-1 sola familia: **Phosphor** 2.1.1 (MIT), embebida como `<symbol>` (en los bocetos, `bocetos/iconos.svg`; en la app, dentro del HTML). Contorno (`regular`) en general; relleno (`fill`) solo en la pestaña elegida; `bold` para el ✓ y la flecha dentro de los círculos de estado. 24 px en barras y filas, 28 px en la barra de pestañas.
+1 sola familia: **Phosphor** 2.1.1 (MIT), embebida como `<symbol>` (`bocetos/iconos.svg`). Rellenos (`fill`) donde importan (la pestaña elegida); `bold` para lo que va dentro de círculos llenos (✓, flecha, ×, +, −); contorno (`regular`) para las pestañas no elegidas y los íconos chicos de encabezado.
 
 | Para | Ícono |
 |---|---|
-| Hoy / Tareas / Ajustes | `sun` / `list-checks` / `gear-six` |
-| Cerrar / Guardar | `x` / `check` (bold) |
-| Agregar | `plus` |
-| Contador | `minus` / `plus` |
-| Salteada / Esperando | `arrow-right` (bold) / `clock` |
+| Hoy / Tareas / Ajustes | `sun` / `list-checks` / `gear-six` (relleno en la elegida) |
+| Cerrar / Agregar | `x` / `plus` (bold) |
+| Contador | `minus` / `plus` (bold) |
+| Hecha / Salteada / Esperando | `check` (bold) / `arrow-right` (bold) / `clock` |
+| Encabezados de la hoja y de «tengo» | `repeat` (frecuencia), `timer` (minutos) |
 
 Nada de emojis ni SF Symbols.
 
@@ -110,92 +99,73 @@ Nada de emojis ni SF Symbols.
 
 ### Pantalla y barra de pestañas
 
-- La pantalla, lo fijo de abajo (en Hoy, «Tengo X min») y la barra **se reparten el alto**: cada uno en su lugar, y solo la lista se desplaza. Nada queda nunca debajo de la barra.
-- Sin barra de desplazamiento fija a la derecha (`scrollbar-width: none`).
-- Barra de Todoist (iOS 26): cápsula a `--esp-5` de los costados, **pegada a la barra de inicio**: la zona segura se cuenta 1 sola vez (queda a unos 20 px del borde, `env(safe-area-inset-bottom)` menos 14 px). **Fondo sólido** `--flotante`, sin desenfoque ni sombra.
-- 3 pestañas con ícono y etiqueta abajo (Hábitos sin etiqueta: hay que adivinar). La elegida: ícono relleno, todo en blanco. Las otras: contorno, en gris. Sin cápsula resaltada.
-- Cambiar de pestaña: el contenido aparece con un fundido de 200 ms.
+- La pantalla, lo fijo de abajo (en Hoy, «tengo») y la barra **se reparten el alto**: solo la lista se desplaza; nada queda debajo de otra cosa. Sin barra de desplazamiento.
+- Barra **plana** como la de hábitos: negra, a lo ancho, con una línea fina arriba, **pegada a la barra de inicio** (la zona segura se cuenta 1 sola vez). 3 pestañas con ícono y etiqueta abajo. La elegida, **cápsula blanca llena** con ícono relleno y letra negra; las otras, en gris, sin fondo.
 
-### Título de la pantalla
+### Título
 
-Recordatorios: título grande a la izquierda, en la letra propia, con la fecha en gris chico arriba solo en Hoy. Si la pantalla no tiene botones arriba (Hoy), el título sube hasta la zona segura más `--esp-2`; si tiene (Tareas), va debajo de la barra de 44 px.
+Como «hábitos»: en minúscula, grande, a la izquierda; los botones de la pantalla a la derecha, en la misma línea (en Tareas, el «+» como círculo blanco lleno). En Hoy, la fecha en gris chico debajo. El título arranca en la zona segura más `--esp-4`.
 
-### Botones de arriba
+### Lista y fila
 
-Recordatorios: a la derecha, en un círculo `--relleno` de 44 px. Con 2 o más, juntos en 1 cápsula. Hoy: ninguno. Tareas: «+».
+- Encabezado de sección chico, gris y en minúscula.
+- Fila directo sobre el negro, de 68 px: círculo de estado, nombre y 1 línea gris corta. Separador fino que empieza después del círculo. Sin cajas.
+- En Tareas: tocar el círculo marca hecha; tocar la fila abre la hoja. Al tocar, la fila se aclara 100 ms.
 
-### Lista y fila de tarea
+### Botón redondo
 
-Recordatorios (`recordatorios-lista.png`): **sin cajas**.
+44 px. De contorno fino (el «×» de la hoja) o **lleno blanco** si es la acción (el «+» de Tareas).
 
-- Encabezado de sección chico y discreto, como en iOS: `--letra-seccion` y `--texto-2` («Las 3 de hoy», «Tocan»). El único texto grande es el título.
-- Fila directo sobre el negro: círculo de estado, nombre (`--letra-cuerpo`) y 1 línea gris corta.
-- Separador fino que **empieza después del círculo** y termina en el margen.
-- En Tareas: tocar el círculo marca hecha; tocar la fila abre la hoja. Al tocar, la fila se aclara 100 ms, sin el resaltado del navegador.
+### Elegir 1 opción
 
-### Hoja
+- **Pastillas** (2 opciones, como Diario / objetivo semanal): la elegida, blanca llena con letra negra; la otra, contorno fino gris. En la hoja: «Cada» / «Entre».
+- **Círculos** (varias opciones cortas, como los días de la semana de hábitos): en «tengo», 5, 10, 20, 30 y 60, en círculos de 56 px. El elegido, blanco lleno.
 
-Recordatorios (detalle) y Hábitos (nuevo):
+### Contador
 
-- Sube desde abajo (300 ms, `--curva-ios`); lo de atrás se oscurece. Esquinas de arriba `--radio-hoja`. Casi a pantalla completa.
-- Arriba: «×» en un círculo a la izquierda, título chico al centro, «✓» en un círculo a la derecha: **blanco con ✓ negro** cuando se puede guardar; `--relleno` con ✓ apagado mientras no hay nada para guardar.
-- Se cierra con «×» o tocando afuera. No se arrastra para cerrar.
-- Adentro, **grupos con caja** (`--superficie`), con encabezado arriba y nota gris debajo. Tiene que entrar en 1 pantalla.
-
-### Tarea en curso
-
-Va en una hoja, de a 1 tarea, sin espacio vacío arriba: el contenido está centrado en la hoja.
-
-- El nombre **enorme y centrado**, en la letra propia; los minutos abajo en gris.
-- **1 acción principal grande:** un círculo de 112 px para tocar = hecha (se llena de blanco con ✓). Debajo, en gris chico, «Hecha».
-- «A medias» y «Saltear» como **botones de texto** chicos, abajo de todo. Al tocarlos, el círculo grande muestra ese estado.
-- Después de marcar, la tarea sale a la izquierda y entra la siguiente. Al final: «Listo por ahora», las filas con su estado y «Cerrar».
-
-### «Tengo X minutos»
-
-Un control de iOS, no un formulario: «Tengo» en gris chico, los minutos como **número grande** en la letra propia, y abajo un **selector** con las opciones rápidas 5, 10, 20, 30 y 60. Después, «Empezar». **Fijo, siempre visible, arriba de la barra de pestañas**, con un separador fino arriba; la lista se desplaza por encima.
-
-### Contador − y +
-
-Solo en la hoja (Hábitos): nombre de la fila a la izquierda («Minutos») y a la derecha −, número y +, en círculos de 36 px de dibujo dentro de 44 px de toque. Pasos de 5 en minutos y de 1 en días. En el tope, el botón que no sirve queda apagado. El número cambia con un fundido corto.
-
-### Selector
-
-Hábitos (Diario / objetivo semanal), con la forma del control segmentado de iOS: cápsula `--relleno` de 44 px de alto, la opción elegida en una cápsula `--marca-selector` que se desliza (200 ms). En Hoy: 5, 10, 20, 30, 60. En la hoja: «Cada» / «Entre».
+Como «1 vez al día» de hábitos: «−» en un círculo de contorno, el número grande en el medio con la unidad debajo en gris, «+» en un círculo **blanco lleno**. En el tope, el botón que no sirve queda apagado (contorno y ícono en gris oscuro). El número cambia con un fundido corto.
 
 ### Botones
 
-- **Principal:** cápsula de 50 px a lo ancho, **blanca con letra negra**. 1 por pantalla, en la mitad de abajo. Apagado: `--relleno` con letra `--texto-3`, no responde.
-- **De texto:** solo la palabra, en gris semibold de 15 px, con 44 px de toque. Para lo secundario («A medias», «Saltear»).
-- **Borrar:** fila centrada en rojo, sola en su grupo, al final de la hoja.
+- **Principal:** cápsula de 56 px a lo ancho, **blanca con letra negra**. 1 por pantalla, abajo. **Apagado: solo contorno fino y letra gris**, como «Crear hábito».
+- **De texto:** la palabra sola, en gris, con 44 px de toque, para lo secundario («A medias», «Saltear»). En rojo, «Borrar tarea».
 
-### Menú «⋯»
+### Hoja
 
-Ninguna pantalla lo usa por ahora (en Tareas no había nada poco usado que poner). Cuando haga falta: el de Recordatorios, que sale del botón y crece desde ahí (200 ms), `--flotante` con sombra y borde fino, filas de 44 px con ícono y texto.
+- Sube desde abajo (300 ms); lo de atrás queda velado en gris. Negra, con las esquinas de arriba redondeadas y el borde fino. Se cierra con el «×» (arriba a la derecha, como en hábitos) o tocando afuera.
+- **Hoja de tarea, como «nuevo hábito»:** arriba al centro el círculo grande lleno con ✓ (la firma); el nombre centrado, grande, con una rayita abajo; «frecuencia» con las pastillas «Cada» / «Entre» y sus contadores (1 con «Cada»; «desde» y «hasta» con «Entre», y solo ahí la nota); «lleva» con el contador de minutos. Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar tarea» en rojo (solo al editar).
+
+### Tarea en curso
+
+En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **el círculo de 120 px para tocar = hecha** (se llena de blanco con ✓), con «hecha» en gris debajo. «A medias» y «Saltear», botones de texto abajo. Arriba a la izquierda, «1 de 2» en gris. Al terminar: «listo por ahora», las filas con su estado y «Cerrar».
+
+### «Tengo X minutos»
+
+**Fijo, siempre visible, arriba de la barra de pestañas**, con una línea fina arriba; la lista se desplaza por encima. Una línea gris chica («tengo» a la izquierda, «minutos» a la derecha), los 5 círculos de opciones y «Empezar».
 
 ### Transiciones
 
 | Qué | Cómo | Duración |
 |---|---|---|
-| Hoja | Sube desde abajo; fondo se oscurece | 300 ms, `--curva-ios` (`cubic-bezier(.32,.72,0,1)`) |
+| Hoja | Sube desde abajo; lo de atrás se vela | 300 ms, `--curva-ios` (`cubic-bezier(.32,.72,0,1)`) |
 | Cambio de pestaña | Fundido del contenido | 200 ms |
 | Siguiente tarea | La actual sale a la izquierda, la nueva entra desde la derecha | 250 ms |
-| Cambio de estado del círculo | Se llena con un leve rebote (escala 1 → 1,15 → 1) | 250 ms |
-| Selector | La marca se desliza | 200 ms |
+| Cambio de estado del círculo | Se llena con un leve rebote | 250 ms |
+| Elegir una opción | Se llena de blanco | 200 ms |
 | Número que cambia | Fundido | 150 ms |
 
-Con `prefers-reduced-motion`: sin animación, todo cambia al instante.
+Con `prefers-reduced-motion`: sin animación.
 
-### Que se sienta app
+### Que se sienta app (de Apple)
 
-En `sistema.css`, para todo: `-webkit-tap-highlight-color: transparent`, `user-select: none` y `-webkit-touch-callout: none` (salvo campos de texto), `overscroll-behavior: none`. La página no se mueve: solo se desplaza el contenido; la barra de pestañas queda quieta. Zonas seguras con `env(safe-area-inset-*)`.
+`-webkit-tap-highlight-color: transparent`, `user-select: none` y `-webkit-touch-callout: none` (salvo campos de texto), `overscroll-behavior: none`. La página no se mueve: solo se desplaza el contenido. Zonas seguras con `env(safe-area-inset-*)`.
 
 ## Pantallas (bocetos)
 
-En `bocetos/`, con datos de `vision.md` (miércoles 18 de noviembre, 18:40). Se publican en https://franketf2.neocities.org/bocetos/ con el workflow «Publicar en Neocities».
+En `bocetos/`, con datos de `vision.md` (miércoles 18 de noviembre, 18:40). Se publican en https://franketf2.neocities.org/bocetos/ con el workflow «Publicar en Neocities» al fusionar.
 
-- `hoy.html`: las 3 de hoy, lo que espera (colgar la ropa) y «Tengo X minutos» abajo.
+- `hoy.html`: las 3 de hoy, lo que espera (colgar la ropa) y «tengo» fijo abajo.
 - `hoy.html#curso`: la tarea en curso.
-- `tareas.html`: las 9 tareas en 3 secciones (Tocan, Más adelante, Hechas hoy).
-- `tareas.html#editar`: la hoja de editar (Verdulería).
+- `tareas.html`: las 9 tareas en 3 secciones (tocan, más adelante, hechas hoy).
+- `tareas.html#editar`: la hoja de tarea (Verdulería).
 - `index.html`: la portada: los links, el ícono y la muestra de estados y colores. En los bocetos, la pestaña Ajustes lleva acá.

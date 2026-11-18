@@ -8,17 +8,17 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bocetos">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icono-180.png">
 <title>Hoy · boceto</title>
 <link rel="stylesheet" href="sistema.css">
-<link rel="apple-touch-icon" href="icono-180.png">
 <style>
   /* «Tengo X minutos»: fijo arriba de la barra de pestañas; la lista se mueve por encima */
-  .tengo { flex: none; padding: var(--esp-3) var(--margen) 0; text-align: center; border-top: .5px solid var(--separador); }
-  .tengo small { display: block; font: var(--letra-nota); color: var(--texto-2); }
-  .tengo .cuanto { font: var(--letra-enorme); margin: var(--esp-1) 0 var(--esp-3); }
-  .tengo .cuanto span { font: var(--letra-titulo-2); font-weight: 400; color: var(--texto-2); }
-  .tengo .nota { font: var(--letra-nota); color: var(--texto-2); padding-top: var(--esp-2); min-height: 26px; }
-  .tengo .nota:empty { min-height: var(--esp-3); }
+  .tengo { flex: none; padding: var(--esp-5) var(--margen) var(--esp-4); border-top: var(--trazo) solid var(--linea); }
+  .tengo .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
+  .tengo .cabeza svg { width: 20px; height: 20px; }
+  .tengo .cabeza span:last-child { margin-left: auto; }
+  .tengo .nota { font: var(--letra-nota); color: var(--texto-2); text-align: center; min-height: var(--esp-4); padding: var(--esp-3) 0; }
+  .tengo .nota:empty { padding: 0; }
   .tengo .nota:not(:empty) { animation: fundido var(--t-corta); }
 
   /* Tarea en curso */
@@ -28,63 +28,56 @@
   .tarea.sale { transform: translateX(-40%); opacity: 0; }
   .tarea.entra { transform: translateX(40%); opacity: 0; transition: none; }
   .tarea h3 { font: var(--letra-enorme); }
-  .tarea p { font: var(--letra-titulo-2); font-weight: 400; color: var(--texto-2); margin-top: var(--esp-2); }
+  .tarea p { font: var(--letra-secundaria); font-size: 20px; color: var(--texto-2); margin-top: var(--esp-2); }
   .tarea .estado { width: auto; height: auto; margin-top: var(--esp-8); }
-  .tarea .estado i { --circulo: var(--circulo-grande); border-width: 3px; }
-  .tarea .estado i svg { width: 52px; height: 52px; }
+  .tarea .estado i { --circulo: var(--circulo-grande); border-width: 3px; transition: background var(--t-corta), border-color var(--t-corta), transform 100ms; }
+  .tarea .estado i svg { width: 50%; height: 50%; }
   .tarea[data-estado="toca"] .estado:active i { transform: scale(.94); }
-  .tarea .estado i { transition: background var(--t-corta), border-color var(--t-corta), transform 100ms; }
-  .tarea .etiqueta { font: var(--letra-nota); color: var(--texto-2); margin-top: var(--esp-2); }
+  .tarea .etiqueta { font: var(--letra-seccion); color: var(--texto-2); margin-top: var(--esp-3); }
   .otras { display: flex; justify-content: center; gap: var(--esp-6); }
   .otras button[disabled], .tarea .estado[disabled] { pointer-events: none; }
 
   .fin { flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: center; text-align: left; animation: fundido var(--t-corta); }
-  .fin h3 { font: var(--letra-titulo); padding: 0 0 var(--esp-4); text-align: center; }
+  .fin h3 { font: var(--letra-titulo); padding: 0 0 var(--esp-5); text-align: center; }
   .fin .fila { padding-left: 0; }
-  .fin .fila + .fila::before { left: 48px; right: 0; }
-  .fin .fila:active { background: none; }
-  .fin .boton { margin-top: auto; }
+  .fin .fila + .fila::before { left: calc(var(--circulo) + var(--esp-5)); right: 0; }
 </style>
 </head>
 <body>
 
 <main class="pantalla">
   <div class="titulo">
-    <small>Miércoles 18 de noviembre</small>
-    <h1>Hoy</h1>
+    <div><h1>hoy</h1><small>miércoles 18 de noviembre</small></div>
   </div>
 
   <section class="seccion">
-    <h2>Las 3 de hoy</h2>
+    <h2>las 3 de hoy</h2>
     <div id="las3"></div>
   </section>
 
   <section class="seccion">
-    <h2>Esperando</h2>
+    <h2>esperando</h2>
     <div id="esperando"></div>
   </section>
 </main>
 
 <div class="tengo">
-    <small>Tengo</small>
-    <div class="cuanto num" id="cuanto"></div>
-    <div class="selector" id="minutos">
-      <span class="marca"></span>
-      <button data-op="5">5</button>
-      <button data-op="10">10</button>
-      <button data-op="20">20</button>
-      <button data-op="30">30</button>
-      <button data-op="60">60</button>
-    </div>
-    <p class="nota" id="nota"></p>
-    <button class="boton principal" id="empezar">Empezar</button>
+  <div class="cabeza"><span class="ic-timer"></span><span>tengo</span><span>minutos</span></div>
+  <div class="opciones num" id="minutos">
+    <button data-op="5">5</button>
+    <button data-op="10">10</button>
+    <button data-op="20">20</button>
+    <button data-op="30">30</button>
+    <button data-op="60">60</button>
+  </div>
+  <p class="nota" id="nota"></p>
+  <button class="boton" id="empezar">Empezar</button>
 </div>
 
 <section class="hoja" id="hoja-curso" aria-label="Tarea en curso">
   <div class="hoja-arriba">
-    <button class="boton-circulo" id="cerrar-curso" aria-label="Cerrar"></button>
     <h2 class="num" id="cuenta"></h2>
-    <span></span>
+    <button class="boton-circulo" id="cerrar-curso" aria-label="Cerrar"></button>
   </div>
   <div class="curso" id="curso"></div>
 </section>
@@ -103,7 +96,8 @@
   // De la más vencida a la menos; las 3 de hoy primero.
   const orden = ['barrer', 'verdu', 'bano', 'ordenar'];
 
-  document.getElementById('cerrar-curso').innerHTML = ic('x');
+  document.getElementById('cerrar-curso').innerHTML = ic('x-bold');
+  document.querySelector('.ic-timer').outerHTML = ic('timer');
 
   function pintarHoy() {
     document.getElementById('las3').innerHTML = ['platos', 'barrer', 'verdu']
@@ -121,9 +115,6 @@
   }
   let minutos = 20, elegidas = [];
   function pintarTengo() {
-    const cuanto = document.getElementById('cuanto');
-    cuanto.innerHTML = `${minutos} <span>min</span>`;
-    cuanto.classList.remove('cambia'); void cuanto.offsetWidth; cuanto.classList.add('cambia');
     elegidas = entran(minutos);
     document.getElementById('empezar').disabled = !elegidas.length;
     const nota = document.getElementById('nota');
@@ -133,7 +124,7 @@
       nota.textContent = `No entra ninguna. La más corta: ${corta.nombre}, ${corta.min} min.`;
     } else nota.textContent = 'No queda nada que toque hoy.';
   }
-  selector(document.getElementById('minutos'), op => { minutos = +op; pintarTengo(); }).elegir('20');
+  elegir(document.getElementById('minutos'), op => { minutos = +op; pintarTengo(); }).marcar('20', false);
 
   // La tarea en curso, de a 1.
   const hoja = document.getElementById('hoja-curso');
@@ -148,8 +139,8 @@
       <div class="tarea ${entrando ? 'entra' : ''}" data-estado="toca">
         <h3>${t.nombre}</h3>
         <p class="num">${t.min} min</p>
-        <button class="estado" data-r="hecha" aria-label="Hecha"><i>${ic('check-bold', 'i-check')}${ic('arrow-right-bold', 'i-salteada')}</i></button>
-        <div class="etiqueta">Hecha</div>
+        <button class="estado" data-r="hecha" aria-label="Hecha"><i>${circuloIconos()}</i></button>
+        <div class="etiqueta">hecha</div>
       </div>
       <div class="otras">
         <button class="boton-texto" data-r="a-medias">A medias</button>
@@ -160,7 +151,7 @@
     curso.querySelectorAll('[data-r]').forEach(b => b.onclick = () => marcar(k, b.dataset.r, tarea));
   }
 
-  const etiquetas = { 'hecha': 'Hecha', 'a-medias': 'A medias', 'salteada': 'Salteada' };
+  const etiquetas = { 'hecha': 'hecha', 'a-medias': 'a medias', 'salteada': 'salteada' };
   function marcar(k, r, tarea) {
     curso.querySelectorAll('[data-r]').forEach(b => b.disabled = true);
     tarea.dataset.estado = r;
@@ -179,10 +170,10 @@
     cuenta.textContent = '';
     curso.innerHTML = `
       <div class="fin">
-        <h3>Listo por ahora</h3>
+        <h3>listo por ahora</h3>
         <div>${resultados.map(([k, r]) => fila({ nombre: tareas[k].nombre, linea: `${tareas[k].min} min`, estado: r })).join('')}</div>
       </div>
-      <button class="boton principal" id="listo">Cerrar</button>`;
+      <button class="boton" id="listo">Cerrar</button>`;
     document.getElementById('listo').onclick = cerrar;
   }
 
