@@ -20,7 +20,8 @@ Los valores viven como variables CSS en `bocetos/sistema.css`; el código de la 
 | `--texto` | `#FFFFFF` | Texto, lo elegido (lleno), lo que toca (contorno) |
 | `--texto-2` | `#8E8E93` | Texto gris (línea de la fila, encabezados, notas), lo no elegido, el lleno de «salteada» |
 | `--texto-3` | `#48484A` | Lo apagado: un − o + en el tope, el texto de ejemplo |
-| `--linea` | `#3A3A3C` | Contornos finos de lo no elegido, separadores, borde de la hoja, lo que no toca |
+| `--linea` | `#3A3A3C` | Contornos finos de lo no elegido, separadores, la línea bajo el título, borde de la hoja |
+| `--gris-lleno` | `#2C2C2E` | Círculo sin hacer (como los días sin hacer de hábitos) y el «×» de la hoja |
 | `--borrar` | `#FF453A` | **Única excepción de color:** solo «Borrar tarea» (el rojo de iOS) |
 | `--velo` | `rgba(44,44,46,.6)` | Lo de atrás de una hoja abierta (como el gris de la de hábitos, dado vuelta) |
 
@@ -28,16 +29,18 @@ Sin degradés, sin desenfoque, sin transparencias, sin sombras (sobre negro no s
 
 ## Estados de una tarea
 
-Se distinguen por **relleno e ícono**, no por color. Círculo de 30 px con trazo de 2 px, dentro de 44 px de toque.
+Como los días de hábitos: lo sin hacer es un **círculo gris oscuro lleno**, lo hecho **blanco lleno**, y lo de hoy lleva **aro**. Se distinguen por relleno, aro e ícono, no por color. Círculo de 30 px con trazo de 2 px, dentro de 44 px de toque.
 
 | Estado | Círculo | Nombre |
 |---|---|---|
-| Toca | Contorno blanco | Blanco |
-| No toca todavía | Contorno gris fino (`--linea`) | Gris |
-| Hecha | Lleno blanco con ✓ negro | Gris |
-| A medias | Contorno blanco, lleno blanco por la mitad | Blanco |
-| Salteada | Lleno gris (`--texto-2`) con flecha → negra | Gris |
-| Esperando | Contorno gris punteado con reloj gris | Gris; la línea dice desde qué hora |
+| Toca | Gris oscuro lleno con aro blanco | Blanco |
+| No toca todavía | Gris oscuro lleno, sin aro ni ícono | Gris |
+| Hecha | Blanco lleno con ✓ negro | Gris |
+| A medias | Aro blanco, mitad blanca y mitad gris oscuro | Blanco |
+| Salteada | Gris claro lleno (`--texto-2`) con flecha → negra | Gris |
+| Esperando | Sin relleno, aro gris punteado y reloj blanco | Gris; la línea dice desde qué hora |
+
+Lo que no toca, lo salteado y lo que espera no se confunden: el primero no tiene ícono, el segundo es claro con flecha y el tercero es hueco y punteado, con reloj.
 
 En la tarea en curso, el mismo círculo a 120 px con trazo de 3 px.
 
@@ -88,7 +91,7 @@ Números con cifras siempre, y `tabular-nums` en minutos y horas.
 | Para | Ícono |
 |---|---|
 | Hoy / Tareas / Ajustes | `sun` / `list-checks` / `gear-six` (relleno en la elegida) |
-| Cerrar / Agregar | `x` / `plus` (bold) |
+| Cerrar / Agregar | `x` (bold) / `plus-circle` (contorno) |
 | Contador | `minus` / `plus` (bold) |
 | Hecha / Salteada / Esperando | `check` (bold) / `arrow-right` (bold) / `clock` |
 | Encabezados de la hoja y de «tengo» | `repeat` (frecuencia), `timer` (minutos) |
@@ -104,7 +107,7 @@ Nada de emojis ni SF Symbols.
 
 ### Título
 
-Como «hábitos»: en minúscula, grande, a la izquierda; los botones de la pantalla a la derecha, en la misma línea (en Tareas, el «+» como círculo blanco lleno). En Hoy, la fecha en gris chico debajo. El título arranca en la zona segura más `--esp-4`.
+Como «hábitos»: una **cabecera fija** con el título en minúscula, grande, a la izquierda, y los botones de la pantalla a la derecha, en la misma línea; abajo, una **línea fina a lo ancho** (`--linea`) que la separa de la lista, que se desplaza por debajo. En Hoy, la fecha en gris chico debajo del título. El título arranca en la zona segura más `--esp-5`.
 
 ### Lista y fila
 
@@ -112,9 +115,10 @@ Como «hábitos»: en minúscula, grande, a la izquierda; los botones de la pant
 - Fila directo sobre el negro, de 68 px: círculo de estado, nombre y 1 línea gris corta. Separador fino que empieza después del círculo. Sin cajas.
 - En Tareas: tocar el círculo marca hecha; tocar la fila abre la hoja. Al tocar, la fila se aclara 100 ms.
 
-### Botón redondo
+### Botones de ícono
 
-44 px. De contorno fino (el «×» de la hoja) o **lleno blanco** si es la acción (el «+» de Tareas).
+- **Ícono suelto** (el «+» de Tareas, como el ⊕ de hábitos): `plus-circle` de contorno, de 32 px, sin fondo, con 44 px de toque aunque no se vea.
+- **Botón redondo** (el «×» de la hoja, como en hábitos): círculo de 44 px gris oscuro lleno (`--gris-lleno`) con borde fino.
 
 ### Elegir 1 opción
 
@@ -137,7 +141,7 @@ Como «1 vez al día» de hábitos: «−» en un círculo de contorno, el núme
 
 ### Tarea en curso
 
-En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **el círculo de 120 px para tocar = hecha** (se llena de blanco con ✓), con «hecha» en gris debajo. «A medias» y «Saltear», botones de texto abajo. Arriba a la izquierda, «1 de 2» en gris. Al terminar: «listo por ahora», las filas con su estado y «Cerrar».
+En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **el círculo de 120 px para tocar = hecha** (gris oscuro con aro blanco; se llena de blanco con ✓), con «hecha» en gris debajo. «A medias» y «Saltear», botones de texto abajo. Arriba a la izquierda, «1 de 2» en gris. Al terminar: «listo por ahora», las filas con su estado y «Cerrar».
 
 ### «Tengo X minutos»
 

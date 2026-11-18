@@ -14,6 +14,7 @@
   --texto-2: #8E8E93;
   --texto-3: #48484A;
   --linea: #3A3A3C;
+  --gris-lleno: #2C2C2E;
   --borrar: #FF453A;
   --velo: rgba(44, 44, 46, .6);
 
@@ -83,29 +84,36 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
   flex: 1; min-height: 0;
   overflow-y: auto; overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
-  padding: calc(var(--arriba) + var(--esp-4)) 0 var(--esp-6);
+  padding: var(--esp-5) 0 var(--esp-6);
   animation: fundido var(--t-corta) ease-out;
 }
 @keyframes fundido { from { opacity: 0; } }
 
-/* Título: en minúscula, grande, con los botones a la derecha (como «hábitos») */
+/* Cabecera fija: el título en minúscula, grande, con los botones a la derecha y una línea fina abajo (como «hábitos») */
 .titulo {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--esp-4);
-  padding: var(--esp-2) var(--margen) var(--esp-6);
+  flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--esp-4);
+  padding: calc(var(--arriba) + var(--esp-5)) var(--margen) var(--esp-4);
+  border-bottom: var(--trazo) solid var(--linea);
 }
 .titulo h1 { font: var(--letra-titulo-grande); }
 .titulo small { display: block; font: var(--letra-seccion); color: var(--texto-2); margin-top: var(--esp-1); }
 
-/* Botón redondo: de contorno, o lleno si es la acción */
+/* Botón redondo (el × de la hoja): lleno de gris oscuro con borde fino */
 .boton-circulo {
   width: var(--toque); height: var(--toque); border-radius: 50%; flex: none;
   display: grid; place-items: center;
-  border: var(--trazo) solid var(--linea); color: var(--texto);
-  transition: background var(--t-corta), color var(--t-corta), transform 100ms;
+  background: var(--gris-lleno); border: var(--trazo) solid var(--linea); color: var(--texto);
+  transition: transform 100ms;
 }
-.boton-circulo.lleno { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
 .boton-circulo:active { transform: scale(.92); }
 .boton-circulo svg { width: 20px; height: 20px; }
+/* Botón de ícono suelto (el + del título): se ve solo el ícono de contorno; el toque es de 44 px */
+.boton-icono {
+  width: var(--toque); height: var(--toque); flex: none; margin-right: -8px;
+  display: grid; place-items: center; color: var(--texto); transition: opacity 100ms;
+}
+.boton-icono:active { opacity: .5; }
+.boton-icono svg { width: 32px; height: 32px; }
 
 /* Listas: filas sobre el negro, con mucho aire */
 .seccion { margin-bottom: var(--esp-7); }
@@ -129,14 +137,14 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .fila .nombre { font: var(--letra-cuerpo); transition: color var(--t-corta); }
 .fila .linea { font: var(--letra-secundaria); color: var(--texto-2); margin-top: 2px; }
 
-/* Círculo de estado: grande y grueso; se distingue por relleno e ícono */
+/* Círculo de estado, como los días de hábitos: lo sin hacer, gris oscuro lleno; se distingue por relleno, aro e ícono */
 .estado {
   width: var(--toque); height: var(--toque); flex: none;
   display: grid; place-items: center;
 }
 .estado i {
   width: var(--circulo); height: var(--circulo); border-radius: 50%;
-  border: var(--trazo-estado) solid var(--linea); display: grid; place-items: center;
+  background: var(--gris-lleno); border: var(--trazo-estado) solid var(--gris-lleno); display: grid; place-items: center;
   position: relative; overflow: hidden; color: var(--fondo);
   transition: background var(--t-corta), border-color var(--t-corta);
 }
@@ -149,7 +157,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 [data-estado="a-medias"] .estado i::after { transform: scaleX(1); }
 [data-estado="salteada"] .estado i { background: var(--texto-2); border-color: var(--texto-2); color: var(--fondo); animation: rebote var(--t-tarea); }
 [data-estado="salteada"] .estado i .i-salteada { opacity: 1; }
-[data-estado="esperando"] .estado i { border-style: dashed; border-color: var(--texto-2); color: var(--texto-2); }
+[data-estado="esperando"] .estado i { background: none; border-style: dashed; border-color: var(--texto-2); color: var(--texto); }
 [data-estado="esperando"] .estado i .i-reloj { opacity: 1; width: 62%; height: 62%; }
 [data-estado="hecha"] .nombre, [data-estado="salteada"] .nombre, [data-estado="esperando"] .nombre, [data-estado="no"] .nombre { color: var(--texto-2); }
 @keyframes rebote { 50% { transform: scale(1.15); } }

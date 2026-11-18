@@ -35,11 +35,12 @@
 </head>
 <body>
 
+<header class="titulo">
+  <h1>tareas</h1>
+  <button class="boton-icono" id="nueva" aria-label="Nueva tarea"></button>
+</header>
+
 <main class="pantalla">
-  <div class="titulo">
-    <h1>tareas</h1>
-    <button class="boton-circulo lleno" id="nueva" aria-label="Nueva tarea"></button>
-  </div>
   <div id="lista"></div>
 </main>
 
@@ -108,7 +109,7 @@
       fila({ ...t, linea: linea(t) }).replace('<button', `<button data-i="${todas.indexOf(t)}"`)).join('')}</div></section>`).join('');
 
   // Íconos
-  document.getElementById('nueva').innerHTML = ic('plus-bold');
+  document.getElementById('nueva').innerHTML = ic('plus-circle');
   document.getElementById('cerrar').innerHTML = ic('x-bold');
   document.getElementById('firma').innerHTML = ic('check-bold');
   document.querySelector('.ic-repeat').outerHTML = ic('repeat');

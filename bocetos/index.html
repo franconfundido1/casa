@@ -22,8 +22,9 @@
 </style>
 </head>
 <body>
+<header class="titulo"><div><h1>bocetos</h1><small>para mirar en el iPhone</small></div></header>
+
 <main class="pantalla">
-  <div class="titulo"><div><h1>bocetos</h1><small>para mirar en el iPhone</small></div></div>
 
   <section class="seccion">
     <h2>pantallas</h2>
@@ -67,7 +68,7 @@
 
   const colores = [
     ['--texto', 'Texto, lo elegido, lo que toca'], ['--texto-2', 'Texto gris, lo no elegido, «salteada»'],
-    ['--texto-3', 'Apagado'], ['--linea', 'Contornos finos y separadores'],
+    ['--texto-3', 'Apagado'], ['--linea', 'Contornos finos y separadores'], ['--gris-lleno', 'Círculo sin hacer, el ×'],
     ['--borrar', 'Solo «Borrar tarea»'], ['--fondo', 'Fondo'],
   ];
   document.getElementById('colores').innerHTML = colores.map(([v, n]) =>
