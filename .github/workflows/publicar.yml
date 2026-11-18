@@ -1,0 +1,87 @@
+# Publica en Neocities (franketf2.neocities.org): la app (salida/) en la raíz y los bocetos (bocetos/) en /bocetos/.
+#
+# Corre solo al fusionar en main algo que cambie salida/ o bocetos/, y a mano: Actions › «Publicar en Neocities» › Run workflow.
+# Solo corre desde la rama main: con otra rama falla al principio con un mensaje claro.
+# Si ya existe codigo/build.py, compila antes y se corta si salida/ no coincide con lo que está commiteado.
+# No borra nada del sitio (cleanup: false): lo que ya está en Neocities y no se sube queda como está.
+# Hace falta el secreto NEOCITIES_API_KEY (Settings › Secrets and variables › Actions).
+name: Publicar en Neocities
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'salida/**'
+      - 'bocetos/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# nunca 2 publicaciones a la vez
+concurrency:
+  group: publicar-neocities
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      # solo se publica lo que está en main: elegir otra rama en el botón corta acá, antes de tocar nada
+      - name: Chequear que se corra desde main
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::Solo se publica desde la rama main (elegiste ${GITHUB_REF_NAME}). Volvé a correr el workflow eligiendo main en «Use workflow from»."
+            exit 1
+          fi
+
+      - name: Chequear que esté el secreto
+        env:
+          NEOCITIES_API_KEY: ${{ secrets.NEOCITIES_API_KEY }}
+        run: |
+          if [ -z "$NEOCITIES_API_KEY" ]; then
+            echo "::error::Falta el secreto NEOCITIES_API_KEY (Settings › Secrets and variables › Actions)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # compilar solo necesita python3 (ya viene en el runner); hasta el PR 1 no hay nada que compilar
+      - name: Compilar y chequear que salida/ coincida con lo commiteado
+        run: |
+          if [ ! -f codigo/build.py ]; then
+            echo "Todavía no hay codigo/build.py: no se compila."
+            exit 0
+          fi
+          python3 --version
+          python3 codigo/build.py
+          if [ -n "$(git status --porcelain -- salida/)" ]; then
+            echo "::error::salida/ no coincide con lo commiteado: compilá en tu máquina (python3 codigo/build.py), commiteá salida/ y volvé a publicar."
+            git status --short -- salida/
+            git diff --stat -- salida/
+            exit 1
+          fi
+
+      # se arma 1 carpeta con lo que se sube: salida/ en la raíz y bocetos/ en /bocetos/
+      - name: Armar lo que se sube
+        run: |
+          mkdir publicar
+          if [ -d salida ]; then
+            git clean -fdX salida/
+            cp -R salida/. publicar/
+          fi
+          cp -R bocetos publicar/bocetos
+          echo "Se sube:"
+          find publicar -type f | sort
+
+      - name: Subir a Neocities
+        uses: bcomnes/deploy-to-neocities@3020f7bfce434c94048d96d0805d18e29bc624bf # v3.0.6
+        with:
+          api_key: ${{ secrets.NEOCITIES_API_KEY }}
+          dist_dir: publicar
+          cleanup: false
+          neocities_supporter: false
+          preview_before_deploy: true

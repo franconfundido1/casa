@@ -55,7 +55,7 @@ Las reglas:
 
 1. **Referencias reales:** Recordatorios de Apple, Things 3, Todoist y Streaks. Lo que las hace sentir app está anotado en `docs/referencias.md`, con las capturas del usuario. Ante una duda de diseño, se mira cómo lo resuelven ellas.
 2. **Es una app de iPhone: Human Interface Guidelines de Apple.**
-   - Letra del sistema: `-apple-system` (en el iPhone, SF Pro). En el entorno de pruebas (Linux) no está: las capturas de Playwright **no sirven para aprobar diseño**; lo que vale es lo que el usuario ve en su iPhone.
+   - Letra del sistema (`-apple-system`; en el iPhone, SF Pro) para el texto. Letra propia (embebida, SIL OFL) solo para los títulos y los números grandes. En el entorno de pruebas (Linux) SF Pro no está: las capturas de Playwright **no sirven para aprobar diseño**; lo que vale es lo que el usuario ve en su iPhone.
    - Barra de pestañas fija abajo, minimalista, con 3 pestañas (ícono y etiqueta): **Hoy, Tareas y Ajustes**. Nunca pestañas de relleno.
    - Hojas que suben desde abajo; se cierran con un botón o tocando afuera. Cerrarlas arrastrando, solo si queda igual que en iOS.
    - Listas al estilo iOS (filas, separadores finos, agrupadas).
@@ -96,6 +96,7 @@ Se completa en el PR 1, con los comandos exactos y la tabla de resultados espera
 - Página: Playwright con viewport de iPhone (390×844, `isMobile`, `hasTouch`). Si en el entorno está WebKit, usarlo; si no, Chromium, y avisar en el reporte que falta probar en el iPhone de verdad.
 - Sin internet: la prueba de la PWA abre la app, corta la red y recarga.
 - Lo que no se puede probar acá (instalar desde Safari, modo avión en el iPhone) se lista en el reporte para que lo pruebe el usuario.
+- Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 
 ## Reglas de datos
 
