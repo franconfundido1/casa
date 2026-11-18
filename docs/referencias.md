@@ -2,7 +2,7 @@
 
 Capturas del usuario en su iPhone (`docs/referencias/`). Ante una duda de diseño, se mira cómo lo resuelven estas apps. Las notas son de Claude; los comentarios del usuario van en «Lo que dice Franco».
 
-Falta de Recordatorios: un recordatorio abierto (la hoja de detalle). Things 3, si se puede.
+Things 3 queda opcional.
 
 ## Todoist (modo oscuro)
 
@@ -41,7 +41,7 @@ Lo que no:
 
 ## Recordatorios de Apple (modo oscuro, iOS 26)
 
-`recordatorios-inicio.png`, `recordatorios-lista.png`, `recordatorios-menu.png`
+`recordatorios-inicio.png`, `recordatorios-lista.png`, `recordatorios-menu.png`, `recordatorios-detalle.png`, `recordatorios-detalle-2.png`
 
 Lo que la hace sentir app (es la referencia de cómo diseña Apple):
 - **No tiene barra de pestañas.** Todo sale de 1 pantalla de inicio y se entra a cada lista; lo demás va en la cápsula de arriba (buscar, nueva lista, «⋯»).
@@ -58,13 +58,19 @@ Lo que no:
 - Los degradés de las tarjetas (en una web quedan «premium genérico»; colores lisos).
 - La lista sugerida (promoción dentro de la app).
 
+- **La hoja de detalle:** casi a pantalla completa, con las esquinas de arriba redondeadas. Arriba: «×» en un círculo a la izquierda, el título chico al centro y **«✓» en un círculo de color a la derecha** (guardar). El nombre va primero, grande y editable.
+- **Formulario en grupos:** encabezado gris arriba de cada grupo («Fecha y hora»), filas con ícono gris, el valor elegido **debajo del nombre en el color de acento** o a la derecha en gris con «⌃⌄» (abre un menú para elegir) o «›» (abre otra pantalla). Una nota gris chica **debajo** del grupo explica lo que hace falta, en vez de texto dentro de las filas.
+- Interruptores del sistema, verdes al prenderse.
+
+Lo que no (de la hoja): es larguísima. La de esta app tiene que entrar en 1 pantalla: nombre, minutos y frecuencia.
+
 ## Lo que se lleva esta app
 
 - Monocromo + 1 acento con 1 trabajo: «esto es lo que toca».
 - Listas agrupadas con separadores que empiezan después del ícono.
 - La fila de Recordatorios para cada tarea: círculo, nombre y 1 línea gris («cada 3 días · 10 min»).
 - El menú «⋯» flotante de Recordatorios para lo que se usa poco (Tareas, Ajustes, copia de seguridad).
-- La hoja de «Hábitos» para editar una tarea: selector de frecuencia, contador de minutos con − y +, botón principal apagado hasta que esté completa.
+- Para editar una tarea, la hoja de Recordatorios (× y ✓ arriba, nombre grande, grupos con encabezado y nota gris debajo) con los controles de «Hábitos»: selector de frecuencia, contador de minutos con − y +, botón principal apagado hasta que esté completa.
 - El estado con círculos y color (toca, hecha, salteada, a medias), no con palabras.
 - Si hay barra de pestañas, con ícono **y** etiqueta. Puede no hacer falta (como en Recordatorios).
 - Sin emojis, sin rachas, sin tarjetas con sombra, sin degradés.
