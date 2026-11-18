@@ -14,6 +14,7 @@ La app ideal: la abro, le digo cuánto tiempo tengo, y me dice qué hacer, de a 
 - Los números (frecuencias, minutos, demoras) los ajusto yo y se revisan con el uso real.
 - Mis datos viven en el celu y no se pierden (copia de seguridad).
 - Se usa en el iPhone, con 1 mano, de pasada.
+- Solo modo oscuro.
 - Se ve y se siente como una app de iPhone desde el día 1: el diseño se define antes de programar, comparando con apps reales.
 
 ## Las tareas de arranque
@@ -80,7 +81,6 @@ Avisos: en la versión 1 la app **no avisa sola** (en el iPhone, una app web sin
 - Colgar y guardar la ropa: ¿cuántos minutos lleva cada uno? (Arranco con 10 y 5.) ¿«Guardar la ropa» es lo mismo que «Ordenar la ropa» o son tareas distintas?
 - Si me sobra tiempo y no toca nada, ¿adelanta tareas que tocan pronto o me deja libre?
 - ¿Dónde se publica? Tiene que ser un sitio aparte de Akordia (otro origen): si va en una carpeta del sitio de Akordia, comparten datos del navegador y el service worker de Akordia puede tomar esta app. Opciones: un sitio nuevo en Neocities o GitHub Pages (con el repo privado, Pages necesita un plan pago).
-- ¿Modo oscuro desde el día 1 (siguiendo el del iPhone) o solo claro?
 - ¿El día arranca a las 0:00 o más tarde (por ejemplo, a las 5:00, para que lo que hago a la 1:00 cuente para el día anterior)?
 
 ## Plan de PRs

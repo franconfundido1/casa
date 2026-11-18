@@ -56,7 +56,7 @@ Las reglas:
 1. **Referencias reales:** Recordatorios de Apple, Things 3, Todoist y Streaks. Lo que las hace sentir app está anotado en `docs/referencias.md`, con las capturas del usuario. Ante una duda de diseño, se mira cómo lo resuelven ellas.
 2. **Es una app de iPhone: Human Interface Guidelines de Apple.**
    - Letra del sistema: `-apple-system` (en el iPhone, SF Pro). En el entorno de pruebas (Linux) no está: las capturas de Playwright **no sirven para aprobar diseño**; lo que vale es lo que el usuario ve en su iPhone.
-   - Barra de pestañas fija abajo, solo con las pantallas que existen (en la versión 1, 2 o 3; nunca pestañas de relleno).
+   - Barra de pestañas fija abajo, minimalista, con 3 pestañas (ícono y etiqueta): **Hoy, Tareas y Ajustes**. Nunca pestañas de relleno.
    - Hojas que suben desde abajo; se cierran con un botón o tocando afuera. Cerrarlas arrastrando, solo si queda igual que en iOS.
    - Listas al estilo iOS (filas, separadores finos, agrupadas).
    - Zonas seguras: `env(safe-area-inset-*)` para la isla y la barra de inicio.
@@ -73,6 +73,7 @@ Las reglas:
 
 Además:
 
+- **Solo modo oscuro** (decidido): no hay modo claro ni se sigue el modo del sistema. Fondo negro como Recordatorios.
 - iPhone en vertical, 390×844 de referencia; se usa con 1 mano, de pasada: lo importante en la mitad de abajo, poco texto, estados inequívocos (toca, hecha, salteada, a medias, esperando).
 - Flujo lineal, pocos botones visibles. Lo que se usa poco va en un menú «⋯».
 

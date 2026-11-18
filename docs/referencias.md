@@ -75,7 +75,7 @@ Lo que no (de la hoja): es larguísima. La de esta app tiene que entrar en 1 pan
 - Si hay barra de pestañas, con ícono **y** etiqueta. Puede no hacer falta (como en Recordatorios).
 - Sin emojis, sin rachas, sin tarjetas con sombra, sin degradés.
 
-## A decidir
+## Decidido
 
-- ¿Barra de pestañas o, como Recordatorios, ninguna: Hoy como única pantalla, y Tareas y Ajustes desde la cápsula de arriba? Si hay barra: ¿cápsula flotante (iOS 26) o clásica? Imitar el vidrio de iOS 26 en una web es riesgoso.
-- ¿Modo oscuro desde el día 1?
+- Barra de pestañas abajo, minimalista, con 3 pestañas con ícono y etiqueta: Hoy, Tareas y Ajustes.
+- Solo modo oscuro.
