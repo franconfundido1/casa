@@ -6,33 +6,45 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bocetos">
+<link rel="manifest" href="manifest.json">
 <title>Hoy · boceto</title>
 <link rel="stylesheet" href="sistema.css">
 <style>
   .pantalla { display: flex; flex-direction: column; }
-  .tengo { margin-top: auto; padding: var(--esp-4) var(--margen) 0; }
-  .tengo .nota { font: var(--letra-nota); color: var(--texto-2); text-align: center; min-height: 18px; margin: var(--esp-3) 0; }
 
-  .curso { flex: 1; display: flex; flex-direction: column; padding: 0 var(--margen); overflow: hidden; }
-  .tarea { margin-top: auto; padding-bottom: var(--esp-7); transition: transform var(--t-tarea) var(--curva-ios), opacity var(--t-tarea); }
+  /* «Tengo X minutos» */
+  .tengo { margin-top: auto; padding: var(--esp-6) var(--margen) 0; text-align: center; }
+  .tengo small { display: block; font: var(--letra-secundaria); color: var(--texto-2); }
+  .tengo .cuanto { font: var(--letra-enorme); margin-bottom: var(--esp-4); }
+  .tengo .cuanto span { font: var(--letra-titulo-2); color: var(--texto-2); }
+  .tengo .nota { font: var(--letra-nota); color: var(--texto-2); padding-top: var(--esp-3); min-height: 30px; }
+  .tengo .nota:empty { min-height: var(--esp-4); }
+  .tengo .nota:not(:empty) { animation: fundido var(--t-corta); }
+
+  /* Tarea en curso */
+  .curso { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 var(--margen); overflow: hidden; text-align: center; }
+  .tarea { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;
+    transition: transform var(--t-tarea) var(--curva-ios), opacity var(--t-tarea); }
   .tarea.sale { transform: translateX(-40%); opacity: 0; }
   .tarea.entra { transform: translateX(40%); opacity: 0; transition: none; }
-  .tarea .estado { width: auto; height: auto; justify-content: start; margin-bottom: var(--esp-5); }
-  .tarea .estado i { --circulo: 64px; border-width: 2.5px; }
-  .tarea .estado i svg { width: 30px; height: 30px; }
-  .tarea[data-estado="esperando"] .estado i .i-reloj { width: 34px; height: 34px; }
-  .tarea .marca { font: var(--letra-nota); font-weight: 600; color: var(--acento); margin-bottom: var(--esp-1); }
-  .tarea h3 { font: var(--letra-titulo); }
-  .tarea p { font: var(--letra-secundaria); color: var(--texto-2); margin-top: var(--esp-1); }
-  .tarea .resultado { font: var(--letra-encabezado); margin-top: var(--esp-3); min-height: 22px; }
-  [data-estado="hecha"] .resultado { color: var(--hecha); }
-  [data-estado="a-medias"] .resultado { color: var(--a-medias); }
-  [data-estado="salteada"] .resultado { color: var(--texto-2); }
-  .acciones { display: grid; gap: var(--esp-3); }
-  .fin { margin-top: auto; padding-bottom: var(--esp-6); animation: fundido var(--t-corta); }
-  .fin h3 { font: var(--letra-titulo); padding: 0 0 var(--esp-5); }
-  .fin .grupo { margin: 0 0 var(--esp-6); }
+  .tarea h3 { font: var(--letra-enorme); }
+  .tarea p { font: var(--letra-titulo-2); font-weight: 400; color: var(--texto-2); margin-top: var(--esp-2); }
+  .tarea .estado { width: auto; height: auto; margin-top: var(--esp-8); }
+  .tarea .estado i { --circulo: var(--circulo-grande); border-width: 3px; }
+  .tarea .estado i svg { width: 52px; height: 52px; }
+  .tarea[data-estado="toca"] .estado:active i { transform: scale(.94); }
+  .tarea .estado i { transition: background var(--t-corta), border-color var(--t-corta), transform 100ms; }
+  .tarea .etiqueta { font: var(--letra-nota); color: var(--texto-2); margin-top: var(--esp-2); }
+  .otras { display: flex; justify-content: center; gap: var(--esp-6); }
+  .otras button[disabled], .tarea .estado[disabled] { pointer-events: none; }
+
+  .fin { flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: center; text-align: left; animation: fundido var(--t-corta); }
+  .fin h3 { font: var(--letra-titulo); padding: 0 0 var(--esp-4); text-align: center; }
+  .fin .fila { padding-left: 0; }
+  .fin .fila + .fila::before { left: 48px; right: 0; }
   .fin .fila:active { background: none; }
+  .fin .boton { margin-top: auto; }
 </style>
 </head>
 <body>
@@ -44,23 +56,28 @@
     <h1>Hoy</h1>
   </div>
 
-  <section class="grupo">
+  <section class="seccion">
     <h2>Las 3 de hoy</h2>
-    <div class="bloque" id="las3"></div>
+    <div id="las3"></div>
   </section>
 
-  <section class="grupo">
+  <section class="seccion">
     <h2>Esperando</h2>
-    <div class="bloque" id="esperando"></div>
+    <div id="esperando"></div>
   </section>
 
   <div class="tengo">
-    <div class="contador" id="minutos">
-      <button data-menos aria-label="Menos"></button>
-      <div class="cifra"><b class="num" data-valor></b><span>minutos</span></div>
-      <button data-mas aria-label="Más"></button>
+    <small>Tengo</small>
+    <div class="cuanto num" id="cuanto"></div>
+    <div class="selector" id="minutos">
+      <span class="marca"></span>
+      <button data-op="5">5</button>
+      <button data-op="10">10</button>
+      <button data-op="20">20</button>
+      <button data-op="30">30</button>
+      <button data-op="60">60</button>
     </div>
-    <p class="nota" id="entran"></p>
+    <p class="nota" id="nota"></p>
     <button class="boton principal" id="empezar">Empezar</button>
   </div>
 </main>
@@ -79,53 +96,46 @@
 <script>
   // Datos de docs/vision.md: miércoles 18 de noviembre, 18:40. La ropa se metió a las 18:00.
   const tareas = {
-    platos:  { nombre: 'Lavar los platos', min: 10, frec: 'Todos los días', hace: 'hecha hoy', estado: 'hecha', de3: true },
-    barrer:  { nombre: 'Barrer', min: 10, frec: 'Cada 3 días', hace: 'hace 5 días', estado: 'toca', de3: true },
-    verdu:   { nombre: 'Verdulería', min: 20, frec: 'Cada 3 a 4 días', hace: 'hace 6 días', estado: 'toca', de3: true },
-    bano:    { nombre: 'Limpiar el baño', min: 20, frec: 'Cada 7 días', hace: 'hace 8 días', estado: 'toca' },
-    ordenar: { nombre: 'Ordenar la ropa', min: 10, frec: 'Cada 2 días', hace: 'hace 2 días', estado: 'toca' },
+    platos:  { nombre: 'Lavar los platos', min: 10, estado: 'hecha' },
+    barrer:  { nombre: 'Barrer', min: 10, estado: 'toca' },
+    verdu:   { nombre: 'Verdulería', min: 20, estado: 'toca' },
+    bano:    { nombre: 'Limpiar el baño', min: 20, estado: 'toca' },
+    ordenar: { nombre: 'Ordenar la ropa', min: 10, estado: 'toca' },
   };
   // De la más vencida a la menos; las 3 de hoy primero.
   const orden = ['barrer', 'verdu', 'bano', 'ordenar'];
-  const linea = t => t.estado === 'hecha' ? `${t.frec} · ${t.min} min` : `${t.frec} · ${t.min} min · ${t.hace}`;
 
-  document.querySelectorAll('[data-menos]').forEach(b => b.innerHTML = ic('minus'));
-  document.querySelectorAll('[data-mas]').forEach(b => b.innerHTML = ic('plus'));
   document.getElementById('cerrar-curso').innerHTML = ic('x');
 
   function pintarHoy() {
     document.getElementById('las3').innerHTML = ['platos', 'barrer', 'verdu']
-      .map(k => fila({ ...tareas[k], linea: linea(tareas[k]) })).join('');
+      .map(k => fila({ ...tareas[k], linea: `${tareas[k].min} min` })).join('');
   }
   document.getElementById('esperando').innerHTML =
-    fila({ nombre: 'Colgar la ropa', linea: '10 min · desde las 19:30', estado: 'esperando' });
+    fila({ nombre: 'Colgar la ropa', linea: 'desde las 19:30', estado: 'esperando' });
 
   // «Tengo X minutos»: recorre las que tocan y se queda con las que entran.
+  const pendientes = () => orden.filter(k => ['toca', 'a-medias'].includes(tareas[k].estado));
   function entran(minutos) {
     let queda = minutos; const lista = [];
-    for (const k of orden) {
-      const t = tareas[k];
-      if (t.estado !== 'toca' && t.estado !== 'a-medias') continue;
-      if (t.min <= queda) { lista.push(k); queda -= t.min; }
-    }
+    for (const k of pendientes()) if (tareas[k].min <= queda) { lista.push(k); queda -= tareas[k].min; }
     return lista;
   }
-  const pendientes = () => orden.filter(k => ['toca', 'a-medias'].includes(tareas[k].estado));
-  let elegidas = [];
-  const minutos = contador(document.getElementById('minutos'), {
-    valor: 20, min: 5, max: 120, paso: 5,
-    alCambiar: v => {
-      elegidas = entran(v);
-      const nota = document.getElementById('entran');
-      const empezar = document.getElementById('empezar');
-      empezar.disabled = elegidas.length === 0;
-      if (elegidas.length) nota.textContent = elegidas.length === 1 ? 'Entra 1 tarea' : `Entran ${elegidas.length} tareas`;
-      else if (pendientes().length) {
-        const corta = pendientes().map(k => tareas[k]).sort((a, b) => a.min - b.min)[0];
-        nota.textContent = `No entra ninguna. La más corta: ${corta.nombre}, ${corta.min} min.`;
-      } else nota.textContent = 'No queda nada que toque hoy.';
-    },
-  });
+  let minutos = 20, elegidas = [];
+  function pintarTengo() {
+    const cuanto = document.getElementById('cuanto');
+    cuanto.innerHTML = `${minutos} <span>min</span>`;
+    cuanto.classList.remove('cambia'); void cuanto.offsetWidth; cuanto.classList.add('cambia');
+    elegidas = entran(minutos);
+    document.getElementById('empezar').disabled = !elegidas.length;
+    const nota = document.getElementById('nota');
+    if (elegidas.length) nota.textContent = '';
+    else if (pendientes().length) {
+      const corta = pendientes().map(k => tareas[k]).sort((a, b) => a.min - b.min)[0];
+      nota.textContent = `No entra ninguna. La más corta: ${corta.nombre}, ${corta.min} min.`;
+    } else nota.textContent = 'No queda nada que toque hoy.';
+  }
+  selector(document.getElementById('minutos'), op => { minutos = +op; pintarTengo(); }).elegir('20');
 
   // La tarea en curso, de a 1.
   const hoja = document.getElementById('hoja-curso');
@@ -138,29 +148,25 @@
     cuenta.textContent = `${paso + 1} de ${elegidas.length}`;
     curso.innerHTML = `
       <div class="tarea ${entrando ? 'entra' : ''}" data-estado="toca">
-        ${circulo()}
-        ${t.de3 ? '<div class="marca">De las 3 de hoy</div>' : ''}
         <h3>${t.nombre}</h3>
-        <p>${t.min} min · ${t.frec.toLowerCase()} · ${t.hace}</p>
-        <div class="resultado"></div>
+        <p class="num">${t.min} min</p>
+        <button class="estado" data-r="hecha" aria-label="Hecha"><i>${ic('check-bold', 'i-check')}${ic('arrow-right-bold', 'i-salteada')}</i></button>
+        <div class="etiqueta">Hecha</div>
       </div>
-      <div class="acciones">
-        <button class="boton principal" data-r="hecha">Hecha</button>
-        <div class="botones-lado">
-          <button class="boton" data-r="a-medias">A medias</button>
-          <button class="boton" data-r="salteada">Saltear</button>
-        </div>
+      <div class="otras">
+        <button class="boton-texto" data-r="a-medias">A medias</button>
+        <button class="boton-texto" data-r="salteada">Saltear</button>
       </div>`;
     const tarea = curso.querySelector('.tarea');
     if (entrando) requestAnimationFrame(() => requestAnimationFrame(() => tarea.classList.remove('entra')));
     curso.querySelectorAll('[data-r]').forEach(b => b.onclick = () => marcar(k, b.dataset.r, tarea));
   }
 
-  const textos = { 'hecha': 'Hecha', 'a-medias': 'A medias: mañana va primero', 'salteada': 'Salteada por hoy' };
+  const etiquetas = { 'hecha': 'Hecha', 'a-medias': 'A medias', 'salteada': 'Salteada' };
   function marcar(k, r, tarea) {
     curso.querySelectorAll('[data-r]').forEach(b => b.disabled = true);
     tarea.dataset.estado = r;
-    tarea.querySelector('.resultado').textContent = textos[r];
+    tarea.querySelector('.etiqueta').textContent = etiquetas[r];
     resultados.push([k, r]);
     setTimeout(() => {
       tarea.classList.add('sale');
@@ -173,15 +179,12 @@
 
   function pintarFin() {
     cuenta.textContent = '';
-    const lineas = { 'hecha': 'Hecha', 'a-medias': 'A medias', 'salteada': 'Salteada' };
     curso.innerHTML = `
       <div class="fin">
         <h3>Listo por ahora</h3>
-        <section class="grupo"><div class="bloque">
-          ${resultados.map(([k, r]) => fila({ nombre: tareas[k].nombre, linea: lineas[r], estado: r })).join('')}
-        </div></section>
-        <button class="boton principal" id="listo">Cerrar</button>
-      </div>`;
+        <div>${resultados.map(([k, r]) => fila({ nombre: tareas[k].nombre, linea: `${tareas[k].min} min`, estado: r })).join('')}</div>
+      </div>
+      <button class="boton principal" id="listo">Cerrar</button>`;
     document.getElementById('listo').onclick = cerrar;
   }
 
@@ -193,8 +196,9 @@
   }
   function cerrar() {
     resultados.forEach(([k, r]) => tareas[k].estado = r);
+    resultados = [];
     pintarHoy();
-    minutos.set(minutos.get());
+    pintarTengo();
     cerrarHoja(hoja);
     history.replaceState(null, '', location.pathname);
   }
@@ -203,6 +207,7 @@
   document.getElementById('velo').onclick = cerrar;
 
   pintarHoy();
+  pintarTengo();
   pestanas('hoy');
   if (location.hash === '#curso') setTimeout(empezar, 150);
 </script>

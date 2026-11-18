@@ -4,13 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bocetos">
+<link rel="manifest" href="manifest.json">
 <title>Bocetos · casa</title>
 <link rel="stylesheet" href="sistema.css">
 <style>
   .pantalla { padding-bottom: calc(var(--abajo) + var(--esp-7)); }
-  .muestra { width: 28px; height: 28px; border-radius: 50%; margin: 0 var(--esp-2); flex: none; border: .5px solid var(--borde-flota); }
+  .muestra { width: 28px; height: 28px; border-radius: 50%; margin: 0 var(--esp-2); flex: none; border: .5px solid var(--separador); }
   .fila .valor svg { width: 18px; height: 18px; color: var(--texto-3); }
-  a.fila { padding-left: var(--esp-4); }
+  a.fila { padding-left: var(--margen); }
+  a.fila + a.fila::before { left: var(--margen); }
 </style>
 </head>
 <body>
@@ -18,21 +23,21 @@
   <div class="barra-arriba"></div>
   <div class="titulo"><small>Paso C · para mirar en el iPhone</small><h1>Bocetos</h1></div>
 
-  <section class="grupo">
+  <section class="seccion">
     <h2>Pantallas</h2>
-    <div class="bloque" id="pantallas"></div>
-    <p class="nota">Datos de ejemplo: miércoles 18 de noviembre, 18:40.</p>
+    <div id="pantallas"></div>
+    <p class="nota">Datos de ejemplo: miércoles 18 de noviembre, 18:40. Para instalar, abrí Hoy y Agregar a inicio.</p>
   </section>
 
-  <section class="grupo">
+  <section class="seccion">
     <h2>Estados</h2>
-    <div class="bloque" id="estados"></div>
+    <div id="estados"></div>
   </section>
 
-  <section class="grupo">
+  <section class="seccion">
     <h2>Colores</h2>
-    <div class="bloque" id="colores"></div>
-    <p class="nota">1 trabajo cada uno. Detalle en docs/diseno.md.</p>
+    <div id="colores"></div>
+    <p class="nota">Detalle en docs/diseno.md.</p>
   </section>
 </main>
 <script src="boceto.js"></script>
@@ -40,7 +45,7 @@
   const pantallas = [
     ['Hoy', 'Las 3 de hoy y «Tengo X minutos»', 'hoy.html'],
     ['Tarea en curso', 'Hecha, a medias y saltear', 'hoy.html#curso'],
-    ['Tareas', 'Las 9 de arranque y el menú «⋯»', 'tareas.html'],
+    ['Tareas', 'Las 9 de arranque', 'tareas.html'],
     ['Editar tarea', 'La hoja, con Verdulería', 'tareas.html#editar'],
   ];
   document.getElementById('pantallas').innerHTML = pantallas.map(([n, l, h]) =>
@@ -51,12 +56,13 @@
     ['Salteada', 'salteada'], ['A medias', 'a-medias'], ['Esperando', 'esperando'],
   ];
   document.getElementById('estados').innerHTML = estados.map(([n, e]) =>
-    fila({ nombre: n, linea: 'Cada 3 días · 10 min', estado: e })).join('');
+    fila({ nombre: n, linea: 'cada 3 días · 10 min', estado: e })).join('');
 
   const colores = [
-    ['--acento', 'Lo que toca, botón principal'], ['--hecha', 'Hecha'], ['--a-medias', 'A medias'],
-    ['--borrar', 'Solo «Borrar tarea»'], ['--texto', 'Texto'], ['--texto-2', 'Línea gris, encabezados'],
-    ['--texto-3', 'Apagado'], ['--flotante', 'Lo que flota'], ['--superficie', 'Grupos'], ['--fondo', 'Fondo'],
+    ['--texto', 'Texto, lo que toca, botón principal'], ['--texto-2', 'Línea gris, encabezados, salteada'],
+    ['--texto-3', 'Apagado, lo que no toca'], ['--marca-selector', 'Opción elegida del selector'],
+    ['--superficie', 'Grupos de la hoja'], ['--flotante', 'Hoja, barra de pestañas'], ['--fondo', 'Fondo'],
+    ['--borrar', 'Solo «Borrar tarea»'],
   ];
   document.getElementById('colores').innerHTML = colores.map(([v, n]) =>
     `<div class="fila"><span class="muestra" style="background: var(${v})"></span><span class="texto"><span class="nombre">${n}</span><span class="linea">${v}</span></span></div>`).join('');

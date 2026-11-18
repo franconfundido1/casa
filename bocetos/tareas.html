@@ -6,16 +6,16 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bocetos">
+<link rel="manifest" href="manifest.json">
 <title>Tareas · boceto</title>
 <link rel="stylesheet" href="sistema.css">
 <style>
-  .nombre-tarea { display: block; width: 100%; background: none; border: 0; outline: 0; padding: var(--esp-4); font: var(--letra-titulo-2); caret-color: var(--acento); }
+  .nombre-tarea { display: block; width: 100%; background: none; border: 0; outline: 0; padding: var(--esp-4); font: var(--letra-titulo-2); caret-color: var(--texto); }
   .nombre-tarea::placeholder { color: var(--texto-3); }
   .hoja .selector { margin-bottom: var(--esp-3); }
-  .hoja .fila:active { background: none; }
-  .contador.en-fila .cifra { min-width: 76px; }
-  .borrar { justify-content: center; color: var(--borrar); font: var(--letra-cuerpo); }
-  .borrar:active { background: rgba(255, 255, 255, .06) !important; }
+  .grupo .borrar { justify-content: center; padding: 0; color: var(--borrar); font: var(--letra-cuerpo); }
+  .grupo .borrar:active { background: rgba(255, 255, 255, .06); }
   .rango { transition: opacity var(--t-corta); }
 </style>
 </head>
@@ -23,20 +23,11 @@
 
 <main class="pantalla">
   <div class="barra-arriba">
-    <div class="capsula">
-      <button id="nueva" aria-label="Nueva tarea"></button>
-      <button id="mas" aria-label="Más"></button>
-    </div>
+    <button class="boton-circulo" id="nueva" aria-label="Nueva tarea"></button>
   </div>
   <div class="titulo"><h1>Tareas</h1></div>
   <div id="lista"></div>
 </main>
-
-<div class="menu" id="menu" role="menu">
-  <button><span class="ic-menu"></span><span class="texto">Ordenar por<small>Más vencida</small></span><span class="ic-caret"></span></button>
-  <hr>
-  <button><span class="ic-menu2"></span><span class="texto">Volver a las 9 de arranque</span></button>
-</div>
 
 <section class="hoja" id="hoja" aria-label="Editar tarea">
   <div class="hoja-arriba">
@@ -51,9 +42,9 @@
 
     <section class="grupo">
       <div class="bloque">
-        <div class="fila sin-circulo">
+        <div class="fila">
           <span class="texto">Minutos</span>
-          <div class="contador en-fila" id="c-min">
+          <div class="contador" id="c-min">
             <button data-menos aria-label="Menos"></button><span class="cifra num" data-valor></span><button data-mas aria-label="Más"></button>
           </div>
         </div>
@@ -68,15 +59,15 @@
         <button data-op="entre">Entre</button>
       </div>
       <div class="bloque">
-        <div class="fila sin-circulo">
+        <div class="fila">
           <span class="texto" id="et-desde">Cada</span>
-          <div class="contador en-fila" id="c-desde">
+          <div class="contador" id="c-desde">
             <button data-menos aria-label="Menos"></button><span class="cifra num" data-valor></span><button data-mas aria-label="Más"></button>
           </div>
         </div>
-        <div class="fila sin-circulo rango" id="fila-hasta">
+        <div class="fila rango" id="fila-hasta">
           <span class="texto">Hasta</span>
-          <div class="contador en-fila" id="c-hasta">
+          <div class="contador" id="c-hasta">
             <button data-menos aria-label="Menos"></button><span class="cifra num" data-valor></span><button data-mas aria-label="Más"></button>
           </div>
         </div>
@@ -85,7 +76,7 @@
     </section>
 
     <section class="grupo" id="grupo-borrar">
-      <div class="bloque"><button class="fila sin-circulo borrar">Borrar tarea</button></div>
+      <div class="bloque"><button class="fila borrar">Borrar tarea</button></div>
     </section>
   </div>
 </section>
@@ -96,42 +87,36 @@
   // Datos de docs/vision.md: miércoles 18 de noviembre, 18:40. La ropa se metió a las 18:00.
   const grupos = [
     ['Tocan', [
-      { nombre: 'Barrer', min: 10, desde: 3, hasta: 3, cuando: 'hace 5 días', estado: 'toca' },
-      { nombre: 'Verdulería', min: 20, desde: 3, hasta: 4, cuando: 'hace 6 días', estado: 'toca' },
-      { nombre: 'Limpiar el baño', min: 20, desde: 7, hasta: 7, cuando: 'hace 8 días', estado: 'toca' },
-      { nombre: 'Ordenar la ropa', min: 10, desde: 2, hasta: 2, cuando: 'hace 2 días', estado: 'toca' },
+      { nombre: 'Barrer', min: 10, desde: 3, hasta: 3, estado: 'toca' },
+      { nombre: 'Verdulería', min: 20, desde: 3, hasta: 4, estado: 'toca' },
+      { nombre: 'Limpiar el baño', min: 20, desde: 7, hasta: 7, estado: 'toca' },
+      { nombre: 'Ordenar la ropa', min: 10, desde: 2, hasta: 2, estado: 'toca' },
     ]],
     ['Más adelante', [
-      { nombre: 'Lavar la ropa', min: 5, desde: 3, hasta: 4, cuando: 'colgar desde las 19:30', estado: 'esperando' },
-      { nombre: 'Pasar el trapo', min: 20, desde: 7, hasta: 7, cuando: 'en 2 días', estado: 'no' },
-      { nombre: 'Súper', min: 60, desde: 7, hasta: 7, cuando: 'en 4 días', estado: 'no' },
+      { nombre: 'Lavar la ropa', min: 5, desde: 3, hasta: 4, estado: 'esperando' },
+      { nombre: 'Pasar el trapo', min: 20, desde: 7, hasta: 7, estado: 'no' },
+      { nombre: 'Súper', min: 60, desde: 7, hasta: 7, estado: 'no' },
     ]],
     ['Hechas hoy', [
       { nombre: 'Hacer la cama', min: 3, desde: 1, hasta: 1, estado: 'hecha' },
       { nombre: 'Lavar los platos', min: 10, desde: 1, hasta: 1, estado: 'hecha' },
     ]],
   ];
-  const frec = t => t.desde === 1 && t.hasta === 1 ? 'Todos los días'
-    : t.desde === t.hasta ? `Cada ${t.desde} días` : `Cada ${t.desde} a ${t.hasta} días`;
-  const linea = t => [frec(t), `${t.min} min`, t.estado === 'hecha' ? '' : t.cuando].filter(Boolean).join(' · ');
+  const frec = t => t.desde === 1 && t.hasta === 1 ? 'todos los días'
+    : t.desde === t.hasta ? `cada ${t.desde} días` : `cada ${t.desde} a ${t.hasta} días`;
+  const linea = t => `${frec(t)} · ${t.min} min`;
 
   const todas = grupos.flatMap(g => g[1]);
   document.getElementById('lista').innerHTML = grupos.map(([titulo, ts]) =>
-    `<section class="grupo"><h2>${titulo}</h2><div class="bloque">${ts.map(t =>
+    `<section class="seccion"><h2>${titulo}</h2><div>${ts.map(t =>
       fila({ ...t, linea: linea(t) }).replace('<button', `<button data-i="${todas.indexOf(t)}"`)).join('')}</div></section>`).join('');
 
   // Íconos
   document.getElementById('nueva').innerHTML = ic('plus');
-  document.getElementById('mas').innerHTML = ic('dots-three');
   document.getElementById('cerrar').innerHTML = ic('x');
   document.getElementById('guardar').innerHTML = ic('check-bold');
-  document.querySelector('.ic-menu').outerHTML = ic('sort-ascending');
-  document.querySelector('.ic-menu2').outerHTML = ic('arrow-counter-clockwise');
-  document.querySelector('.ic-caret').outerHTML = ic('caret-right', 'caret');
   document.querySelectorAll('[data-menos]').forEach(b => b.innerHTML = ic('minus'));
   document.querySelectorAll('[data-mas]').forEach(b => b.innerHTML = ic('plus'));
-
-  menu(document.getElementById('mas'), document.getElementById('menu'));
 
   // Hoja de editar
   const hoja = document.getElementById('hoja');

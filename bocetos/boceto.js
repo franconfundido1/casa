@@ -7,7 +7,7 @@ function fila({ nombre, linea, estado }) {
   return `<button class="fila" data-estado="${estado}">${circulo()}<span class="texto"><span class="nombre">${nombre}</span><span class="linea">${linea}</span></span></button>`;
 }
 
-// Contador − y +. Devuelve una función para leer el valor.
+// Contador − y +. Devuelve get y set.
 function contador(el, { valor, min, max, paso, unidad, alCambiar }) {
   const menos = el.querySelector('[data-menos]'), mas = el.querySelector('[data-mas]');
   const cifra = el.querySelector('[data-valor]');
@@ -39,20 +39,6 @@ function selector(el, alCambiar) {
 
 function abrirHoja(hoja) { hoja.classList.add('abierta'); }
 function cerrarHoja(hoja) { hoja.classList.remove('abierta'); }
-
-function menu(boton, el) {
-  const atrapa = document.createElement('div');
-  atrapa.className = 'atrapa'; document.body.append(atrapa);
-  const cerrar = () => { el.classList.remove('abierto'); atrapa.classList.remove('abierto'); };
-  boton.onclick = () => {
-    const r = boton.getBoundingClientRect();
-    el.style.top = `${r.bottom + 8}px`;
-    el.style.right = `${innerWidth - r.right}px`;
-    el.classList.add('abierto'); atrapa.classList.add('abierto');
-  };
-  atrapa.onclick = cerrar;
-  el.querySelectorAll('button').forEach(b => b.addEventListener('click', cerrar));
-}
 
 // Barra de pestañas
 function pestanas(actual) {

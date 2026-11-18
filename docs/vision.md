@@ -76,11 +76,15 @@ Avisos: en la versión 1 la app **no avisa sola** (en el iPhone, una app web sin
 - Compartir la casa con otra persona (por ahora es solo para mí).
 - Reescribirla en React u otro framework.
 
+## Dónde se publica (decidido)
+
+- La app va en la raíz de **franketf2.neocities.org**, un sitio aparte de Akordia (otro origen: no comparten datos del navegador ni service worker). Los bocetos, en `/bocetos/`.
+- Se publica solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), desde main, con el secreto `NEOCITIES_API_KEY`. Nada se sube a mano.
+
 ## Preguntas abiertas
 
 - Colgar y guardar la ropa: ¿cuántos minutos lleva cada uno? (Arranco con 10 y 5.) ¿«Guardar la ropa» es lo mismo que «Ordenar la ropa» o son tareas distintas?
 - Si me sobra tiempo y no toca nada, ¿adelanta tareas que tocan pronto o me deja libre?
-- ¿Dónde se publica? Tiene que ser un sitio aparte de Akordia (otro origen): si va en una carpeta del sitio de Akordia, comparten datos del navegador y el service worker de Akordia puede tomar esta app. Opciones: un sitio nuevo en Neocities o GitHub Pages (con el repo privado, Pages necesita un plan pago).
 - ¿El día arranca a las 0:00 o más tarde (por ejemplo, a las 5:00, para que lo que hago a la 1:00 cuente para el día anterior)?
 
 ## Plan de PRs

@@ -96,6 +96,7 @@ Se completa en el PR 1, con los comandos exactos y la tabla de resultados espera
 - Página: Playwright con viewport de iPhone (390×844, `isMobile`, `hasTouch`). Si en el entorno está WebKit, usarlo; si no, Chromium, y avisar en el reporte que falta probar en el iPhone de verdad.
 - Sin internet: la prueba de la PWA abre la app, corta la red y recarga.
 - Lo que no se puede probar acá (instalar desde Safari, modo avión en el iPhone) se lista en el reporte para que lo pruebe el usuario.
+- Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 
 ## Reglas de datos
 
