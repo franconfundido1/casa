@@ -26,6 +26,7 @@ Chequear siempre:
 
 - ¿Se entiende en 2 segundos qué hacer ahora? 1 tarea por vez, 1 botón principal.
 - ¿Se usa con 1 mano y el pulgar? Toques de 44 px como mínimo, lo importante en la mitad de abajo.
+- ¿Respeta `docs/diseno.md`? ¿Algo se ve hecho a mano (ícono de otra familia, botón propio, algo que aparece de golpe, una caja que no flota con sombra)?
 - ¿La misma información aparece en más de 1 lugar de la pantalla? Que aparezca en 1 solo.
 - ¿Algún texto se contradice con otro o sobreexplica? Textos cortos.
 - ¿Alguna conclusión sale de pocos datos (1 día, 1 vez)?
@@ -39,7 +40,7 @@ Corto, en 3 partes:
 2. **Pruebas:** los números de cada suite.
 3. **Preguntas.**
 
-Capturas solo si cambió algo que se ve o si las pido. Capturas a 390×844 (iPhone).
+Capturas solo si cambió algo que se ve o si las pido. Capturas a 390×844 (iPhone). Si cambió algo que se ve, decir qué mirar en el iPhone.
 
 ### Gastar menos
 
@@ -48,12 +49,32 @@ Capturas solo si cambió algo que se ve o si las pido. Capturas a 390×844 (iPho
 
 ## Diseño
 
-- iPhone en vertical, 390×844 de referencia; respetar las zonas seguras (`env(safe-area-inset-*)`) y la barra de inicio.
-- Se mira de pasada, con las manos ocupadas: letra grande, poco texto, estados inequívocos (toca, hecha, salteada, a medias, esperando).
+**El diseño se define antes de programar, comparando con apps reales, no desde principios abstractos.** Ningún PR de código hasta que estén aprobados `docs/diseno.md` (el sistema) y los bocetos de las pantallas principales en `bocetos/`. Lo nuevo se bocetea antes con ese sistema.
+
+Las reglas:
+
+1. **Referencias reales:** Recordatorios de Apple, Things 3, Todoist y Streaks. Lo que las hace sentir app está anotado en `docs/referencias.md`, con las capturas del usuario. Ante una duda de diseño, se mira cómo lo resuelven ellas.
+2. **Es una app de iPhone: Human Interface Guidelines de Apple.**
+   - Letra del sistema: `-apple-system` (en el iPhone, SF Pro). En el entorno de pruebas (Linux) no está: las capturas de Playwright **no sirven para aprobar diseño**; lo que vale es lo que el usuario ve en su iPhone.
+   - Barra de pestañas fija abajo, solo con las pantallas que existen (en la versión 1, 2 o 3; nunca pestañas de relleno).
+   - Hojas que suben desde abajo; se cierran con un botón o tocando afuera. Cerrarlas arrastrando, solo si queda igual que en iOS.
+   - Listas al estilo iOS (filas, separadores finos, agrupadas).
+   - Zonas seguras: `env(safe-area-inset-*)` para la isla y la barra de inicio.
+3. **1 sola familia de íconos, embebida: Phosphor** (MIT), contorno en general y relleno en la pestaña elegida. Nada de emojis ni íconos de otra familia. Los SF Symbols no se usan (su licencia no lo permite en una web).
+4. **Se siente app, no web:**
+   - Transiciones cortas entre pantallas (unos 200 a 300 ms); con `prefers-reduced-motion`, sin animación.
+   - Sin selección de texto al mantener apretado (salvo en los campos de texto), sin resaltado al tocar (`-webkit-tap-highlight-color: transparent`), sin menú de enlace al mantener apretado.
+   - Sin «arrastrar para recargar» ni rebote de la página: la barra de pestañas y la de arriba quedan quietas, solo se mueve el contenido (`overscroll-behavior: none`).
+   - Nada aparece de golpe: lo que entra o cambia, entra con una transición corta.
+   - Toques de 44 px como mínimo; botones con el estilo del sistema, no hechos a mano.
+5. **Sombra solo en lo que flota** (hojas, menús). El resto plano: la jerarquía sale del tamaño y del color, no de cajas.
+6. **Sistema de diseño escrito** en `docs/diseno.md`: colores con 1 trabajo cada uno, escala de tamaños (variables CSS, sin valores sueltos), componentes. Bocetos aprobados en `bocetos/`.
+7. **Identidad propia y sobria.** Nada de combinaciones «premium» genéricas (degradés, violeta con negro, vidrio por todos lados). No copiar la identidad de Akordia.
+
+Además:
+
+- iPhone en vertical, 390×844 de referencia; se usa con 1 mano, de pasada: lo importante en la mitad de abajo, poco texto, estados inequívocos (toca, hecha, salteada, a medias, esperando).
 - Flujo lineal, pocos botones visibles. Lo que se usa poco va en un menú «⋯».
-- Fuentes embebidas en la página (sin Google Fonts, porque tiene que andar sin internet). Nada de fuentes genéricas que hagan parecer la app «hecha con IA».
-- La identidad visual (colores, tipografía) se decide después de usarla un tiempo; hasta entonces, sobria y con la escala en variables CSS (sin valores sueltos), para cambiarla en 1 solo lugar.
-- No copiar la identidad de Akordia: es otra app, en otro dispositivo.
 
 ## Estructura del repo
 
@@ -63,6 +84,7 @@ Se arma en el PR 1. La idea (igual que en Akordia, que funcionó):
 - `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` se reemplaza por ese archivo, en ese orden. `estilos/`, `pantallas/` y `logica/`.
 - `codigo/build.py`: junta todo en 1 solo HTML en `salida/` (solo necesita `python3`).
 - `salida/`: lo que se publica (`index.html`, `sw.js`, manifest e íconos). Se commitea compilado.
+- `bocetos/`: los bocetos aprobados (HTML que se abre en el iPhone).
 - `docs/`: el detalle (abajo).
 
 ## Compilar, probar y publicar
@@ -85,4 +107,6 @@ Se completa en el PR 1, con los comandos exactos y la tabla de resultados espera
 ## Índice de `docs/`
 
 - `vision.md`: para qué existe la app, principios, reglas de decisión, versión 1, versión 2 y plan de PRs. Leelo antes de proponer una feature.
+- `referencias.md`: lo que hace sentir app a Recordatorios, Things 3, Todoist y Streaks (con las capturas). Si tocás algo que se ve.
+- `diseno.md`: el sistema de diseño (colores, escala, componentes). Si tocás cualquier estilo.
 - `pendientes.md`: lo anotado para después (se crea cuando haga falta).
