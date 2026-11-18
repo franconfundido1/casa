@@ -40,13 +40,12 @@ function selector(el, alCambiar) {
 function abrirHoja(hoja) { hoja.classList.add('abierta'); }
 function cerrarHoja(hoja) { hoja.classList.remove('abierta'); }
 
-// Barra de pestañas
+// Barra de pestañas (en los bocetos, Ajustes lleva a la portada)
 function pestanas(actual) {
-  const p = [['hoy', 'sun', 'Hoy', 'hoy.html'], ['tareas', 'list-checks', 'Tareas', 'tareas.html'], ['ajustes', 'gear-six', 'Ajustes', '#']];
+  const p = [['hoy', 'sun', 'Hoy', 'hoy.html'], ['tareas', 'list-checks', 'Tareas', 'tareas.html'], ['ajustes', 'gear-six', 'Ajustes', 'index.html']];
   const nav = document.createElement('nav');
   nav.className = 'pestanas';
   nav.innerHTML = p.map(([id, icono, nombre, href]) =>
     `<a href="${href}" ${id === actual ? 'aria-current="page"' : ''}>${ic(id === actual ? icono + '-fill' : icono)}${nombre}</a>`).join('');
-  nav.querySelector('a[href="#"]').onclick = e => e.preventDefault();
   document.body.append(nav);
 }

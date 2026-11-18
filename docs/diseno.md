@@ -39,21 +39,40 @@ El círculo de la izquierda dice el estado con **relleno e ícono, no con color*
 
 Círculo de 24 px con zona de toque de 44 px; el ícono de adentro, de 16 px en `bold` para que se vea (con trazo fino parecía un círculo roto). En la tarea en curso, el mismo círculo a 112 px.
 
+## Identidad: minimalismo propio
+
+Modelo: Hábitos (`habitos-*.png`). Blanco, negro y grises, y 2 cosas propias que la hacen reconocible sin agregar color:
+
+- **Una letra propia solo para lo grande:** los títulos, el número de «Tengo X min» y el nombre de la tarea en curso. Todo lo demás, con la letra del sistema.
+- **El círculo como firma:** el mismo círculo es el estado de cada tarea, la acción grande de la tarea en curso y el ícono de la app (círculo blanco sobre negro, sin texto: `bocetos/icono-180.png`).
+
 ## Letra
 
-`-apple-system` (SF Pro en el iPhone). Escala de iOS (Dynamic Type, tamaño por defecto):
+- **Texto:** `-apple-system` (SF Pro en el iPhone).
+- **Lo grande:** una letra propia, embebida (archivo `woff2` en la página, sin Google Fonts), con licencia SIL OFL. Nada de Jost (es la de Akordia) ni de las letras que usan todas las apps hechas con IA (Inter, Space Grotesk y parecidas). Hay 3 opciones para comparar en la portada de los bocetos; queda 1 sola cuando la elija el usuario:
 
-| Variable | Tamaño / alto de línea | Peso | Uso |
+| Opción | Peso | Carácter |
+|---|---|---|
+| League Spartan | 700 | Geométrica: la «o» es un círculo |
+| Young Serif | 400 | Con serifa, cálida, de casa |
+| Comfortaa | 700 | Redonda, hecha de círculos |
+
+Cada letra tiene su `--ajuste-propia` para que las 3 se vean del mismo tamaño.
+
+Escala (Dynamic Type de iOS en tamaño por defecto, salvo lo grande):
+
+| Variable | Tamaño / alto de línea | Letra | Uso |
 |---|---|---|---|
-| `--letra-enorme` | 40 / 46 | bold | Nombre de la tarea en curso; los minutos de «Tengo X minutos» |
-| `--letra-titulo-grande` | 34 / 41 | bold | Título de la pestaña («Hoy», «Tareas») |
-| `--letra-titulo` | 28 / 34 | bold | «Listo por ahora» |
-| `--letra-titulo-2` | 22 / 28 | bold | Nombre en la hoja de editar; minutos de la tarea en curso (regular) |
-| `--letra-encabezado` | 17 / 22 | semibold | Encabezado de sección, botones, título de la hoja |
-| `--letra-cuerpo` | 17 / 22 | regular | Nombre de la tarea en la fila |
-| `--letra-secundaria` | 15 / 20 | regular | La línea gris de la fila; botones de texto |
-| `--letra-nota` | 13 / 18 | regular | Notas, fecha arriba del título |
-| `--letra-pestana` | 11 / 13 | medium | Etiqueta de la pestaña |
+| `--letra-enorme` | 42 / 1,1 | propia | Nombre de la tarea en curso; los minutos de «Tengo X min» |
+| `--letra-titulo-grande` | 36 / 1,15 | propia | Título de la pestaña («Hoy», «Tareas») |
+| `--letra-titulo` | 28 / 1,2 | propia | «Listo por ahora» |
+| `--letra-titulo-2` | 22 / 28 | sistema, bold | Nombre en la hoja de editar; minutos de la tarea en curso (regular) |
+| `--letra-encabezado` | 17 / 22 | sistema, semibold | Botones, título de la hoja |
+| `--letra-seccion` | 13 / 18 | sistema, semibold | Encabezado de sección («Las 3 de hoy», «Tocan»): chico y gris, como en iOS |
+| `--letra-cuerpo` | 17 / 22 | sistema | Nombre de la tarea en la fila |
+| `--letra-secundaria` | 15 / 20 | sistema | La línea gris de la fila; botones de texto |
+| `--letra-nota` | 13 / 18 | sistema | Notas, fecha arriba del título |
+| `--letra-pestana` | 11 / 13 | sistema, medium | Etiqueta de la pestaña |
 
 Números con cifras siempre, y `tabular-nums` en minutos y horas (no bailan al cambiar).
 
@@ -99,14 +118,15 @@ Nada de emojis ni SF Symbols.
 
 ### Pantalla y barra de pestañas
 
-- La pantalla y la barra **se reparten el alto**: la barra va al final, en su propio lugar, y el contenido se desplaza arriba de ella. Nada queda nunca debajo de la barra (antes tapaba «Empezar»).
-- Barra de Todoist (iOS 26): cápsula a `--esp-5` de los costados, sobre la barra de inicio (`env(safe-area-inset-bottom)`). **Fondo sólido** `--flotante`, sin desenfoque ni sombra.
+- La pantalla, lo fijo de abajo (en Hoy, «Tengo X min») y la barra **se reparten el alto**: cada uno en su lugar, y solo la lista se desplaza. Nada queda nunca debajo de la barra.
+- Sin barra de desplazamiento fija a la derecha (`scrollbar-width: none`).
+- Barra de Todoist (iOS 26): cápsula a `--esp-5` de los costados, **pegada a la barra de inicio**: la zona segura se cuenta 1 sola vez (queda a unos 20 px del borde, `env(safe-area-inset-bottom)` menos 14 px). **Fondo sólido** `--flotante`, sin desenfoque ni sombra.
 - 3 pestañas con ícono y etiqueta abajo (Hábitos sin etiqueta: hay que adivinar). La elegida: ícono relleno, todo en blanco. Las otras: contorno, en gris. Sin cápsula resaltada.
 - Cambiar de pestaña: el contenido aparece con un fundido de 200 ms.
 
 ### Título de la pantalla
 
-Recordatorios: título grande en negrita a la izquierda, con la fecha en gris chico arriba solo en Hoy. Arriba queda siempre la barra de 44 px (vacía o con botones), así el título no salta al cambiar de pestaña.
+Recordatorios: título grande a la izquierda, en la letra propia, con la fecha en gris chico arriba solo en Hoy. Si la pantalla no tiene botones arriba (Hoy), el título sube hasta la zona segura más `--esp-2`; si tiene (Tareas), va debajo de la barra de 44 px.
 
 ### Botones de arriba
 
@@ -116,7 +136,7 @@ Recordatorios: a la derecha, en un círculo `--relleno` de 44 px. Con 2 o más, 
 
 Recordatorios (`recordatorios-lista.png`): **sin cajas**.
 
-- Encabezado de sección en `--letra-encabezado` y `--texto-2` («Las 3 de hoy», «Tocan»).
+- Encabezado de sección chico y discreto, como en iOS: `--letra-seccion` y `--texto-2` («Las 3 de hoy», «Tocan»). El único texto grande es el título.
 - Fila directo sobre el negro: círculo de estado, nombre (`--letra-cuerpo`) y 1 línea gris corta.
 - Separador fino que **empieza después del círculo** y termina en el margen.
 - En Tareas: tocar el círculo marca hecha; tocar la fila abre la hoja. Al tocar, la fila se aclara 100 ms, sin el resaltado del navegador.
@@ -134,14 +154,14 @@ Recordatorios (detalle) y Hábitos (nuevo):
 
 Va en una hoja, de a 1 tarea, sin espacio vacío arriba: el contenido está centrado en la hoja.
 
-- El nombre **enorme y centrado**, los minutos abajo en gris.
+- El nombre **enorme y centrado**, en la letra propia; los minutos abajo en gris.
 - **1 acción principal grande:** un círculo de 112 px para tocar = hecha (se llena de blanco con ✓). Debajo, en gris chico, «Hecha».
 - «A medias» y «Saltear» como **botones de texto** chicos, abajo de todo. Al tocarlos, el círculo grande muestra ese estado.
 - Después de marcar, la tarea sale a la izquierda y entra la siguiente. Al final: «Listo por ahora», las filas con su estado y «Cerrar».
 
 ### «Tengo X minutos»
 
-Un control de iOS, no un formulario: «Tengo» en gris chico, los minutos como **número grande**, y abajo un **selector** con las opciones rápidas 5, 10, 20, 30 y 60. Después, «Empezar». Va en la mitad de abajo de Hoy.
+Un control de iOS, no un formulario: «Tengo» en gris chico, los minutos como **número grande** en la letra propia, y abajo un **selector** con las opciones rápidas 5, 10, 20, 30 y 60. Después, «Empezar». **Fijo, siempre visible, arriba de la barra de pestañas**, con un separador fino arriba; la lista se desplaza por encima.
 
 ### Contador − y +
 
@@ -186,4 +206,4 @@ En `bocetos/`, con datos de `vision.md` (miércoles 18 de noviembre, 18:40). Se 
 - `hoy.html#curso`: la tarea en curso.
 - `tareas.html`: las 9 tareas en 3 secciones (Tocan, Más adelante, Hechas hoy).
 - `tareas.html#editar`: la hoja de editar (Verdulería).
-- `index.html`: los links y la muestra de estados y colores.
+- `index.html`: la portada: las 3 letras para elegir, los links, el ícono y la muestra de estados y colores. En los bocetos, la pestaña Ajustes lleva acá.

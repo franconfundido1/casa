@@ -10,23 +10,44 @@
 <link rel="manifest" href="manifest.json">
 <title>Bocetos · casa</title>
 <link rel="stylesheet" href="sistema.css">
+<link rel="apple-touch-icon" href="icono-180.png">
+<script>try { document.documentElement.dataset.letra = localStorage.getItem("boceto-letra") || "spartan"; } catch (e) {}</script>
 <style>
-  .pantalla { padding-bottom: calc(var(--abajo) + var(--esp-7)); }
   .muestra { width: 28px; height: 28px; border-radius: 50%; margin: 0 var(--esp-2); flex: none; border: .5px solid var(--separador); }
   .fila .valor svg { width: 18px; height: 18px; color: var(--texto-3); }
   a.fila { padding-left: var(--margen); }
   a.fila + a.fila::before { left: var(--margen); }
+
+  .letra { align-items: flex-start; }
+  .letra .estado { margin-top: 6px; }
+  .letra .prueba { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--esp-4); row-gap: 0; }
+  .letra .prueba span { font-size: 38px; line-height: 1.15; }
+  .letra .linea { margin-top: var(--esp-1); }
+  .letra:active { background: none; }
+  .icono { display: flex; align-items: center; gap: var(--esp-4); padding: var(--esp-2) var(--margen) 0; }
+  .icono img { width: 64px; height: 64px; border-radius: 15px; border: .5px solid var(--separador); }
+  .icono p { font: var(--letra-secundaria); color: var(--texto-2); }
 </style>
 </head>
 <body>
 <main class="pantalla">
-  <div class="barra-arriba"></div>
   <div class="titulo"><small>Paso C · para mirar en el iPhone</small><h1>Bocetos</h1></div>
+
+  <section class="seccion">
+    <h2>Letra para lo grande</h2>
+    <div id="letras"></div>
+    <p class="nota">Tocá una: Hoy, Tareas y la tarea en curso pasan a usarla.</p>
+  </section>
 
   <section class="seccion">
     <h2>Pantallas</h2>
     <div id="pantallas"></div>
-    <p class="nota">Datos de ejemplo: miércoles 18 de noviembre, 18:40. Para instalar, abrí Hoy y Agregar a inicio.</p>
+    <p class="nota">Datos de ejemplo: miércoles 18 de noviembre, 18:40. En los bocetos, la pestaña Ajustes trae acá.</p>
+  </section>
+
+  <section class="seccion">
+    <h2>Ícono</h2>
+    <div class="icono"><img src="icono-180.png" alt=""><p>El círculo de «toca», blanco sobre negro, sin texto.</p></div>
   </section>
 
   <section class="seccion">
@@ -42,6 +63,28 @@
 </main>
 <script src="boceto.js"></script>
 <script>
+  const letras = [
+    ['spartan', 'League Spartan', 'League Spartan', 700, 'Geométrica, la «o» es un círculo'],
+    ['young', 'Young Serif', 'Young Serif', 400, 'Con serifa, cálida, de casa'],
+    ['comfortaa', 'Comfortaa', 'Comfortaa', 700, 'Redonda, hecha de círculos'],
+  ];
+  const actual = () => document.documentElement.dataset.letra;
+  function pintarLetras() {
+    document.getElementById('letras').innerHTML = letras.map(([id, nombre, familia, peso, nota]) =>
+      `<button class="fila letra" data-id="${id}" data-estado="${id === actual() ? 'hecha' : 'no'}">${circulo()}
+        <span class="texto">
+          <span class="prueba" style="font-family: '${familia}'; font-weight: ${peso}"><span>Hoy</span><span>20 min</span><span>Barrer</span></span>
+          <span class="linea">${nombre} · ${nota}</span>
+        </span></button>`).join('');
+  }
+  document.getElementById('letras').onclick = e => {
+    const f = e.target.closest('.letra'); if (!f) return;
+    document.documentElement.dataset.letra = f.dataset.id;
+    try { localStorage.setItem('boceto-letra', f.dataset.id); } catch (err) {}
+    pintarLetras();
+  };
+  pintarLetras();
+
   const pantallas = [
     ['Hoy', 'Las 3 de hoy y «Tengo X minutos»', 'hoy.html'],
     ['Tarea en curso', 'Hecha, a medias y saltear', 'hoy.html#curso'],
@@ -49,7 +92,7 @@
     ['Editar tarea', 'La hoja, con Verdulería', 'tareas.html#editar'],
   ];
   document.getElementById('pantallas').innerHTML = pantallas.map(([n, l, h]) =>
-    `<a class="fila sin-circulo" href="${h}"><span class="texto"><span class="nombre">${n}</span><span class="linea">${l}</span></span><span class="valor">${ic('caret-right')}</span></a>`).join('');
+    `<a class="fila" href="${h}"><span class="texto"><span class="nombre">${n}</span><span class="linea">${l}</span></span><span class="valor">${ic('caret-right')}</span></a>`).join('');
 
   const estados = [
     ['Toca', 'toca'], ['No toca todavía', 'no'], ['Hecha', 'hecha'],
@@ -66,6 +109,8 @@
   ];
   document.getElementById('colores').innerHTML = colores.map(([v, n]) =>
     `<div class="fila"><span class="muestra" style="background: var(${v})"></span><span class="texto"><span class="nombre">${n}</span><span class="linea">${v}</span></span></div>`).join('');
+
+  pestanas('ajustes');
 </script>
 </body>
 </html>
