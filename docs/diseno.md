@@ -18,7 +18,7 @@ Los valores viven como variables CSS en `bocetos/sistema.css`; el código de la 
 |---|---|---|
 | `--fondo` | `#000000` | Fondo de todo, también de la hoja y de la barra de pestañas; la letra sobre lo blanco lleno |
 | `--texto` | `#FFFFFF` | Texto, lo elegido (lleno), lo que toca (contorno) |
-| `--texto-2` | `#8E8E93` | Texto gris (línea de la fila, encabezados, notas), lo no elegido, el lleno de «salteada» |
+| `--texto-2` | `#8E8E93` | Texto gris (línea de la fila, encabezados, notas), lo no elegido, la flecha de «salteada» |
 | `--texto-3` | `#48484A` | Lo apagado: un − o + en el tope, el texto de ejemplo |
 | `--linea` | `#3A3A3C` | Contornos finos de lo no elegido, separadores, la línea bajo el título, borde de la hoja |
 | `--gris-lleno` | `#2C2C2E` | Círculo sin hacer (como los días sin hacer de hábitos) y el «×» de la hoja |
@@ -29,7 +29,7 @@ Sin degradés, sin desenfoque, sin transparencias, sin sombras (sobre negro no s
 
 ## Estados de una tarea
 
-Como los días de hábitos: lo sin hacer es un **círculo gris oscuro lleno**, lo hecho **blanco lleno**, y lo de hoy lleva **aro**. Se distinguen por relleno, aro e ícono, no por color. Círculo de 30 px con trazo de 2 px, dentro de 44 px de toque.
+Como los días de hábitos: lo sin hacer es un **círculo gris oscuro lleno**, lo hecho **blanco lleno**, y lo de hoy lleva **aro**. **Lo único que brilla es el blanco:** toca (el aro), hecha y a medias; lo demás queda en grises. Se distinguen por relleno, aro e ícono, no por color. Círculo de 30 px con trazo de 2 px, dentro de 44 px de toque.
 
 | Estado | Círculo | Nombre |
 |---|---|---|
@@ -37,10 +37,10 @@ Como los días de hábitos: lo sin hacer es un **círculo gris oscuro lleno**, l
 | No toca todavía | Gris oscuro lleno, sin aro ni ícono | Gris |
 | Hecha | Blanco lleno con ✓ negro | Gris |
 | A medias | Aro blanco, mitad blanca y mitad gris oscuro | Blanco |
-| Salteada | Gris claro lleno (`--texto-2`) con flecha → negra | Gris |
-| Esperando | Sin relleno, aro gris punteado y reloj blanco | Gris; la línea dice desde qué hora |
+| Salteada | Gris oscuro lleno, como «no toca», con la flecha → en gris claro (`--texto-2`) | Gris |
+| Esperando | Sin relleno, aro gris punteado y reloj gris claro | Gris; la línea dice desde qué hora |
 
-Lo que no toca, lo salteado y lo que espera no se confunden: el primero no tiene ícono, el segundo es claro con flecha y el tercero es hueco y punteado, con reloj.
+Lo que no toca, lo salteado y lo que espera no se confunden: el primero no tiene ícono, el segundo tiene la flecha gris y el tercero es hueco y punteado, con reloj.
 
 En la tarea en curso, el mismo círculo a 120 px con trazo de 3 px.
 
