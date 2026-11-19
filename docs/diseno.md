@@ -94,7 +94,7 @@ Números con cifras siempre, y `tabular-nums` en minutos y horas.
 | Cerrar / Agregar | `x` (bold) / `plus-circle` (contorno) |
 | Contador | `minus` / `plus` (bold) |
 | Hecha / Salteada / Esperando | `check` (bold) / `arrow-right` (bold) / `clock` |
-| Bloques de la hoja (solos, sin texto) | `repeat` (frecuencia), `timer` (minutos), `clock` (última vez) |
+| Bloques de la hoja (solos, sin texto) | `repeat` (frecuencia), `timer` (minutos), `clock-counter-clockwise` (última vez: el reloj con la flecha para atrás) |
 
 ### Ícono de cada tarea
 
@@ -160,7 +160,7 @@ Como «1 vez al día» de hábitos: «−» en un círculo de contorno, el núme
 ### Hoja
 
 - Sube desde abajo (300 ms); lo de atrás queda velado en gris. Negra, con las esquinas de arriba redondeadas y el borde fino. Se cierra con el «×» (arriba a la derecha, como en hábitos) o tocando afuera.
-- **Hoja de tarea, como «nuevo hábito»:** arriba al centro, el círculo grande blanco lleno con **el ícono de la tarea** en negro y un lápiz chico en el borde. Al tocarlo se abre encima **otra hoja**, sin título: los 16 íconos en una grilla de 4, sin nombre (el ícono se explica solo); el elegido, con un borde blanco (como en hábitos). Tocar uno lo elige y cierra esa hoja. Después, el nombre centrado, grande, con una rayita abajo; el ícono de repetir (sin texto) con las pastillas «Cada» / «Entre» / «1 vez» y sus contadores (con «1 vez», en vez de contadores, las pastillas «Hoy» / «Mañana» / «Elegir»; «Elegir» abre el calendario del iPhone y muestra el día elegido, «vie 21», y no hay «última vez») (1 con «Cada»; «desde» y «hasta» con «Entre»); el reloj con el contador de minutos; el ícono de reloj de «última vez» con un contador que va de «nunca» a «hoy», «ayer» y «N días atrás» (cargarla suma una entrada al historial con esa fecha; sirve para poner al día las de arranque el primer día). Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar» en rojo (solo al editar), que pide 2 toques: el 1.º cambia el texto a «¿Borrar?» y, si no se toca otra vez en 3 segundos, vuelve. Los minutos van de a 1 hasta 10, de a 5 hasta 60 y después 75, 90, 120, 150 y 180.
+- **Hoja de tarea, como «nuevo hábito»:** arriba al centro, el círculo grande blanco lleno con **el ícono de la tarea** en negro y un lápiz chico en el borde. Al tocarlo se abre encima **otra hoja**, sin título: los 16 íconos en una grilla de 4, sin nombre (el ícono se explica solo); el elegido, con un borde blanco (como en hábitos). Tocar uno lo elige y cierra esa hoja. Después, el nombre centrado, grande, con una rayita abajo; el ícono de repetir (sin texto) con las pastillas «Cada» / «Entre» / «1 vez» y sus contadores (con «1 vez», en vez de contadores, las pastillas «Hoy» / «Mañana» / «Elegir»; «Elegir» abre el calendario del iPhone y muestra el día elegido, «vie 21», y no hay «última vez») (1 con «Cada»; «desde» y «hasta» con «Entre»); el reloj con el contador de minutos; el reloj con la flecha para atrás (`clock-counter-clockwise`) de «última vez» con un contador que va de «nunca» a «hoy», «ayer» y «N días atrás» (cargarla suma una entrada al historial con esa fecha; sirve para poner al día las de arranque el primer día). Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar» en rojo (solo al editar), que pide 2 toques: el 1.º cambia el texto a «¿Borrar?» y, si no se toca otra vez en 3 segundos, vuelve. Los minutos van de a 1 hasta 10, de a 5 hasta 60 y después 75, 90, 120, 150 y 180.
 
 ### Tarea en curso
 
