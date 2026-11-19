@@ -81,8 +81,8 @@ Además:
 
 Igual que en Akordia, que funcionó:
 
-- `codigo/reglas/`: reglas puras, sin DOM ni fecha del sistema (`fechas.js`, `estado.js` con las migraciones, `tareas.js` con los vencimientos; después «Tengo X minutos», la mañana, la ropa), con pruebas en `codigo/tests/`. Cada archivo termina con `module.exports` para las pruebas y va igual en la página.
-- `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` (ruta desde `codigo/`) se reemplaza por ese archivo, en ese orden. `estilos/` (`base.css`: variables y «se siente app»; `componentes.css`), `pantallas/` (cabecera, hoy, tareas, ajustes, pestañas) y `logica/` (datos, navegación, tareas, inicio). Un archivo nuevo se suma a la plantilla (`build.py` avisa si sobra alguno).
+- `codigo/reglas/`: reglas puras, sin DOM ni fecha del sistema (`fechas.js`, `estado.js` con las migraciones, `tareas.js` con los vencimientos, `hoy.js` con las 3 de hoy y «Tengo X minutos»; después la ropa), con pruebas en `codigo/tests/`. Cada archivo termina con `module.exports` para las pruebas y va igual en la página.
+- `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` (ruta desde `codigo/`) se reemplaza por ese archivo, en ese orden. `estilos/` (`base.css`: variables y «se siente app»; `componentes.css`), `pantallas/` (cabecera, hoy, tareas, ajustes, pestañas) y `logica/` (datos, navegación, tareas, hoy, inicio). Un archivo nuevo se suma a la plantilla (`build.py` avisa si sobra alguno).
 - `codigo/recursos/`: la letra (League Spartan, `woff2`, va embebida en base64), los íconos de Phosphor (`iconos.svg`) y los íconos de la app (círculo lleno, 180, 192 y 512 px).
 - `codigo/sw.js`: el service worker (primero la red; sin red, el caché `casa-v1`).
 - `codigo/build.py`: junta todo en 1 solo HTML en `salida/` (solo necesita `python3`).
@@ -100,8 +100,8 @@ Igual que en Akordia, que funcionó:
 
   | Suite | Pasan |
   |---|---|
-  | reglas (`node --test`) | 38 |
-  | página (`test_pagina.js`) | 57 |
+  | reglas (`node --test`) | 51 |
+  | página (`test_pagina.js`) | 73 |
 
 - Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 

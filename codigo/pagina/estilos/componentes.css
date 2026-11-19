@@ -99,7 +99,13 @@
 [data-estado="toca"] .estado i { border-color: var(--texto); }
 [data-estado="hecha"] .estado i { background: var(--texto); border-color: var(--texto); animation: rebote var(--t-tarea); }
 [data-estado="hecha"] .estado i .i-check { opacity: 1; }
-[data-estado="hecha"] .nombre, [data-estado="no"] .nombre { color: var(--texto-2); }
+/* A medias: aro blanco y la mitad llena; salteada: gris oscuro con la flecha gris (lo único que brilla es el blanco) */
+.estado i::after { content: ""; position: absolute; inset: 0 50% 0 0; background: var(--texto); transform: scaleX(0); transform-origin: left; transition: transform var(--t-corta); }
+[data-estado="a-medias"] .estado i { border-color: var(--texto); animation: rebote var(--t-tarea); }
+[data-estado="a-medias"] .estado i::after { transform: scaleX(1); }
+[data-estado="salteada"] .estado i { color: var(--texto-2); animation: rebote var(--t-tarea); }
+[data-estado="salteada"] .estado i .i-salteada { opacity: 1; }
+[data-estado="hecha"] .nombre, [data-estado="salteada"] .nombre, [data-estado="no"] .nombre { color: var(--texto-2); }
 @keyframes rebote { 50% { transform: scale(1.15); } }
 
 /* Pastillas para elegir: lo elegido, blanco lleno con letra negra; lo demás, contorno fino gris */

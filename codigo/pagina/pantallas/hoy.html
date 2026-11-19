@@ -1,2 +1,16 @@
-<section class="pantalla" id="pantalla-hoy" data-titulo="hoy">
+<section class="pantalla pantalla-hoy" id="pantalla-hoy" data-titulo="hoy">
+  <div class="lista-hoy" id="lista-hoy"></div>
+  <!-- «Tengo X minutos»: fijo arriba de la barra de pestañas; la lista se mueve por encima -->
+  <div class="tengo">
+    <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg><span>tengo</span><span>minutos</span></div>
+    <div class="opciones num" id="minutos">
+      <button data-op="5">5</button>
+      <button data-op="10">10</button>
+      <button data-op="20" aria-pressed="true">20</button>
+      <button data-op="30">30</button>
+      <button data-op="60">60</button>
+    </div>
+    <p class="nota" id="nota-tengo"></p>
+    <button class="boton" id="empezar">Empezar</button>
+  </div>
 </section>
