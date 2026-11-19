@@ -1,4 +1,6 @@
 // Al abrir: leer los datos, pedir que no se borren, poner la fecha y dejar la app lista para usarse sin internet.
+// La entrada con el logo dura 700 ms; después se saca (no queda nada encima de la app)
+setTimeout(() => { const e = document.getElementById('entrada'); if (e) e.remove(); }, 750);
 leerDatos();
 prepararDia();
 pintarSubtitulo();

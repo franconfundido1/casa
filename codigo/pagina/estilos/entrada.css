@@ -1,0 +1,23 @@
+/* La entrada (docs/diseno.md › Transiciones): 700 ms en total, para que no moleste cada vez que se abre.
+   0–380 ms: los 3 círculos crecen de a 1 (220 ms cada uno, 80 ms entre uno y otro, curva iOS).
+   480–700 ms: el logo crece un poco y todo se desvanece, y queda «hoy» debajo. Sin animación si se pide menos movimiento. */
+.entrada {
+  position: fixed; inset: 0; z-index: 50; background: var(--fondo);
+  display: grid; place-items: center; pointer-events: none;
+  animation: entrada-sale 220ms ease-in 480ms forwards;
+}
+.entrada svg { width: 168px; animation: entrada-logo 220ms ease-in 480ms forwards; }
+.entrada .c { transform-box: fill-box; transform-origin: center; transform: scale(0); animation: entrada-circulo 220ms var(--curva-ios) forwards; }
+.entrada .c2 { animation-delay: 80ms; }
+.entrada .c3 { animation-delay: 160ms; }
+@keyframes entrada-circulo { to { transform: scale(1); } }
+@keyframes entrada-logo { to { transform: scale(1.3); } }
+@keyframes entrada-sale { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .entrada { display: none; } }
+
+/* Ajustes, abajo de todo: el logo chico, el nombre y la versión */
+#pantalla-ajustes { display: flex; flex-direction: column; }
+.firma-app { margin-top: auto; padding: var(--esp-8) var(--margen) var(--esp-4); display: flex; flex-direction: column; align-items: center; gap: var(--esp-2); }
+.firma-app svg { width: 72px; height: 23px; color: var(--texto); }
+.firma-app b { font: var(--letra-encabezado); }
+.firma-app span { font: var(--letra-nota); color: var(--texto-2); }
