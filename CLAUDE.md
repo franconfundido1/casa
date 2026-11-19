@@ -4,6 +4,7 @@ Lo que hace falta para cualquier tarea. El detalle va en `docs/` (índice abajo)
 
 ## Qué es
 
+- **El nombre que se ve es «str3ak»** (en minúscula): en el manifest, el `<title>`, `apple-mobile-web-app-title` y el archivo de la copia (`str3ak-copia-AAAA-MM-DD.json`). Los nombres internos siguen siendo `casa` (abajo, en «Reglas de datos»).
 - App personal para ordenar el día en la casa: tareas, ropa, comida y súper. **La app decide qué hacer y cuándo**; el usuario solo dice cuánto tiempo tiene y marca lo que hizo.
 - Se usa en un **iPhone, en vertical, instalada desde Safari** («Agregar a inicio»). No en la tablet ni en Chrome.
 - 1 solo archivo HTML, sin servidor. Funciona sin internet (service worker).
@@ -84,7 +85,7 @@ Igual que en Akordia, que funcionó:
 
 - `codigo/reglas/`: reglas puras, sin DOM ni fecha del sistema (`fechas.js`, `estado.js` con las migraciones, `tareas.js` con los vencimientos, `unavez.js` con las tareas de 1 vez, `hoy.js` con las 3 de hoy y «Tengo X minutos», `copia.js` con la copia de seguridad; después la ropa), con pruebas en `codigo/tests/`. Cada archivo termina con `module.exports` para las pruebas y va igual en la página.
 - `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` (ruta desde `codigo/`) se reemplaza por ese archivo, en ese orden. `estilos/` (`base.css`: variables y «se siente app»; `componentes.css`), `pantallas/` (cabecera, hoy, tareas, ajustes, pestañas) y `logica/` (datos, navegación, tareas, hoy, copia, inicio). Un archivo nuevo se suma a la plantilla (`build.py` avisa si sobra alguno).
-- `codigo/recursos/`: la letra (League Spartan, `woff2`, va embebida en base64), los íconos de Phosphor (`iconos.svg`) y los íconos de la app (círculo lleno, 180, 192 y 512 px).
+- `codigo/recursos/`: la letra (League Spartan, `woff2`, va embebida en base64), los íconos de Phosphor (`iconos.svg`) y el ícono de la app (los 3 estados del círculo: aro, mitad y lleno; 180, 192 y 512 px).
 - `codigo/sw.js`: el service worker (primero la red; sin red, el caché `casa-v1`).
 - `codigo/build.py`: junta todo en 1 solo HTML en `salida/` (solo necesita `python3`).
 - `salida/`: lo que se publica (`index.html`, `sw.js`, `manifest.json`, íconos y la licencia de la letra). Se commitea compilado.
@@ -102,7 +103,7 @@ Igual que en Akordia, que funcionó:
   | Suite | Pasan |
   |---|---|
   | reglas (`node --test`) | 72 |
-  | página (`test_pagina.js`) | 96 |
+  | página (`test_pagina.js`) | 97 |
 
 - Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 

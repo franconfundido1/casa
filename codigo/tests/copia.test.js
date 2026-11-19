@@ -17,8 +17,8 @@ test('armarCopia: todo el estado, con app casa, la versión y cuándo se bajó',
   assert.deepEqual(datos.historial, e.historial);
 });
 
-test('nombreCopia: casa-copia con el día', () => {
-  assert.equal(C.nombreCopia(HOY), 'casa-copia-2026-11-19.json');
+test('nombreCopia: str3ak-copia con el día', () => {
+  assert.equal(C.nombreCopia(HOY), 'str3ak-copia-2026-11-19.json');
 });
 
 test('leerCopia: lo que se bajó vuelve igual (sin el dato de la copia), con un resumen', () => {
@@ -37,11 +37,11 @@ test('leerCopia: una copia de una versión vieja se migra', () => {
   assert.equal(r.resumen.dia, null);
 });
 
-test('leerCopia: lo que no es una copia de casa no se carga', () => {
+test('leerCopia: lo que no es una copia de str3ak no se carga', () => {
   for (const malo of ['{roto', '"hola"', 'null', '[]', JSON.stringify({ app: 'atril', version: 1 }), JSON.stringify({ app: 'casa' })]) {
     const r = C.leerCopia(malo);
     assert.equal(r.ok, false, malo);
-    assert.equal(r.error, 'El archivo no es una copia de casa.');
+    assert.equal(r.error, 'El archivo no es una copia de str3ak.');
   }
 });
 
