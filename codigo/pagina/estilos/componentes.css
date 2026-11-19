@@ -1,0 +1,51 @@
+/* Componentes de docs/diseno.md que ya usa la app. Los demás se suman cuando una pantalla los necesite (están en bocetos/sistema.css). */
+
+/* Cabecera fija: el título en minúscula, grande, con una línea fina abajo (como «hábitos») */
+.titulo {
+  flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--esp-4);
+  padding: calc(var(--arriba) + var(--esp-5)) var(--margen) var(--esp-4);
+  border-bottom: var(--trazo) solid var(--linea);
+}
+.titulo h1 { font: var(--letra-titulo-grande); }
+.titulo small { display: block; font: var(--letra-seccion); color: var(--texto-2); margin-top: var(--esp-1); min-height: 20px; }
+.titulo .cambia { animation: fundido var(--t-corta) ease-out; }
+
+/* Pantallas: solo una a la vista; lo único que se desplaza */
+.pantallas { flex: 1; min-height: 0; position: relative; }
+.pantalla {
+  position: absolute; inset: 0;
+  overflow-y: auto; overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--esp-5) 0 var(--esp-6);
+  animation: fundido var(--t-corta) ease-out;
+}
+
+/* Secciones y notas */
+.seccion { margin-bottom: var(--esp-7); }
+.seccion > h2 { font: var(--letra-seccion); color: var(--texto-2); padding: 0 var(--margen) var(--esp-1); }
+.vacio { font: var(--letra-secundaria); color: var(--texto-2); padding: var(--esp-2) var(--margen); }
+
+/* Fila de datos (sin círculo): nombre a la izquierda, valor gris a la derecha */
+.fila-dato {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--esp-4);
+  min-height: var(--alto-fila); padding: 0 var(--margen);
+}
+.fila-dato .valor { font: var(--letra-secundaria); color: var(--texto-2); text-align: right; }
+
+/* Barra de pestañas: plana, abajo, pegada a la barra de inicio (zona segura contada 1 vez) */
+.pestanas {
+  flex: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--esp-2);
+  padding: var(--esp-2) var(--esp-4) max(var(--esp-2), calc(var(--abajo) - 10px));
+  border-top: var(--trazo) solid var(--linea); background: var(--fondo);
+}
+.pestanas button {
+  height: 52px; border-radius: var(--radio-capsula);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  color: var(--texto-2); font: var(--letra-pestana);
+  transition: background var(--t-corta), color var(--t-corta);
+}
+.pestanas svg { width: 26px; height: 26px; }
+.pestanas .lleno { display: none; }
+.pestanas button[aria-current="page"] { background: var(--texto); color: var(--fondo); }
+.pestanas button[aria-current="page"] .lleno { display: block; }
+.pestanas button[aria-current="page"] .contorno { display: none; }

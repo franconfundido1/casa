@@ -1,0 +1,85 @@
+/* Sistema de diseño (docs/diseno.md): la app de hábitos, dada vuelta. Blanco lleno sobre negro. */
+
+/* League Spartan para todo (SIL OFL), embebida: 1 archivo variable con todos los pesos. */
+@font-face {
+  font-family: "League Spartan";
+  src: url(data:font/woff2;base64,__FUENTE__) format("woff2");
+  font-weight: 100 900; font-display: block;
+}
+
+:root {
+  color-scheme: dark;
+  --fondo: #000000;
+  --texto: #FFFFFF;
+  --texto-2: #8E8E93;
+  --texto-3: #48484A;
+  --linea: #3A3A3C;
+  --gris-lleno: #2C2C2E;
+  --borrar: #FF453A;
+  --velo: rgba(44, 44, 46, .6);
+
+  --letra: "League Spartan", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --letra-enorme: 700 44px/1.1 var(--letra);
+  --letra-titulo-grande: 700 40px/1.1 var(--letra);
+  --letra-titulo: 700 30px/1.15 var(--letra);
+  --letra-numero: 600 36px/1 var(--letra);
+  --letra-encabezado: 600 18px/24px var(--letra);
+  --letra-cuerpo: 500 18px/24px var(--letra);
+  --letra-secundaria: 400 16px/20px var(--letra);
+  --letra-seccion: 400 15px/20px var(--letra);
+  --letra-nota: 400 14px/18px var(--letra);
+  --letra-pestana: 500 12px/14px var(--letra);
+
+  --esp-1: 4px; --esp-2: 8px; --esp-3: 12px; --esp-4: 16px;
+  --esp-5: 20px; --esp-6: 24px; --esp-7: 32px; --esp-8: 40px;
+  --margen: 20px;
+  --toque: 44px;
+  --alto-boton: 56px;
+  --alto-pastilla: 48px;
+  --alto-fila: 68px;
+  --circulo: 30px;
+  --circulo-opcion: 56px;
+  --circulo-grande: 120px;
+  --icono: 24px;
+  --radio-hoja: 38px;
+  --radio-capsula: 999px;
+  --trazo: 1px;
+  --trazo-estado: 2px;
+
+  --curva-ios: cubic-bezier(.32, .72, 0, 1);
+  --t-hoja: 300ms;
+  --t-corta: 200ms;
+  --t-tarea: 250ms;
+
+  --arriba: env(safe-area-inset-top, 0px);
+  --abajo: env(safe-area-inset-bottom, 0px);
+}
+
+/* Que se sienta app: sin selección, sin resaltado al tocar, sin menú al mantener apretado, sin rebote ni barra de desplazamiento */
+* { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }
+[hidden] { display: none !important; }
+html, body {
+  background: var(--fondo);
+  color: var(--texto);
+  font: var(--letra-cuerpo);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+  overscroll-behavior: none;
+  overflow: hidden;
+}
+/* La cabecera, la pantalla y la barra de pestañas se reparten el alto: nada queda debajo de otra cosa. */
+body { position: fixed; inset: 0; display: flex; flex-direction: column; }
+input, textarea { -webkit-user-select: text; user-select: text; font: inherit; color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; touch-action: manipulation; }
+a { color: inherit; text-decoration: none; }
+svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; }
+.num { font-variant-numeric: tabular-nums; }
+@keyframes fundido { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
