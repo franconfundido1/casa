@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>str3ak · logos</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .pantalla { padding-top: var(--esp-5); }
+  .logo { display: flex; align-items: center; gap: var(--esp-4); padding: var(--esp-3) var(--margen); width: 100%; text-align: left; position: relative; }
+  .logo + .logo::before { content: ""; position: absolute; top: 0; left: calc(var(--margen) + 76px); right: var(--margen); border-top: var(--trazo) solid var(--linea); }
+  .logo img { width: 60px; height: 60px; border-radius: 14px; flex: none; }
+  .logo .texto { flex: 1; }
+  .logo .nombre { display: block; font: var(--letra-cuerpo); }
+  .logo .linea { display: block; font: var(--letra-secundaria); color: var(--texto-2); margin-top: 2px; }
+  .logo svg { width: 18px; height: 18px; color: var(--texto-2); }
+  .inicio { display: flex; justify-content: center; gap: var(--esp-7); padding: var(--esp-7) var(--margen) var(--esp-4); }
+  .inicio figure { display: flex; flex-direction: column; align-items: center; gap: var(--esp-2); }
+  .inicio img, .logo img { border: var(--trazo) solid var(--linea); }
+  .inicio img { width: 60px; height: 60px; border-radius: 14px; }
+  .inicio figcaption { font: 400 12px/14px -apple-system, system-ui, sans-serif; color: var(--texto); }
+</style>
+</head>
+<body>
+<header class="titulo"><div><h1>str3ak</h1><small>3 opciones de logo</small></div></header>
+<main class="pantalla">
+  <!-- como en la pantalla de inicio, con la letra del iPhone debajo -->
+  <div class="inicio">
+    <figure><img src="logos/logo-1-180.png" alt=""><figcaption>str3ak</figcaption></figure>
+    <figure><img src="logos/logo-2-180.png" alt=""><figcaption>str3ak</figcaption></figure>
+    <figure><img src="logos/logo-3-180.png" alt=""><figcaption>str3ak</figcaption></figure>
+  </div>
+  <a class="logo" href="logo-1.html"><img src="logos/logo-1-180.png" alt=""><span class="texto"><span class="nombre">1 · toca, a medias, hecha</span><span class="linea">los 3 estados del círculo</span></span><svg aria-hidden="true"><use href="iconos.svg#caret-right"/></svg></a>
+  <a class="logo" href="logo-2.html"><img src="logos/logo-2-180.png" alt=""><span class="texto"><span class="nombre">2 · el 3</span><span class="linea">el círculo de «hecha» con el 3 de str3ak</span></span><svg aria-hidden="true"><use href="iconos.svg#caret-right"/></svg></a>
+  <a class="logo" href="logo-3.html"><img src="logos/logo-3-180.png" alt=""><span class="texto"><span class="nombre">3 · 3 de 3</span><span class="linea">el aro partido en 3: las 3 de hoy</span></span><svg aria-hidden="true"><use href="iconos.svg#caret-right"/></svg></a>
+</main>
+</body>
+</html>

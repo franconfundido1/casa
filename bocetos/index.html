@@ -55,6 +55,7 @@
     ['Tarea en curso', 'Hecha, a medias y saltear', 'hoy.html#curso'],
     ['Tareas', 'Las 9 de arranque', 'tareas.html'],
     ['Editar tarea', 'La hoja, con Verdulería', 'tareas.html#editar'],
+    ['Logo', '3 opciones con el nombre str3ak', 'logos.html'],
   ];
   document.getElementById('pantallas').innerHTML = pantallas.map(([n, l, h]) =>
     `<a class="fila" href="${h}"><span class="texto"><span class="nombre">${n}</span><span class="linea">${l}</span></span><span class="valor">${ic('caret-right')}</span></a>`).join('');
