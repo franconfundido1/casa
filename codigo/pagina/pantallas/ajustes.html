@@ -3,4 +3,11 @@
     <h2>tus datos</h2>
     <div class="fila-dato"><span>Guardados en este iPhone</span><span class="valor" id="persistente"></span></div>
   </div>
+  <div class="seccion">
+    <h2>copia de seguridad</h2>
+    <button class="fila-dato fila-boton" id="bajar-copia"><span>Bajar copia</span><svg class="ic" aria-hidden="true"><use href="#download-simple"/></svg></button>
+    <button class="fila-dato fila-boton" id="cargar-copia"><span>Cargar copia</span><svg class="ic" aria-hidden="true"><use href="#upload-simple"/></svg></button>
+    <input type="file" id="archivo-copia" accept=".json,application/json" hidden>
+    <p class="nota-ajustes" id="nota-copia"></p>
+  </div>
 </section>
