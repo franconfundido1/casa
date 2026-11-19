@@ -79,23 +79,30 @@ Además:
 
 ## Estructura del repo
 
-Se arma en el PR 1. La idea (igual que en Akordia, que funcionó):
+Igual que en Akordia, que funcionó:
 
-- `codigo/reglas/`: reglas puras (vencimientos, «Tengo X minutos», la mañana, la ropa), con pruebas en `codigo/tests/`.
-- `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` se reemplaza por ese archivo, en ese orden. `estilos/`, `pantallas/` y `logica/`.
+- `codigo/reglas/`: reglas puras, sin DOM ni fecha del sistema (`fechas.js`, `estado.js`; después vencimientos, «Tengo X minutos», la mañana, la ropa), con pruebas en `codigo/tests/`. Cada archivo termina con `module.exports` para las pruebas y va igual en la página.
+- `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` (ruta desde `codigo/`) se reemplaza por ese archivo, en ese orden. `estilos/` (`base.css`: variables y «se siente app»; `componentes.css`), `pantallas/` (cabecera, hoy, tareas, ajustes, pestañas) y `logica/` (datos, navegación, inicio). Un archivo nuevo se suma a la plantilla (`build.py` avisa si sobra alguno).
+- `codigo/recursos/`: la letra (League Spartan, `woff2`, va embebida en base64), los íconos de Phosphor (`iconos.svg`) y los íconos de la app (círculo lleno, 180, 192 y 512 px).
+- `codigo/sw.js`: el service worker (primero la red; sin red, el caché `casa-v1`).
 - `codigo/build.py`: junta todo en 1 solo HTML en `salida/` (solo necesita `python3`).
-- `salida/`: lo que se publica (`index.html`, `sw.js`, manifest e íconos). Se commitea compilado.
+- `salida/`: lo que se publica (`index.html`, `sw.js`, `manifest.json`, íconos y la licencia de la letra). Se commitea compilado.
 - `bocetos/`: los bocetos aprobados (HTML que se abre en el iPhone).
 - `docs/`: el detalle (abajo).
 
 ## Compilar, probar y publicar
 
-Se completa en el PR 1, con los comandos exactos y la tabla de resultados esperados (único lugar donde está; actualizarla cuando cambie). La idea:
+- Compilar: `python3 codigo/build.py` (actualiza `salida/`; commitear `salida/` junto con el código).
+- Reglas: `node --test codigo/tests/*.test.js` (sin dependencias; con Node 22 hay que pasar los archivos, no la carpeta). Las de fechas corren con la zona de Argentina.
+- Página: `python3 codigo/build.py && timeout 120 node codigo/test_pagina.js`. Sirve `salida/` y la abre a 390×844 táctil: carga, «se siente app», cambio de pestaña, datos, instalable y recarga sin red con el service worker. Usa WebKit si está; si no, Chromium, y el reporte avisa que falta probar en el iPhone de verdad (Playwright ya está en el entorno; no correr `playwright install`).
+- Lo que no se puede probar acá (instalar desde Safari, modo avión en el iPhone, el ícono) se lista en el reporte para que lo pruebe el usuario.
+- Resultado esperado (único lugar donde está; actualizarlo cuando cambie):
 
-- Reglas: `node --test codigo/tests/` (sin dependencias).
-- Página: Playwright con viewport de iPhone (390×844, `isMobile`, `hasTouch`). Si en el entorno está WebKit, usarlo; si no, Chromium, y avisar en el reporte que falta probar en el iPhone de verdad.
-- Sin internet: la prueba de la PWA abre la app, corta la red y recarga.
-- Lo que no se puede probar acá (instalar desde Safari, modo avión en el iPhone) se lista en el reporte para que lo pruebe el usuario.
+  | Suite | Pasan |
+  |---|---|
+  | reglas (`node --test`) | 16 |
+  | página (`test_pagina.js`) | 28 |
+
 - Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 
 ## Reglas de datos
