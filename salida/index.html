@@ -328,16 +328,14 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .contadores .contador { gap: var(--esp-2); }
 .contadores .contador button { width: var(--toque); height: var(--toque); }
 .contadores .contador .cifra { min-width: 52px; }
-.nota-frec { font: var(--letra-nota); color: var(--texto-2); text-align: center; margin-top: var(--esp-3); }
 .pie { padding: var(--esp-3) var(--margen) 0; display: flex; flex-direction: column; align-items: center; gap: var(--esp-1); }
 
 /* Hoja para elegir el ícono, encima de la de la tarea */
 .hoja.chica { top: auto; z-index: 23; }
 .hoja.chica + .velo { z-index: 22; }
-.hoja.chica .hoja-arriba h2 { font: var(--letra-titulo); }
 .grilla-iconos { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--esp-2); padding: var(--esp-4) 0 var(--esp-2); }
 .grilla-iconos button {
-  height: 92px; border-radius: var(--esp-5); border: 2px solid transparent;
+  height: 72px; border-radius: var(--esp-5); border: 2px solid transparent;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--esp-2);
   font: var(--letra-nota); color: var(--texto-2); transition: border-color var(--t-corta), color var(--t-corta), transform 100ms;
 }
@@ -350,8 +348,6 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .lista-hoy .nada { font: var(--letra-secundaria); color: var(--texto-2); padding: var(--esp-2) var(--margen); }
 
 .tengo { flex: none; padding: var(--esp-5) var(--margen) var(--esp-4); border-top: var(--trazo) solid var(--linea); }
-.tengo .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
-.tengo .cabeza svg { width: 20px; height: 20px; }
 .tengo .opciones { margin-bottom: var(--esp-4); }
 
 /* Círculos para elegir (los minutos): el elegido, blanco lleno con letra negra; los demás, contorno fino gris */
@@ -382,7 +378,6 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .tarea .estado i .i-tarea { width: 46%; height: 46%; color: var(--texto); opacity: 0; z-index: 1; }
 .tarea[data-estado="toca"] .estado i .i-tarea { opacity: 1; }
 .tarea[data-estado="toca"] .estado:active i { transform: scale(.94); }
-.tarea .etiqueta { font: var(--letra-seccion); color: var(--texto-2); margin-top: var(--esp-3); }
 .otras { display: flex; justify-content: center; gap: var(--esp-6); }
 .otras button[disabled], .tarea .estado[disabled] { pointer-events: none; }
 
@@ -433,6 +428,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 <symbol id="pencil-simple-fill" viewBox="0 0 256 256" fill="currentColor"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM192,108.68,147.31,64l24-24L216,84.68Z"/></symbol>
 <symbol id="download-simple" viewBox="0 0 256 256" fill="currentColor"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></symbol>
 <symbol id="upload-simple" viewBox="0 0 256 256" fill="currentColor"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0ZM93.66,77.66,120,51.31V144a8,8,0,0,0,16,0V51.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,77.66Z"/></symbol>
+<symbol id="clock-counter-clockwise" viewBox="0 0 256 256" fill="currentColor"><path d="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm-8-48A95.44,95.44,0,0,0,60.08,60.15C52.81,67.51,46.35,74.59,40,82V64a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16H49c7.15-8.42,14.27-16.35,22.39-24.57a80,80,0,1,1,1.66,114.75,8,8,0,1,0-11,11.64A96,96,0,1,0,128,32Z"/></symbol>
 </svg>
 <header class="titulo">
   <div><h1 id="titulo">hoy</h1><small id="subtitulo"></small></div>
@@ -441,9 +437,8 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 <main class="pantallas">
 <section class="pantalla pantalla-hoy" id="pantalla-hoy" data-titulo="hoy">
   <div class="lista-hoy" id="lista-hoy"></div>
-  <!-- «Tengo X minutos»: fijo arriba de la barra de pestañas; la lista se mueve por encima -->
+  <!-- Los minutos y «Empezar»: fijos arriba de la barra de pestañas; la lista se mueve por encima y sigue a los minutos -->
   <div class="tengo">
-    <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg><span>tengo</span></div>
     <div class="opciones num" id="minutos">
       <button data-op="5">5</button>
       <button data-op="10">10</button>
@@ -459,11 +454,9 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 </section>
 <section class="pantalla" id="pantalla-ajustes" data-titulo="ajustes" hidden>
   <div class="seccion">
-    <h2>tus datos</h2>
     <div class="fila-dato"><span>Guardados en este iPhone</span><span class="valor" id="persistente"></span></div>
   </div>
   <div class="seccion">
-    <h2>copia de seguridad</h2>
     <button class="fila-dato fila-boton" id="bajar-copia"><span>Bajar copia</span><svg class="ic" aria-hidden="true"><use href="#download-simple"/></svg></button>
     <button class="fila-dato fila-boton" id="cargar-copia"><span>Cargar copia</span><svg class="ic" aria-hidden="true"><use href="#upload-simple"/></svg></button>
     <input type="file" id="archivo-copia" accept=".json,application/json" hidden>
@@ -487,7 +480,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
     <div class="rayita"></div>
 
     <div class="bloque-hoja">
-      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#repeat"/></svg>frecuencia</div>
+      <div class="cabeza" aria-label="Frecuencia"><svg class="ic" aria-hidden="true"><use href="#repeat"/></svg></div>
       <div class="pastillas" id="modo">
         <button data-op="cada">Cada</button>
         <button data-op="entre">Entre</button>
@@ -503,29 +496,28 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
         <div class="contador" id="c-desde"></div>
         <div class="contador" id="c-hasta"></div>
       </div>
-      <p class="nota-frec" id="nota-frec"></p>
     </div>
 
     <div class="bloque-hoja">
-      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg>lleva</div>
+      <div class="cabeza" aria-label="Minutos"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg></div>
       <div class="contador" id="c-minutos"></div>
     </div>
 
     <div class="bloque-hoja" id="bloque-ultima">
-      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#clock"/></svg>última vez</div>
+      <div class="cabeza" aria-label="Última vez"><svg class="ic" aria-hidden="true"><use href="#clock-counter-clockwise"/></svg></div>
       <div class="contador" id="c-ultima"></div>
     </div>
   </div>
   <div class="pie">
     <button class="boton" id="guardar-tarea" disabled>Guardar</button>
-    <button class="boton-texto borrar" id="borrar-tarea">Borrar tarea</button>
+    <button class="boton-texto borrar" id="borrar-tarea">Borrar</button>
   </div>
 </section>
 <div class="velo" id="velo-tarea"></div>
 
 <section class="hoja chica" id="hoja-iconos" aria-label="Elegir ícono">
   <div class="hoja-arriba">
-    <h2>elegir ícono</h2>
+    <span></span>
     <button class="boton-circulo" id="cerrar-iconos" aria-label="Cerrar"><svg class="ic" aria-hidden="true"><use href="#x-bold"/></svg></button>
   </div>
   <div class="hoja-cuerpo"><div class="grilla-iconos" id="grilla-iconos"></div></div>
@@ -541,7 +533,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 <div class="velo" id="velo-curso"></div>
 <section class="hoja chica" id="hoja-copia" aria-label="Cargar copia">
   <div class="hoja-arriba">
-    <h2>cargar copia</h2>
+    <span></span>
     <button class="boton-circulo" id="cerrar-copia" aria-label="Cerrar"><svg class="ic" aria-hidden="true"><use href="#x-bold"/></svg></button>
   </div>
   <div class="hoja-cuerpo">
@@ -891,13 +883,6 @@ function completarLasTres(estado, hoy) {
   return { ...estado, las3: { dia: hoy, ids: completas } };
 }
 
-// Cuando las 3 de hoy ya no tienen nada pendiente (hechas, a medias o salteadas), hasta 3 más de las que tocan.
-function tambienTocan(estado, hoy) {
-  const tres = lasTres(estado);
-  if (tres.some(t => estadoDelDia(estado.historial, t.id, hoy) === null)) return [];
-  return paraOfrecer(estado, hoy).filter(t => !t.unaVez && !tres.includes(t)).slice(0, 3);
-}
-
 // Las 3 de hoy, como tareas (sin las que se borraron).
 function lasTres(estado) {
   if (!estado.las3) return [];
@@ -948,7 +933,7 @@ function marcarSalteada(estado, id, hoy) { return anotar(estado, id, hoy, 'salte
 function marcarAMedias(estado, id, hoy) { return anotar(estado, id, hoy, 'a-medias'); }
 
 if (typeof module === 'object') module.exports = {
-  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, reelegirSiNoEmpezo, completarLasTres, tambienTocan,
+  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, reelegirSiNoEmpezo, completarLasTres,
   lasTres, diaCumplido, paraOfrecer, queEntra, minutosPosibles, marcarSalteada, marcarAMedias,
 };
 // La copia de seguridad: un .json con todo el estado (app: 'casa' y la versión). Funciones puras.
@@ -1085,8 +1070,9 @@ function lineaUnaVez(t, hoy) {
   return `${t.minutos} min` + (atraso ? ` · <span class="atraso">${atraso}</span>` : '');
 }
 
-function seccionFilas(titulo, filas) {
-  return filas.length ? `<section class="seccion"><h2>${titulo}</h2><div>${filas.join('')}</div></section>` : '';
+// Un grupo de filas, sin título: el círculo (aro, gris, ✓) y la línea (la fecha, el atraso) ya dicen qué es cada uno.
+function seccionFilas(grupo, filas) {
+  return filas.length ? `<section class="seccion" data-grupo="${grupo}"><div>${filas.join('')}</div></section>` : '';
 }
 
 function pintarTareas() {
@@ -1156,7 +1142,6 @@ const borrarBtn = document.getElementById('borrar-tarea');
 const firma = document.getElementById('firma');
 const grilla = document.getElementById('grilla-iconos');
 const modoEl = document.getElementById('modo');
-const notaFrec = document.getElementById('nota-frec');
 const fechaEl = document.getElementById('fecha-unavez');
 const fechaElegir = document.getElementById('fecha-elegir');
 let enEdicion = null, icono = 'check-circle', modo = 'cada', fechaUnaVez = null, original = '', ultimaOriginal = NUNCA, armando = false;
@@ -1164,9 +1149,9 @@ let enEdicion = null, icono = 'check-circle', modo = 'cada', fechaUnaVez = null,
 const cMinutos = contador(document.getElementById('c-minutos'), { valores: VALORES_MINUTOS, unidad: 'minutos', alCambiar: revisar });
 const cDesde = contador(document.getElementById('c-desde'), {
   valores: VALORES_DIAS, unidad: n => (modo === 'cada' ? (n === 1 ? 'día' : 'días') : 'desde'),
-  alCambiar: () => { ajustarHasta(); pintarNota(); revisar(); },
+  alCambiar: () => { ajustarHasta(); revisar(); },
 });
-const cHasta = contador(document.getElementById('c-hasta'), { valores: VALORES_DIAS, unidad: 'hasta', alCambiar: () => { pintarNota(); revisar(); } });
+const cHasta = contador(document.getElementById('c-hasta'), { valores: VALORES_DIAS, unidad: 'hasta', alCambiar: () => { revisar(); } });
 const cUltima = contador(document.getElementById('c-ultima'), {
   valores: VALORES_ULTIMA, alCambiar: revisar,
   mostrar: v => (v === NUNCA ? 'nunca' : v === 0 ? 'hoy' : v === 1 ? 'ayer' : v),
@@ -1219,11 +1204,6 @@ fechaElegir.addEventListener('change', () => {
   revisar();
 });
 
-// La nota de la frecuencia, solo con «Entre».
-function pintarNota() {
-  notaFrec.hidden = modo !== 'entre';
-  notaFrec.textContent = `Toca a partir de los ${cDesde.get()} días; después de los ${cHasta.get()}, está atrasada.`;
-}
 
 function pintarModo() {
   modoEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.op === modo));
@@ -1236,7 +1216,6 @@ function pintarModo() {
   document.getElementById('c-hasta').hidden = modo === 'cada';
   cDesde.set(cDesde.get()); // la unidad cambia entre «días» y «desde»
   ajustarHasta();
-  pintarNota();
 }
 modoEl.addEventListener('click', e => {
   const b = e.target.closest('button[data-op]');
@@ -1249,7 +1228,7 @@ modoEl.addEventListener('click', e => {
 function pintarIcono() {
   firma.innerHTML = ic(icono + '-fill') + `<span class="lapiz">${ic('pencil-simple-fill')}</span>`;
   grilla.innerHTML = ICONOS_TAREA.map(([id, nombre]) =>
-    `<button data-id="${id}" aria-pressed="${id === icono}">${ic(id + '-fill')}${nombre}</button>`).join('');
+    `<button data-id="${id}" aria-pressed="${id === icono}" aria-label="${nombre}">${ic(id + '-fill')}</button>`).join('');
 }
 firma.onclick = () => abrirHoja(hojaIconos);
 grilla.addEventListener('click', e => {
@@ -1324,12 +1303,12 @@ let borrarEspera = null;
 function reiniciarBorrar() {
   clearTimeout(borrarEspera);
   borrarEspera = null;
-  borrarBtn.textContent = 'Borrar tarea';
+  borrarBtn.textContent = 'Borrar';
 }
 borrarBtn.onclick = () => {
   if (!enEdicion) return;
   if (!borrarEspera) {
-    borrarBtn.textContent = 'Tocá de nuevo para borrar';
+    borrarBtn.textContent = '¿Borrar?';
     borrarEspera = setTimeout(reiniciarBorrar, 3000);
     return;
   }
@@ -1353,7 +1332,7 @@ document.getElementById('nueva-tarea').onclick = () => {
     abrirHojaTarea(null);
   }
 };
-// Hoy: las 3 de hoy, «Tengo X minutos» y la tarea en curso, de a 1.
+// Hoy: la lista de lo que entra en los minutos elegidos, «Empezar» y la tarea en curso, de a 1.
 // Las reglas (cuáles son las 3, qué entra, el orden) son de reglas/hoy.js; acá solo se dibuja y se guarda.
 
 const listaHoy = document.getElementById('lista-hoy');
@@ -1368,24 +1347,21 @@ function prepararDia() {
   if (estado !== antes) guardarDatos();
 }
 
-// Hoy: para hoy (las de 1 vez), las 3 de hoy y, si esas ya no tienen nada pendiente, también tocan.
+// Hoy: la lista sigue a los minutos. Muestra todo lo que entra en ese tiempo, en el orden en que se va a ofrecer
+// (las de 1 vez primero; después las 3 de hoy, sin marcarlas; después lo más vencido). Lo que no entra no se muestra.
 function pintarHoy() {
   const hoy = hoyLocal();
-  const conEstado = t => estadoDelDia(estado.historial, t.id, hoy) || 'toca';
-  const unaVez = paraHoyUnaVez(estado.tareas, estado.historial, hoy).map(t => filaTarea(t, conEstado(t), lineaUnaVez(t, hoy)));
-  const tres = lasTres(estado).map(t => filaTarea(t, conEstado(t), `${t.minutos} min`));
-  const mas = tambienTocan(estado, hoy).map(t => filaTarea(t, 'toca', `${t.minutos} min`));
-  const titulo = diaCumplido(estado, hoy) ? 'las 3 de hoy · cumplido' : 'las 3 de hoy';
-  listaHoy.innerHTML = unaVez.length || tres.length || mas.length
-    ? '<div class="lista">' + seccionFilas('para hoy', unaVez) + seccionFilas(titulo, tres) + seccionFilas('también tocan', mas) + '</div>'
+  const lista = paraOfrecer(estado, hoy);
+  pintarMinutos(lista);
+  const { entran } = queEntra(lista, minutos);
+  listaHoy.innerHTML = entran.length
+    ? '<div class="lista">' + entran.map(t => filaTarea(t, 'toca', t.unaVez ? lineaUnaVez(t, hoy) : `${t.minutos} min`)).join('') + '</div>'
     : '<p class="nada lista">Hoy no toca nada.</p>';
-  pintarTengo();
 }
 
-// «Tengo X minutos»: los minutos que no alcanzan para ninguna tarea van apagados; si el elegido quedó apagado,
+// Los minutos: los que no alcanzan para ninguna tarea van apagados; si el elegido quedó apagado,
 // pasa al más chico que alcanza. Sin ninguno, «Empezar» apagado.
-function pintarTengo() {
-  const lista = paraOfrecer(estado, hoyLocal());
+function pintarMinutos(lista) {
   const botones = [...minutosEl.querySelectorAll('button')];
   const posibles = minutosPosibles(lista, botones.map(b => +b.dataset.op));
   if (!posibles.includes(minutos) && posibles.length) minutos = posibles[0];
@@ -1402,8 +1378,7 @@ minutosEl.addEventListener('click', e => {
   const b = e.target.closest('button[data-op]');
   if (!b) return;
   minutos = +b.dataset.op;
-  minutosEl.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
-  pintarTengo();
+  pintarHoy();
 });
 
 listaHoy.addEventListener('click', e => {
@@ -1428,7 +1403,6 @@ function pintarTareaEnCurso(entrando) {
       <h3>${escapar(t.nombre)}</h3>
       <p class="num">${t.minutos} min</p>
       <button class="estado" data-r="hecha" aria-label="Hecha"><i>${ic(t.icono + '-fill', 'i-tarea')}${iconosEstado()}</i></button>
-      <div class="etiqueta">hecha</div>
     </div>
     <div class="otras">
       <button class="boton-texto" data-r="a-medias">A medias</button>
@@ -1439,14 +1413,12 @@ function pintarTareaEnCurso(entrando) {
   curso.querySelectorAll('[data-r]').forEach(b => { b.onclick = () => marcarEnCurso(t, b.dataset.r, tarea); });
 }
 
-const ETIQUETAS = { 'hecha': 'hecha', 'a-medias': 'a medias', 'salteada': 'salteada' };
 function marcarEnCurso(t, r, tarea) {
   curso.querySelectorAll('[data-r]').forEach(b => { b.disabled = true; });
   const hoy = hoyLocal();
   estado = r === 'hecha' ? marcarHecha(estado, t.id, hoy) : r === 'a-medias' ? marcarAMedias(estado, t.id, hoy) : marcarSalteada(estado, t.id, hoy);
   guardarDatos();
   tarea.dataset.estado = r;
-  tarea.querySelector('.etiqueta').textContent = ETIQUETAS[r];
   resultados.push([t, r]);
   setTimeout(() => {
     tarea.classList.add('sale');
@@ -1505,7 +1477,7 @@ document.getElementById('bajar-copia').onclick = async () => {
   if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
     try {
       await navigator.share({ files: [archivo] });
-      avisarCopia('Copia lista. Guardala en Archivos.');
+      avisarCopia('Copia lista.');
     } catch (e) { /* cerraste el menú sin elegir: no pasa nada */ }
     return;
   }
@@ -1530,7 +1502,7 @@ archivoCopia.addEventListener('change', async () => {
   copiaLeida = r.ok ? r.estado : null;
   if (r.ok) {
     const de = r.resumen.dia ? `Copia del ${fechaLarga(r.resumen.dia)}` : 'Copia';
-    textoCopia.textContent = `${de}: ${r.resumen.tareas} tareas y ${r.resumen.hechas} hechas. Reemplaza todo lo que hay ahora en este iPhone.`;
+    textoCopia.textContent = `${de}: ${r.resumen.tareas} tareas y ${r.resumen.hechas} hechas.`;
   } else {
     textoCopia.textContent = r.error;
   }

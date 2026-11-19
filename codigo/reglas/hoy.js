@@ -58,13 +58,6 @@ function completarLasTres(estado, hoy) {
   return { ...estado, las3: { dia: hoy, ids: completas } };
 }
 
-// Cuando las 3 de hoy ya no tienen nada pendiente (hechas, a medias o salteadas), hasta 3 más de las que tocan.
-function tambienTocan(estado, hoy) {
-  const tres = lasTres(estado);
-  if (tres.some(t => estadoDelDia(estado.historial, t.id, hoy) === null)) return [];
-  return paraOfrecer(estado, hoy).filter(t => !t.unaVez && !tres.includes(t)).slice(0, 3);
-}
-
 // Las 3 de hoy, como tareas (sin las que se borraron).
 function lasTres(estado) {
   if (!estado.las3) return [];
@@ -115,6 +108,6 @@ function marcarSalteada(estado, id, hoy) { return anotar(estado, id, hoy, 'salte
 function marcarAMedias(estado, id, hoy) { return anotar(estado, id, hoy, 'a-medias'); }
 
 if (typeof module === 'object') module.exports = {
-  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, reelegirSiNoEmpezo, completarLasTres, tambienTocan,
+  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, reelegirSiNoEmpezo, completarLasTres,
   lasTres, diaCumplido, paraOfrecer, queEntra, minutosPosibles, marcarSalteada, marcarAMedias,
 };

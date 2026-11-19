@@ -4,8 +4,6 @@
 .lista-hoy .nada { font: var(--letra-secundaria); color: var(--texto-2); padding: var(--esp-2) var(--margen); }
 
 .tengo { flex: none; padding: var(--esp-5) var(--margen) var(--esp-4); border-top: var(--trazo) solid var(--linea); }
-.tengo .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
-.tengo .cabeza svg { width: 20px; height: 20px; }
 .tengo .opciones { margin-bottom: var(--esp-4); }
 
 /* Círculos para elegir (los minutos): el elegido, blanco lleno con letra negra; los demás, contorno fino gris */
@@ -36,7 +34,6 @@
 .tarea .estado i .i-tarea { width: 46%; height: 46%; color: var(--texto); opacity: 0; z-index: 1; }
 .tarea[data-estado="toca"] .estado i .i-tarea { opacity: 1; }
 .tarea[data-estado="toca"] .estado:active i { transform: scale(.94); }
-.tarea .etiqueta { font: var(--letra-seccion); color: var(--texto-2); margin-top: var(--esp-3); }
 .otras { display: flex; justify-content: center; gap: var(--esp-6); }
 .otras button[disabled], .tarea .estado[disabled] { pointer-events: none; }
 

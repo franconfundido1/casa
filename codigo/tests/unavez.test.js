@@ -95,14 +95,6 @@ test('completarLasTres: si se borra una de las 3, se completa con la que sigue',
   assert.ok(!e.las3.ids.includes('barrer'));
 });
 
-test('tambienTocan: con las 3 de hoy ya hechas, aparecen hasta 3 más de las que tocan', () => {
-  let e = H.asegurarLasTres(estadoNuevo(), HOY);
-  assert.deepEqual(H.tambienTocan(e, HOY), [], 'mientras haya algo pendiente en las 3, nada más');
-  for (const id of e.las3.ids) e = T.marcarHecha(e, id, HOY);
-  assert.equal(H.tambienTocan(e, HOY).length, 3);
-  assert.ok(H.tambienTocan(e, HOY).every(t => !e.las3.ids.includes(t.id)));
-});
-
 test('minutosPosibles: solo los minutos en los que entra al menos 1 tarea', () => {
   const lista = [{ minutos: 10 }, { minutos: 20 }];
   assert.deepEqual(H.minutosPosibles(lista, [5, 10, 20, 30, 60]), [10, 20, 30, 60]);

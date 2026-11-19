@@ -70,6 +70,7 @@ Las reglas:
 5. **Sombra solo en lo que flota** (hojas, menús). El resto plano: la jerarquía sale del tamaño y del color, no de cajas.
 6. **Sistema de diseño escrito** en `docs/diseno.md`: colores con 1 trabajo cada uno, escala de tamaños (variables CSS, sin valores sueltos), componentes. Bocetos aprobados en `bocetos/`.
 7. **Identidad propia y sobria.** Nada de combinaciones «premium» genéricas (degradés, violeta con negro, vidrio por todos lados). No copiar la identidad de Akordia.
+8. **Menos texto.** Si un ícono, la forma o el comportamiento lo explica, no se escribe. Nada de títulos, etiquetas ni frases que repitan lo que ya se ve.
 
 Además:
 
@@ -100,8 +101,8 @@ Igual que en Akordia, que funcionó:
 
   | Suite | Pasan |
   |---|---|
-  | reglas (`node --test`) | 73 |
-  | página (`test_pagina.js`) | 94 |
+  | reglas (`node --test`) | 72 |
+  | página (`test_pagina.js`) | 96 |
 
 - Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 

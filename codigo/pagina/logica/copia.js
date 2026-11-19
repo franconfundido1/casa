@@ -21,7 +21,7 @@ document.getElementById('bajar-copia').onclick = async () => {
   if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
     try {
       await navigator.share({ files: [archivo] });
-      avisarCopia('Copia lista. Guardala en Archivos.');
+      avisarCopia('Copia lista.');
     } catch (e) { /* cerraste el menú sin elegir: no pasa nada */ }
     return;
   }
@@ -46,7 +46,7 @@ archivoCopia.addEventListener('change', async () => {
   copiaLeida = r.ok ? r.estado : null;
   if (r.ok) {
     const de = r.resumen.dia ? `Copia del ${fechaLarga(r.resumen.dia)}` : 'Copia';
-    textoCopia.textContent = `${de}: ${r.resumen.tareas} tareas y ${r.resumen.hechas} hechas. Reemplaza todo lo que hay ahora en este iPhone.`;
+    textoCopia.textContent = `${de}: ${r.resumen.tareas} tareas y ${r.resumen.hechas} hechas.`;
   } else {
     textoCopia.textContent = r.error;
   }

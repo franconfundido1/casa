@@ -44,8 +44,9 @@ function lineaUnaVez(t, hoy) {
   return `${t.minutos} min` + (atraso ? ` · <span class="atraso">${atraso}</span>` : '');
 }
 
-function seccionFilas(titulo, filas) {
-  return filas.length ? `<section class="seccion"><h2>${titulo}</h2><div>${filas.join('')}</div></section>` : '';
+// Un grupo de filas, sin título: el círculo (aro, gris, ✓) y la línea (la fecha, el atraso) ya dicen qué es cada uno.
+function seccionFilas(grupo, filas) {
+  return filas.length ? `<section class="seccion" data-grupo="${grupo}"><div>${filas.join('')}</div></section>` : '';
 }
 
 function pintarTareas() {
@@ -115,7 +116,6 @@ const borrarBtn = document.getElementById('borrar-tarea');
 const firma = document.getElementById('firma');
 const grilla = document.getElementById('grilla-iconos');
 const modoEl = document.getElementById('modo');
-const notaFrec = document.getElementById('nota-frec');
 const fechaEl = document.getElementById('fecha-unavez');
 const fechaElegir = document.getElementById('fecha-elegir');
 let enEdicion = null, icono = 'check-circle', modo = 'cada', fechaUnaVez = null, original = '', ultimaOriginal = NUNCA, armando = false;
@@ -123,9 +123,9 @@ let enEdicion = null, icono = 'check-circle', modo = 'cada', fechaUnaVez = null,
 const cMinutos = contador(document.getElementById('c-minutos'), { valores: VALORES_MINUTOS, unidad: 'minutos', alCambiar: revisar });
 const cDesde = contador(document.getElementById('c-desde'), {
   valores: VALORES_DIAS, unidad: n => (modo === 'cada' ? (n === 1 ? 'día' : 'días') : 'desde'),
-  alCambiar: () => { ajustarHasta(); pintarNota(); revisar(); },
+  alCambiar: () => { ajustarHasta(); revisar(); },
 });
-const cHasta = contador(document.getElementById('c-hasta'), { valores: VALORES_DIAS, unidad: 'hasta', alCambiar: () => { pintarNota(); revisar(); } });
+const cHasta = contador(document.getElementById('c-hasta'), { valores: VALORES_DIAS, unidad: 'hasta', alCambiar: () => { revisar(); } });
 const cUltima = contador(document.getElementById('c-ultima'), {
   valores: VALORES_ULTIMA, alCambiar: revisar,
   mostrar: v => (v === NUNCA ? 'nunca' : v === 0 ? 'hoy' : v === 1 ? 'ayer' : v),
@@ -178,11 +178,6 @@ fechaElegir.addEventListener('change', () => {
   revisar();
 });
 
-// La nota de la frecuencia, solo con «Entre».
-function pintarNota() {
-  notaFrec.hidden = modo !== 'entre';
-  notaFrec.textContent = `Toca a partir de los ${cDesde.get()} días; después de los ${cHasta.get()}, está atrasada.`;
-}
 
 function pintarModo() {
   modoEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.op === modo));
@@ -195,7 +190,6 @@ function pintarModo() {
   document.getElementById('c-hasta').hidden = modo === 'cada';
   cDesde.set(cDesde.get()); // la unidad cambia entre «días» y «desde»
   ajustarHasta();
-  pintarNota();
 }
 modoEl.addEventListener('click', e => {
   const b = e.target.closest('button[data-op]');
@@ -208,7 +202,7 @@ modoEl.addEventListener('click', e => {
 function pintarIcono() {
   firma.innerHTML = ic(icono + '-fill') + `<span class="lapiz">${ic('pencil-simple-fill')}</span>`;
   grilla.innerHTML = ICONOS_TAREA.map(([id, nombre]) =>
-    `<button data-id="${id}" aria-pressed="${id === icono}">${ic(id + '-fill')}${nombre}</button>`).join('');
+    `<button data-id="${id}" aria-pressed="${id === icono}" aria-label="${nombre}">${ic(id + '-fill')}</button>`).join('');
 }
 firma.onclick = () => abrirHoja(hojaIconos);
 grilla.addEventListener('click', e => {
@@ -283,12 +277,12 @@ let borrarEspera = null;
 function reiniciarBorrar() {
   clearTimeout(borrarEspera);
   borrarEspera = null;
-  borrarBtn.textContent = 'Borrar tarea';
+  borrarBtn.textContent = 'Borrar';
 }
 borrarBtn.onclick = () => {
   if (!enEdicion) return;
   if (!borrarEspera) {
-    borrarBtn.textContent = 'Tocá de nuevo para borrar';
+    borrarBtn.textContent = '¿Borrar?';
     borrarEspera = setTimeout(reiniciarBorrar, 3000);
     return;
   }

@@ -9,7 +9,7 @@
     <div class="rayita"></div>
 
     <div class="bloque-hoja">
-      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#repeat"/></svg>frecuencia</div>
+      <div class="cabeza" aria-label="Frecuencia"><svg class="ic" aria-hidden="true"><use href="#repeat"/></svg></div>
       <div class="pastillas" id="modo">
         <button data-op="cada">Cada</button>
         <button data-op="entre">Entre</button>
@@ -25,29 +25,28 @@
         <div class="contador" id="c-desde"></div>
         <div class="contador" id="c-hasta"></div>
       </div>
-      <p class="nota-frec" id="nota-frec"></p>
     </div>
 
     <div class="bloque-hoja">
-      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg>lleva</div>
+      <div class="cabeza" aria-label="Minutos"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg></div>
       <div class="contador" id="c-minutos"></div>
     </div>
 
     <div class="bloque-hoja" id="bloque-ultima">
-      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#clock"/></svg>última vez</div>
+      <div class="cabeza" aria-label="Última vez"><svg class="ic" aria-hidden="true"><use href="#clock-counter-clockwise"/></svg></div>
       <div class="contador" id="c-ultima"></div>
     </div>
   </div>
   <div class="pie">
     <button class="boton" id="guardar-tarea" disabled>Guardar</button>
-    <button class="boton-texto borrar" id="borrar-tarea">Borrar tarea</button>
+    <button class="boton-texto borrar" id="borrar-tarea">Borrar</button>
   </div>
 </section>
 <div class="velo" id="velo-tarea"></div>
 
 <section class="hoja chica" id="hoja-iconos" aria-label="Elegir ícono">
   <div class="hoja-arriba">
-    <h2>elegir ícono</h2>
+    <span></span>
     <button class="boton-circulo" id="cerrar-iconos" aria-label="Cerrar"><svg class="ic" aria-hidden="true"><use href="#x-bold"/></svg></button>
   </div>
   <div class="hoja-cuerpo"><div class="grilla-iconos" id="grilla-iconos"></div></div>
