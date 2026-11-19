@@ -100,8 +100,8 @@ Igual que en Akordia, que funcionó:
 
   | Suite | Pasan |
   |---|---|
-  | reglas (`node --test`) | 51 |
-  | página (`test_pagina.js`) | 73 |
+  | reglas (`node --test`) | 53 |
+  | página (`test_pagina.js`) | 74 |
 
 - Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 

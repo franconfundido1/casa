@@ -119,3 +119,25 @@ test('las 9 de arranque, nunca hechas: las 3 de hoy son las más cortas', () => 
   const e = H.asegurarLasTres(estadoNuevo(), HOY);
   assert.deepEqual(e.las3.ids, ['cama', 'lavar-ropa', 'barrer']);
 });
+
+test('reelegirSiNoEmpezo: al poner al día «última vez», si no empezaste con las 3 de hoy, se vuelven a elegir', () => {
+  const { cargarUltimaVez } = require('../reglas/tareas.js');
+  let e = H.asegurarLasTres(estadoNuevo(), HOY);
+  assert.deepEqual(e.las3.ids, ['cama', 'lavar-ropa', 'barrer']);
+  // el primer día pone todas al día: la ropa y barrer, ayer (ya no tocan); los platos, hace 3 días; el resto, hace 1 o 2
+  const alDia = [['cama', 1], ['lavar-ropa', 1], ['barrer', 1], ['platos', 3], ['ordenar-ropa', 2], ['verduleria', 2], ['trapo', 2], ['bano', 2], ['super', 2]];
+  for (const [id, hace] of alDia) e = cargarUltimaVez(e, id, hace, HOY);
+  e = H.reelegirSiNoEmpezo(e, HOY);
+  // tocan: platos 3/1, cama 1/1, ordenar 2/2 → esas 3
+  assert.deepEqual(e.las3.ids, ['platos', 'cama', 'ordenar-ropa'], 'salen las que de verdad tocan');
+});
+
+test('reelegirSiNoEmpezo: si ya hiciste, salteaste o dejaste a medias alguna de las 3, quedan fijas', () => {
+  const { cargarUltimaVez } = require('../reglas/tareas.js');
+  for (const marcar of [(e, id) => marcarHecha(e, id, HOY), (e, id) => H.marcarSalteada(e, id, HOY), (e, id) => H.marcarAMedias(e, id, HOY)]) {
+    let e = H.asegurarLasTres(estadoNuevo(), HOY);
+    e = marcar(e, 'barrer');
+    e = cargarUltimaVez(e, 'platos', 5, HOY);
+    assert.deepEqual(H.reelegirSiNoEmpezo(e, HOY).las3.ids, ['cama', 'lavar-ropa', 'barrer']);
+  }
+});

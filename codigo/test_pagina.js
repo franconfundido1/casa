@@ -189,6 +189,21 @@ function chequear(nombre, ok, detalle = '') {
   chequear('hoy: 1 línea gris, solo los minutos', (await p.textContent('#lista-hoy [data-id="barrer"] .linea')) === '10 min');
   const las3 = (await guardadas()).las3;
   chequear('hoy: las 3 quedan guardadas con el día', las3 && /^\d{4}-\d{2}-\d{2}$/.test(las3.dia) && las3.ids.join() === 'cama,lavar-ropa,barrer', JSON.stringify(las3));
+  // poner «última vez» antes de empezar el día vuelve a elegir las 3 de hoy
+  await p.tap('.pestanas [data-pantalla="tareas"]');
+  await p.tap('#lista-tareas [data-id="barrer"] .nombre');
+  await p.waitForTimeout(400);
+  await p.tap('#c-ultima [data-mas]');
+  await p.tap('#c-ultima [data-mas]');
+  await p.tap('#guardar-tarea');
+  await p.waitForTimeout(400);
+  await p.tap('.pestanas [data-pantalla="hoy"]');
+  const reelegidas = (await guardadas()).las3.ids;
+  chequear('hoy: si cambiás «última vez» antes de empezar, se vuelven a elegir las 3', !reelegidas.includes('barrer') && reelegidas.length === 3 &&
+    !(await filasHoy()).some(f => f[0] === 'Barrer'), JSON.stringify(reelegidas));
+  // para seguir con las mismas pruebas de antes: Barrer otra vez en «nunca»
+  await p.evaluate(() => { localStorage.clear(); });
+  await p.reload();
   const panel = await p.evaluate(() => { const e = document.getElementById('empezar').getBoundingClientRect(), n = document.querySelector('.pestanas').getBoundingClientRect(); return [e.bottom, n.top]; });
   chequear('hoy: «Empezar» fijo, arriba de la barra de pestañas', panel[0] <= panel[1], JSON.stringify(panel));
   chequear('hoy: 20 minutos elegidos de entrada, «Empezar» prendido', (await p.getAttribute('#minutos [data-op="20"]', 'aria-pressed')) === 'true' && !(await p.isDisabled('#empezar')));

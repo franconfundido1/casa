@@ -36,6 +36,15 @@ function asegurarLasTres(estado, hoy) {
   return { ...estado, las3: { dia: hoy, ids: elegirLasTres(estado.tareas, estado.historial, hoy) } };
 }
 
+// Si cambia «última vez» de una tarea y todavía no se hizo nada con las 3 de hoy (ni hecha, ni a medias, ni salteada),
+// se vuelven a elegir: así, al poner las tareas al día, salen las que de verdad tocan.
+function reelegirSiNoEmpezo(estado, hoy) {
+  if (!estado.las3 || estado.las3.dia !== hoy) return asegurarLasTres(estado, hoy);
+  const empezo = estado.las3.ids.some(id => estadoDelDia(estado.historial, id, hoy) !== null);
+  if (empezo) return estado;
+  return { ...estado, las3: { dia: hoy, ids: elegirLasTres(estado.tareas, estado.historial, hoy) } };
+}
+
 // Las 3 de hoy, como tareas (sin las que se borraron).
 function lasTres(estado) {
   if (!estado.las3) return [];
@@ -80,6 +89,6 @@ function marcarSalteada(estado, id, hoy) { return anotar(estado, id, hoy, 'salte
 function marcarAMedias(estado, id, hoy) { return anotar(estado, id, hoy, 'a-medias'); }
 
 if (typeof module === 'object') module.exports = {
-  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, lasTres, diaCumplido,
+  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, reelegirSiNoEmpezo, lasTres, diaCumplido,
   paraOfrecer, queEntra, marcarSalteada, marcarAMedias,
 };

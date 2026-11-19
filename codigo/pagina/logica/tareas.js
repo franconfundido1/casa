@@ -209,7 +209,11 @@ guardarBtn.onclick = () => {
   if (!tareaValida(t)) return;
   estado = guardarTarea(estado, t);
   // la última vez cargada a mano se suma al historial con esa fecha
-  if (cUltima.get() !== ultimaOriginal) estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
+  if (cUltima.get() !== ultimaOriginal) {
+    estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
+    // si todavía no empezaste con las 3 de hoy, se vuelven a elegir con la fecha nueva
+    estado = reelegirSiNoEmpezo(estado, hoyLocal());
+  }
   guardarDatos();
   cerrarHojaTarea();
   pintarTodo();
