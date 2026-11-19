@@ -113,7 +113,7 @@ Como en hábitos (`habitos-hoja-nuevo.png`, `habitos-iconos.png`): cada tarea ti
 | `shopping-cart` | Carrito | Súper |
 | `bathtub` | Bañera | Limpiar el baño |
 | `toilet` | Inodoro | |
-| `paint-bucket` | Balde | Pasar el trapo |
+| `drop` | Gota | Pasar el trapo |
 | `spray-bottle` | Rociador | |
 | `trash` | Basura | |
 | `cooking-pot` | Olla | |
