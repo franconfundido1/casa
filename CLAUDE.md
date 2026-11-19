@@ -85,7 +85,7 @@ Igual que en Akordia, que funcionó:
 
 - `codigo/reglas/`: reglas puras, sin DOM ni fecha del sistema (`fechas.js`, `estado.js` con las migraciones, `tareas.js` con los vencimientos, `unavez.js` con las tareas de 1 vez, `hoy.js` con las 3 de hoy y «Tengo X minutos», `copia.js` con la copia de seguridad; después la ropa), con pruebas en `codigo/tests/`. Cada archivo termina con `module.exports` para las pruebas y va igual en la página.
 - `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` (ruta desde `codigo/`) se reemplaza por ese archivo, en ese orden. `estilos/` (`base.css`: variables y «se siente app»; `componentes.css`), `pantallas/` (cabecera, hoy, tareas, ajustes, pestañas) y `logica/` (datos, navegación, tareas, hoy, copia, inicio). Un archivo nuevo se suma a la plantilla (`build.py` avisa si sobra alguno).
-- `codigo/recursos/`: la letra (League Spartan, `woff2`, va embebida en base64), los íconos de Phosphor (`iconos.svg`) y los íconos de la app (círculo lleno, 180, 192 y 512 px).
+- `codigo/recursos/`: la letra (League Spartan, `woff2`, va embebida en base64), los íconos de Phosphor (`iconos.svg`) y el ícono de la app (los 3 estados del círculo: aro, mitad y lleno; 180, 192 y 512 px).
 - `codigo/sw.js`: el service worker (primero la red; sin red, el caché `casa-v1`).
 - `codigo/build.py`: junta todo en 1 solo HTML en `salida/` (solo necesita `python3`).
 - `salida/`: lo que se publica (`index.html`, `sw.js`, `manifest.json`, íconos y la licencia de la letra). Se commitea compilado.

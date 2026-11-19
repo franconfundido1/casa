@@ -9,7 +9,7 @@ Los valores viven como variables CSS en `bocetos/sistema.css`; el código de la 
 - **Contraste total.** Lo elegido es **blanco lleno con letra negra** (el «20» de los minutos, «Cada», la pestaña elegida, el botón principal). Lo no elegido es **solo contorno fino gris o texto gris**. Sin pastillas ni cajas grises de relleno.
 - **Formas llenas y grandes:** círculos de estado grandes y gruesos, opciones en círculos, íconos rellenos donde importan.
 - **League Spartan para todo** (no solo los títulos). Títulos en minúscula, como «hábitos»: «hoy», «tareas».
-- **El círculo como firma:** el mismo círculo es el estado de cada tarea, la acción grande de la tarea en curso, el círculo de arriba de la hoja y el ícono de la app (el círculo lleno de «hecha», blanco sobre negro, sin texto: `bocetos/icono-180.png`).
+- **El círculo como firma:** el mismo círculo es el estado de cada tarea, la acción grande de la tarea en curso, el círculo de arriba de la hoja y el ícono de la app, **str3ak**: los 3 estados del círculo en fila (aro de «toca», mitad de «a medias» y lleno de «hecha»), blanco sobre negro, sin texto (`codigo/recursos/icono-180.png`; elegido entre las 3 opciones de `bocetos/logos.html`).
 - **Mucho aire:** pocas cosas por pantalla, filas altas, márgenes de 20 px.
 
 ## Colores
