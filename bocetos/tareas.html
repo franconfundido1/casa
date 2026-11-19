@@ -13,8 +13,28 @@
 <link rel="stylesheet" href="sistema.css">
 <style>
   /* Hoja de tarea, como «nuevo hábito» */
-  .firma { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto; background: var(--texto); color: var(--fondo); display: grid; place-items: center; }
-  .firma svg { width: 40px; height: 40px; }
+  /* El círculo de la tarea con su ícono; el lápiz avisa que se toca para cambiarlo */
+  .firma { position: relative; width: 88px; height: 88px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
+    background: var(--texto); color: var(--fondo); transition: transform 100ms; }
+  .firma:active { transform: scale(.95); }
+  .firma > svg { width: 44px; height: 44px; }
+  .firma .lapiz { position: absolute; right: -2px; bottom: -2px; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--texto); border: 2px solid var(--fondo); display: grid; place-items: center; }
+  .firma .lapiz svg { width: 15px; height: 15px; }
+
+  /* Hoja para elegir el ícono, encima de la de la tarea */
+  .hoja.chica { top: auto; z-index: 23; }
+  .hoja.chica + .velo { z-index: 22; }
+  .hoja.chica .hoja-arriba h2 { font: var(--letra-titulo); color: var(--texto); }
+  .grilla-iconos { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--esp-2); padding: var(--esp-4) 0 var(--esp-2); }
+  .grilla-iconos button {
+    height: 92px; border-radius: var(--esp-5); border: 2px solid transparent;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--esp-2);
+    font: var(--letra-nota); color: var(--texto-2); transition: border-color var(--t-corta), color var(--t-corta), transform 100ms;
+  }
+  .grilla-iconos button svg { width: 34px; height: 34px; color: var(--texto); }
+  .grilla-iconos button:active { transform: scale(.95); }
+  .grilla-iconos button[aria-pressed="true"] { border-color: var(--texto); color: var(--texto); font-weight: 600; }
   .nombre-tarea {
     display: block; width: 100%; background: none; border: 0; outline: 0; text-align: center;
     font: var(--letra-titulo); padding: var(--esp-5) 0 var(--esp-2); caret-color: var(--texto);
@@ -50,7 +70,7 @@
     <button class="boton-circulo" id="cerrar" aria-label="Cerrar"></button>
   </div>
   <div class="hoja-cuerpo">
-    <div class="firma" id="firma"></div>
+    <button class="firma" id="firma" aria-label="Cambiar el ícono"></button>
     <input class="nombre-tarea" id="nombre" placeholder="nombrá la tarea" autocomplete="off">
     <div class="rayita"></div>
 
@@ -79,24 +99,33 @@
 </section>
 <div class="velo" id="velo"></div>
 
+<section class="hoja chica" id="hoja-iconos" aria-label="Elegir ícono">
+  <div class="hoja-arriba">
+    <h2>elegir ícono</h2>
+    <button class="boton-circulo" id="cerrar-iconos" aria-label="Cerrar"></button>
+  </div>
+  <div class="hoja-cuerpo"><div class="grilla-iconos" id="grilla-iconos"></div></div>
+</section>
+<div class="velo" id="velo-iconos"></div>
+
 <script src="boceto.js"></script>
 <script>
   // Datos de docs/vision.md: miércoles 18 de noviembre, 18:40. La ropa se metió a las 18:00.
   const grupos = [
     ['tocan', [
-      { nombre: 'Barrer', min: 10, desde: 3, hasta: 3, estado: 'toca' },
-      { nombre: 'Verdulería', min: 20, desde: 3, hasta: 4, estado: 'toca' },
-      { nombre: 'Limpiar el baño', min: 20, desde: 7, hasta: 7, estado: 'toca' },
-      { nombre: 'Ordenar la ropa', min: 10, desde: 2, hasta: 2, estado: 'toca' },
+      { nombre: 'Barrer', min: 10, desde: 3, hasta: 3, icono: 'broom', estado: 'toca' },
+      { nombre: 'Verdulería', min: 20, desde: 3, hasta: 4, icono: 'carrot', estado: 'toca' },
+      { nombre: 'Limpiar el baño', min: 20, desde: 7, hasta: 7, icono: 'bathtub', estado: 'toca' },
+      { nombre: 'Ordenar la ropa', min: 10, desde: 2, hasta: 2, icono: 't-shirt', estado: 'toca' },
     ]],
     ['más adelante', [
-      { nombre: 'Lavar la ropa', min: 5, desde: 3, hasta: 4, estado: 'esperando' },
-      { nombre: 'Pasar el trapo', min: 20, desde: 7, hasta: 7, estado: 'no' },
-      { nombre: 'Súper', min: 60, desde: 7, hasta: 7, estado: 'no' },
+      { nombre: 'Lavar la ropa', min: 5, desde: 3, hasta: 4, icono: 'washing-machine', estado: 'esperando' },
+      { nombre: 'Pasar el trapo', min: 20, desde: 7, hasta: 7, icono: 'paint-bucket', estado: 'no' },
+      { nombre: 'Súper', min: 60, desde: 7, hasta: 7, icono: 'shopping-cart', estado: 'no' },
     ]],
     ['hechas hoy', [
-      { nombre: 'Hacer la cama', min: 3, desde: 1, hasta: 1, estado: 'hecha' },
-      { nombre: 'Lavar los platos', min: 10, desde: 1, hasta: 1, estado: 'hecha' },
+      { nombre: 'Hacer la cama', min: 3, desde: 1, hasta: 1, icono: 'bed', estado: 'hecha' },
+      { nombre: 'Lavar los platos', min: 10, desde: 1, hasta: 1, icono: 'bowl-food', estado: 'hecha' },
     ]],
   ];
   const frec = t => t.desde === 1 && t.hasta === 1 ? 'todos los días'
@@ -111,7 +140,7 @@
   // Íconos
   document.getElementById('nueva').innerHTML = ic('plus-circle');
   document.getElementById('cerrar').innerHTML = ic('x-bold');
-  document.getElementById('firma').innerHTML = ic('check-bold');
+  document.getElementById('cerrar-iconos').innerHTML = ic('x-bold');
   document.querySelector('.ic-repeat').outerHTML = ic('repeat');
   document.querySelector('.ic-timer').outerHTML = ic('timer');
 
@@ -119,9 +148,27 @@
   const hoja = document.getElementById('hoja');
   const nombre = document.getElementById('nombre');
   const guardar = document.getElementById('guardar');
-  let modo = 'cada', original = '', listo = false;
+  let modo = 'cada', icono = 'check-circle', original = '', listo = false;
   const dias = n => n === 1 ? 'día' : 'días';
-  const leer = () => JSON.stringify([nombre.value.trim(), cMin.get(), modo, cDesde.get(), modo === 'entre' ? cHasta.get() : cDesde.get()]);
+  const leer = () => JSON.stringify([nombre.value.trim(), icono, cMin.get(), modo, cDesde.get(), modo === 'entre' ? cHasta.get() : cDesde.get()]);
+
+  // El ícono: el círculo de arriba lo muestra; tocarlo abre la lista corta.
+  const firma = document.getElementById('firma');
+  const hojaIconos = document.getElementById('hoja-iconos');
+  const grilla = document.getElementById('grilla-iconos');
+  function pintarIcono() {
+    firma.innerHTML = ic(icono + '-fill') + `<span class="lapiz">${ic('pencil-simple-fill')}</span>`;
+    grilla.innerHTML = ICONOS_TAREA.map(([id, nombre]) =>
+      `<button data-id="${id}" aria-pressed="${id === icono}">${ic(id + '-fill')}${nombre}</button>`).join('');
+  }
+  firma.onclick = () => abrirHoja(hojaIconos);
+  grilla.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    icono = b.dataset.id; pintarIcono(); revisar();
+    setTimeout(() => cerrarHoja(hojaIconos), 150);
+  };
+  document.getElementById('cerrar-iconos').onclick = () => cerrarHoja(hojaIconos);
+  document.getElementById('velo-iconos').onclick = () => cerrarHoja(hojaIconos);
   const revisar = () => { if (listo) guardar.disabled = !nombre.value.trim() || leer() === original; };
 
   const cDesde = contador(document.getElementById('c-desde'), { valor: 3, min: 1, max: 60, paso: 1,
@@ -150,10 +197,11 @@
 
   function abrir(t) {
     const nueva = !t;
-    t = t || { nombre: '', min: 10, desde: 3, hasta: 3 };
+    t = t || { nombre: '', min: 10, desde: 3, hasta: 3, icono: 'check-circle' };
     document.getElementById('borrar').hidden = nueva;
     listo = false;
     nombre.value = t.nombre;
+    icono = t.icono; pintarIcono();
     modo = t.desde === t.hasta ? 'cada' : 'entre';
     selModo.marcar(modo, false);
     cMin.set(t.min); cDesde.set(t.desde); cHasta.set(t.hasta === t.desde ? t.desde + 1 : t.hasta);

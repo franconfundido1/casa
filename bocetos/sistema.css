@@ -240,7 +240,8 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
   padding-bottom: max(var(--esp-4), var(--abajo));
 }
 .hoja.abierta { transform: none; }
-.hoja.abierta ~ .velo { opacity: 1; pointer-events: auto; }
+/* Cada hoja lleva su velo justo después (así se pueden apilar 2 hojas) */
+.hoja.abierta + .velo { opacity: 1; pointer-events: auto; }
 .hoja-arriba {
   display: flex; align-items: center; justify-content: space-between;
   padding: var(--esp-4) var(--margen) 0; min-height: 60px;

@@ -32,6 +32,9 @@
   .tarea .estado { width: auto; height: auto; margin-top: var(--esp-8); }
   .tarea .estado i { --circulo: var(--circulo-grande); border-width: 3px; transition: background var(--t-corta), border-color var(--t-corta), transform 100ms; }
   .tarea .estado i svg { width: 50%; height: 50%; }
+  /* El ícono de la tarea, grande y blanco, adentro del círculo; al marcarla, deja lugar al ✓, la flecha o la mitad */
+  .tarea .estado i .i-tarea { width: 46%; height: 46%; color: var(--texto); opacity: 0; z-index: 1; }
+  .tarea[data-estado="toca"] .estado i .i-tarea { opacity: 1; }
   .tarea[data-estado="toca"] .estado:active i { transform: scale(.94); }
   .tarea .etiqueta { font: var(--letra-seccion); color: var(--texto-2); margin-top: var(--esp-3); }
   .otras { display: flex; justify-content: center; gap: var(--esp-6); }
@@ -88,11 +91,11 @@
 <script>
   // Datos de docs/vision.md: miércoles 18 de noviembre, 18:40. La ropa se metió a las 18:00.
   const tareas = {
-    platos:  { nombre: 'Lavar los platos', min: 10, estado: 'hecha' },
-    barrer:  { nombre: 'Barrer', min: 10, estado: 'toca' },
-    verdu:   { nombre: 'Verdulería', min: 20, estado: 'toca' },
-    bano:    { nombre: 'Limpiar el baño', min: 20, estado: 'toca' },
-    ordenar: { nombre: 'Ordenar la ropa', min: 10, estado: 'toca' },
+    platos:  { nombre: 'Lavar los platos', min: 10, icono: 'bowl-food', estado: 'hecha' },
+    barrer:  { nombre: 'Barrer', min: 10, icono: 'broom', estado: 'toca' },
+    verdu:   { nombre: 'Verdulería', min: 20, icono: 'carrot', estado: 'toca' },
+    bano:    { nombre: 'Limpiar el baño', min: 20, icono: 'bathtub', estado: 'toca' },
+    ordenar: { nombre: 'Ordenar la ropa', min: 10, icono: 't-shirt', estado: 'toca' },
   };
   // De la más vencida a la menos; las 3 de hoy primero.
   const orden = ['barrer', 'verdu', 'bano', 'ordenar'];
@@ -140,7 +143,7 @@
       <div class="tarea ${entrando ? 'entra' : ''}" data-estado="toca">
         <h3>${t.nombre}</h3>
         <p class="num">${t.min} min</p>
-        <button class="estado" data-r="hecha" aria-label="Hecha"><i>${circuloIconos()}</i></button>
+        <button class="estado" data-r="hecha" aria-label="Hecha"><i>${ic(t.icono + '-fill', 'i-tarea')}${circuloIconos()}</i></button>
         <div class="etiqueta">hecha</div>
       </div>
       <div class="otras">

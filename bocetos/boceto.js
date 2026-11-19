@@ -39,6 +39,14 @@ function elegir(el, alCambiar) {
   return { marcar };
 }
 
+// Íconos de tarea: Phosphor rellenos, de la casa (la lista corta de la hoja)
+const ICONOS_TAREA = [
+  ['check-circle', 'Tarea'], ['broom', 'Escoba'], ['bowl-food', 'Platos'], ['bed', 'Cama'],
+  ['t-shirt', 'Remera'], ['washing-machine', 'Lavarropas'], ['coat-hanger', 'Percha'], ['carrot', 'Verdura'],
+  ['shopping-cart', 'Carrito'], ['bathtub', 'Bañera'], ['toilet', 'Inodoro'], ['paint-bucket', 'Balde'],
+  ['spray-bottle', 'Rociador'], ['trash', 'Basura'], ['cooking-pot', 'Olla'], ['plant', 'Planta'],
+];
+
 function abrirHoja(hoja) { hoja.classList.add('abierta'); }
 function cerrarHoja(hoja) { hoja.classList.remove('abierta'); }
 

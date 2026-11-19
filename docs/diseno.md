@@ -96,6 +96,29 @@ Números con cifras siempre, y `tabular-nums` en minutos y horas.
 | Hecha / Salteada / Esperando | `check` (bold) / `arrow-right` (bold) / `clock` |
 | Encabezados de la hoja y de «tengo» | `repeat` (frecuencia), `timer` (minutos) |
 
+### Ícono de cada tarea
+
+Como en hábitos (`habitos-hoja-nuevo.png`, `habitos-iconos.png`): cada tarea tiene 1 ícono de Phosphor **relleno**, elegido de una lista corta de 16 de la casa. Se ve **solo en la tarea en curso y en la hoja de tarea**; en las listas (Hoy y Tareas) no, para que no haya 2 íconos por fila: ahí está solo el círculo de estado.
+
+| Ícono | Nombre en la lista | Tarea de arranque |
+|---|---|---|
+| `check-circle` | Tarea | (la tarea nueva, hasta que elijas otro) |
+| `broom` | Escoba | Barrer |
+| `bowl-food` | Platos | Lavar los platos |
+| `bed` | Cama | Hacer la cama |
+| `t-shirt` | Remera | Ordenar la ropa |
+| `washing-machine` | Lavarropas | Lavar la ropa |
+| `coat-hanger` | Percha | (colgar la ropa) |
+| `carrot` | Verdura | Verdulería |
+| `shopping-cart` | Carrito | Súper |
+| `bathtub` | Bañera | Limpiar el baño |
+| `toilet` | Inodoro | |
+| `paint-bucket` | Balde | Pasar el trapo |
+| `spray-bottle` | Rociador | |
+| `trash` | Basura | |
+| `cooking-pot` | Olla | |
+| `plant` | Planta | |
+
 Nada de emojis ni SF Symbols.
 
 ## Componentes
@@ -137,11 +160,11 @@ Como «1 vez al día» de hábitos: «−» en un círculo de contorno, el núme
 ### Hoja
 
 - Sube desde abajo (300 ms); lo de atrás queda velado en gris. Negra, con las esquinas de arriba redondeadas y el borde fino. Se cierra con el «×» (arriba a la derecha, como en hábitos) o tocando afuera.
-- **Hoja de tarea, como «nuevo hábito»:** arriba al centro el círculo grande lleno con ✓ (la firma); el nombre centrado, grande, con una rayita abajo; «frecuencia» con las pastillas «Cada» / «Entre» y sus contadores (1 con «Cada»; «desde» y «hasta» con «Entre», y solo ahí la nota); «lleva» con el contador de minutos. Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar tarea» en rojo (solo al editar).
+- **Hoja de tarea, como «nuevo hábito»:** arriba al centro, el círculo grande blanco lleno con **el ícono de la tarea** en negro y un lápiz chico en el borde. Al tocarlo se abre encima **otra hoja, «elegir ícono»**: los 16 íconos en una grilla de 4, con su nombre abajo; el elegido, con un borde blanco (como en hábitos). Tocar uno lo elige y cierra esa hoja. Después, el nombre centrado, grande, con una rayita abajo; «frecuencia» con las pastillas «Cada» / «Entre» y sus contadores (1 con «Cada»; «desde» y «hasta» con «Entre», y solo ahí la nota); «lleva» con el contador de minutos. Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar tarea» en rojo (solo al editar).
 
 ### Tarea en curso
 
-En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **el círculo de 120 px para tocar = hecha** (gris oscuro con aro blanco; se llena de blanco con ✓), con «hecha» en gris debajo. «A medias» y «Saltear», botones de texto abajo. Arriba a la izquierda, «1 de 2» en gris. Al terminar: «listo por ahora», las filas con su estado y «Cerrar».
+En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **el círculo de 120 px para tocar = hecha**: gris oscuro con aro blanco y **el ícono de la tarea grande y blanco adentro**; al tocarlo, el ícono deja lugar al ✓ y el círculo se llena de blanco (con «A medias», a la mitad; con «Saltear», la flecha gris). Debajo, «hecha» en gris. «A medias» y «Saltear», botones de texto abajo. Arriba a la izquierda, «1 de 2» en gris. Al terminar: «listo por ahora», las filas con su estado y «Cerrar».
 
 ### «Tengo X minutos»
 
