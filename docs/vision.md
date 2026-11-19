@@ -78,7 +78,7 @@ Avisos: en la versión 1 la app **no avisa sola** (en el iPhone, una app web sin
 
 ## Después de usarla 1 o 2 semanas
 
-Un estímulo visual que **recompensa y nunca reta** (no hacerlo todavía):
+Un estímulo visual que **recompensa y nunca reta**. Ya está: el círculo que se llena con un salto al completar y el momento de «día cumplido» (`docs/diseno.md` › Transiciones). Falta (no hacerlo todavía):
 
 - El círculo se llena con una animación al marcar hecha.
 - Un momento de «día cumplido» al terminar las 3 de hoy.
