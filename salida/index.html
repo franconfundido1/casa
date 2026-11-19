@@ -109,7 +109,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 
 /* Cabecera fija: el título en minúscula, grande, con una línea fina abajo (como «hábitos») */
 .titulo {
-  flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--esp-4);
+  flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--esp-4);
   padding: calc(var(--arriba) + var(--esp-5)) var(--margen) var(--esp-4);
   border-bottom: var(--trazo) solid var(--linea);
 }
@@ -130,7 +130,6 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 /* Secciones y notas */
 .seccion { margin-bottom: var(--esp-7); }
 .seccion > h2 { font: var(--letra-seccion); color: var(--texto-2); padding: 0 var(--margen) var(--esp-1); }
-.vacio { font: var(--letra-secundaria); color: var(--texto-2); padding: var(--esp-2) var(--margen); }
 
 /* Fila de datos (sin círculo): nombre a la izquierda, valor gris a la derecha */
 .fila-dato {
@@ -156,6 +155,167 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .pestanas button[aria-current="page"] { background: var(--texto); color: var(--fondo); }
 .pestanas button[aria-current="page"] .lleno { display: block; }
 .pestanas button[aria-current="page"] .contorno { display: none; }
+
+/* Botón de ícono suelto (el + del título): se ve solo el ícono de contorno; el toque es de 44 px */
+.boton-icono {
+  width: var(--toque); height: var(--toque); flex: none; margin-right: -8px;
+  display: grid; place-items: center; color: var(--texto); transition: opacity 100ms;
+}
+.boton-icono:active { opacity: .5; }
+.boton-icono svg { width: 32px; height: 32px; }
+/* Botón redondo (el × de la hoja): lleno de gris oscuro con borde fino */
+.boton-circulo {
+  width: var(--toque); height: var(--toque); border-radius: 50%; flex: none;
+  display: grid; place-items: center;
+  background: var(--gris-lleno); border: var(--trazo) solid var(--linea); color: var(--texto);
+  transition: transform 100ms;
+}
+.boton-circulo:active { transform: scale(.92); }
+.boton-circulo svg { width: 20px; height: 20px; }
+
+/* Fila de tarea: directo sobre el negro, con mucho aire; el separador empieza después del círculo */
+.lista { animation: fundido var(--t-corta) ease-out; }
+.fila {
+  display: flex; align-items: center; gap: var(--esp-3);
+  min-height: var(--alto-fila); padding: 0 var(--margen) 0 calc(var(--margen) - 7px);
+  position: relative; width: 100%; text-align: left;
+  transition: opacity 100ms;
+}
+.fila:active { opacity: .6; }
+.fila + .fila::before {
+  content: ""; position: absolute; top: 0; right: var(--margen); left: calc(var(--margen) + var(--circulo) + var(--esp-3));
+  border-top: var(--trazo) solid var(--linea);
+}
+.fila .texto { flex: 1; padding: var(--esp-3) 0; min-width: 0; }
+.fila .nombre, .fila .linea { display: block; }
+.fila .nombre { font: var(--letra-cuerpo); transition: color var(--t-corta); }
+.fila .linea { font: var(--letra-secundaria); color: var(--texto-2); margin-top: 2px; }
+
+/* Círculo de estado, como los días de hábitos: lo sin hacer, gris oscuro lleno; se distingue por relleno, aro e ícono */
+.estado {
+  width: var(--toque); height: var(--toque); flex: none;
+  display: grid; place-items: center;
+}
+.estado i {
+  width: var(--circulo); height: var(--circulo); border-radius: 50%;
+  background: var(--gris-lleno); border: var(--trazo-estado) solid var(--gris-lleno); display: grid; place-items: center;
+  position: relative; overflow: hidden; color: var(--fondo);
+  transition: background var(--t-corta), border-color var(--t-corta);
+}
+.estado i svg { position: absolute; width: 60%; height: 60%; opacity: 0; transition: opacity var(--t-corta); }
+[data-estado="toca"] .estado i { border-color: var(--texto); }
+[data-estado="hecha"] .estado i { background: var(--texto); border-color: var(--texto); animation: rebote var(--t-tarea); }
+[data-estado="hecha"] .estado i .i-check { opacity: 1; }
+[data-estado="hecha"] .nombre, [data-estado="no"] .nombre { color: var(--texto-2); }
+@keyframes rebote { 50% { transform: scale(1.15); } }
+
+/* Pastillas para elegir: lo elegido, blanco lleno con letra negra; lo demás, contorno fino gris */
+.pastillas { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--esp-3); }
+.pastillas button {
+  height: var(--alto-pastilla); border-radius: var(--radio-capsula);
+  border: var(--trazo) solid var(--linea); color: var(--texto);
+  font: var(--letra-encabezado);
+  transition: background var(--t-corta), color var(--t-corta), border-color var(--t-corta), transform 100ms;
+}
+.pastillas button[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
+.pastillas button:active { transform: scale(.95); }
+
+/* Contador: − de contorno, + lleno; el número grande en el medio */
+.contador { display: flex; align-items: center; justify-content: center; gap: var(--esp-5); }
+.contador button {
+  width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
+  border: var(--trazo) solid var(--linea); color: var(--texto);
+  transition: background var(--t-corta), color var(--t-corta), border-color var(--t-corta), transform 100ms;
+}
+.contador button[data-mas] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
+.contador button svg { width: 20px; height: 20px; }
+.contador button:active { transform: scale(.92); }
+.contador button[disabled] { background: none; border-color: var(--linea); color: var(--texto-3); pointer-events: none; }
+.contador .cifra { min-width: 64px; text-align: center; }
+.contador .cifra b { display: block; font: var(--letra-numero); }
+.contador .cifra span { display: block; font: var(--letra-nota); color: var(--texto-2); margin-top: var(--esp-1); min-height: 18px; }
+.cambia { animation: fundido 150ms ease-out; }
+
+/* Botones */
+.boton {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: var(--alto-boton); border-radius: var(--radio-capsula);
+  font: var(--letra-encabezado); background: var(--texto); color: var(--fondo);
+  border: var(--trazo) solid var(--texto);
+  transition: background var(--t-corta), color var(--t-corta), border-color var(--t-corta), transform 100ms;
+}
+.boton:active { transform: scale(.97); }
+/* Apagado: solo contorno, como «Crear hábito» */
+.boton[disabled] { background: none; border-color: var(--linea); color: var(--texto-2); pointer-events: none; }
+.boton-texto {
+  min-height: var(--toque); padding: 0 var(--esp-4);
+  font: var(--letra-secundaria); font-weight: 500; color: var(--texto-2);
+  transition: opacity 100ms, color var(--t-corta);
+}
+.boton-texto:active { opacity: .5; }
+.boton-texto.borrar { color: var(--borrar); }
+
+/* Hoja: sube desde abajo, negra, con el borde fino; cada hoja lleva su velo justo después (así se apilan 2) */
+.velo {
+  position: fixed; inset: 0; z-index: 20; background: var(--velo);
+  opacity: 0; pointer-events: none; transition: opacity var(--t-hoja) ease;
+}
+.hoja {
+  position: fixed; z-index: 21; left: 0; right: 0; bottom: 0;
+  top: calc(var(--arriba) + var(--esp-3));
+  background: var(--fondo); border-radius: var(--radio-hoja) var(--radio-hoja) 0 0;
+  border-top: var(--trazo) solid var(--linea);
+  transform: translateY(105%); transition: transform var(--t-hoja) var(--curva-ios);
+  display: flex; flex-direction: column;
+  padding-bottom: max(var(--esp-4), var(--abajo));
+}
+.hoja.abierta { transform: none; }
+.hoja.abierta + .velo { opacity: 1; pointer-events: auto; }
+.hoja-arriba {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--esp-4) var(--margen) 0; min-height: 60px;
+}
+.hoja-cuerpo { flex: 1; overflow-y: auto; overscroll-behavior: none; padding: 0 var(--margen); }
+/* Hoja de tarea, como «nuevo hábito» */
+/* El círculo de la tarea con su ícono; el lápiz avisa que se toca para cambiarlo */
+.firma { position: relative; width: 76px; height: 76px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
+  background: var(--texto); color: var(--fondo); transition: transform 100ms; }
+.firma:active { transform: scale(.95); }
+.firma > svg { width: 38px; height: 38px; }
+.firma .lapiz { position: absolute; right: -2px; bottom: -2px; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--texto); border: 2px solid var(--fondo); display: grid; place-items: center; }
+.firma .lapiz svg { width: 15px; height: 15px; }
+
+.nombre-tarea {
+  display: block; width: 100%; background: none; border: 0; outline: 0; text-align: center;
+  font: var(--letra-titulo); padding: var(--esp-4) 0 var(--esp-2); caret-color: var(--texto);
+}
+.nombre-tarea::placeholder { color: var(--texto-3); }
+.rayita { width: 56px; height: 2px; border-radius: 1px; background: var(--linea); margin: 0 auto var(--esp-6); }
+.bloque-hoja { margin-bottom: var(--esp-6); }
+.cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
+.cabeza svg { width: 20px; height: 20px; }
+.bloque-hoja .pastillas { margin-bottom: var(--esp-4); }
+.contadores { display: flex; justify-content: center; gap: var(--esp-6); }
+.contadores .contador { gap: var(--esp-2); }
+.contadores .contador button { width: var(--toque); height: var(--toque); }
+.contadores .contador .cifra { min-width: 52px; }
+.nota-frec { font: var(--letra-nota); color: var(--texto-2); text-align: center; margin-top: var(--esp-3); }
+.pie { padding: var(--esp-3) var(--margen) 0; display: flex; flex-direction: column; align-items: center; gap: var(--esp-1); }
+
+/* Hoja para elegir el ícono, encima de la de la tarea */
+.hoja.chica { top: auto; z-index: 23; }
+.hoja.chica + .velo { z-index: 22; }
+.hoja.chica .hoja-arriba h2 { font: var(--letra-titulo); }
+.grilla-iconos { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--esp-2); padding: var(--esp-4) 0 var(--esp-2); }
+.grilla-iconos button {
+  height: 92px; border-radius: var(--esp-5); border: 2px solid transparent;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--esp-2);
+  font: var(--letra-nota); color: var(--texto-2); transition: border-color var(--t-corta), color var(--t-corta), transform 100ms;
+}
+.grilla-iconos button svg { width: 34px; height: 34px; color: var(--texto); }
+.grilla-iconos button:active { transform: scale(.95); }
+.grilla-iconos button[aria-pressed="true"] { border-color: var(--texto); color: var(--texto); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -198,13 +358,13 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 </svg>
 <header class="titulo">
   <div><h1 id="titulo">hoy</h1><small id="subtitulo"></small></div>
+  <button class="boton-icono" id="nueva-tarea" aria-label="Nueva tarea" hidden><svg class="ic" aria-hidden="true"><use href="#plus-circle"/></svg></button>
 </header>
 <main class="pantallas">
 <section class="pantalla" id="pantalla-hoy" data-titulo="hoy">
-  <p class="vacio">Todavía no hay tareas.</p>
 </section>
 <section class="pantalla" id="pantalla-tareas" data-titulo="tareas" hidden>
-  <p class="vacio">Todavía no hay tareas.</p>
+  <div id="lista-tareas"></div>
 </section>
 <section class="pantalla" id="pantalla-ajustes" data-titulo="ajustes" hidden>
   <div class="seccion">
@@ -218,6 +378,54 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
   <button data-pantalla="tareas"><svg class="ic contorno" aria-hidden="true"><use href="#list-checks"/></svg><svg class="ic lleno" aria-hidden="true"><use href="#list-checks-fill"/></svg>Tareas</button>
   <button data-pantalla="ajustes"><svg class="ic contorno" aria-hidden="true"><use href="#gear-six"/></svg><svg class="ic lleno" aria-hidden="true"><use href="#gear-six-fill"/></svg>Ajustes</button>
 </nav>
+<section class="hoja" id="hoja-tarea" aria-label="Tarea">
+  <div class="hoja-arriba">
+    <span></span>
+    <button class="boton-circulo" id="cerrar-tarea" aria-label="Cerrar"><svg class="ic" aria-hidden="true"><use href="#x-bold"/></svg></button>
+  </div>
+  <div class="hoja-cuerpo">
+    <button class="firma" id="firma" aria-label="Cambiar el ícono"></button>
+    <input class="nombre-tarea" id="nombre-tarea" placeholder="nombrá la tarea" autocomplete="off" maxlength="40">
+    <div class="rayita"></div>
+
+    <div class="bloque-hoja">
+      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#repeat"/></svg>frecuencia</div>
+      <div class="pastillas" id="modo">
+        <button data-op="cada">Cada</button>
+        <button data-op="entre">Entre</button>
+      </div>
+      <div class="contadores">
+        <div class="contador" id="c-desde"></div>
+        <div class="contador" id="c-hasta"></div>
+      </div>
+      <p class="nota-frec" id="nota-frec"></p>
+    </div>
+
+    <div class="bloque-hoja">
+      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg>lleva</div>
+      <div class="contador" id="c-minutos"></div>
+    </div>
+
+    <div class="bloque-hoja">
+      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#clock"/></svg>última vez</div>
+      <div class="contador" id="c-ultima"></div>
+    </div>
+  </div>
+  <div class="pie">
+    <button class="boton" id="guardar-tarea" disabled>Guardar</button>
+    <button class="boton-texto borrar" id="borrar-tarea">Borrar tarea</button>
+  </div>
+</section>
+<div class="velo" id="velo-tarea"></div>
+
+<section class="hoja chica" id="hoja-iconos" aria-label="Elegir ícono">
+  <div class="hoja-arriba">
+    <h2>elegir ícono</h2>
+    <button class="boton-circulo" id="cerrar-iconos" aria-label="Cerrar"><svg class="ic" aria-hidden="true"><use href="#x-bold"/></svg></button>
+  </div>
+  <div class="hoja-cuerpo"><div class="grilla-iconos" id="grilla-iconos"></div></div>
+</section>
+<div class="velo" id="velo-iconos"></div>
 <script>
 'use strict';
 // Fechas en días locales (Argentina, UTC−3). Funciones puras: reciben las fechas como parámetro.
@@ -241,6 +449,13 @@ function diasEntre(desde, hasta) {
   return numeroDeDia(hasta) - numeroDeDia(desde);
 }
 
+// El día que queda n días después (o antes, con n negativo).
+function sumarDias(dia, n) {
+  const f = new Date((numeroDeDia(dia) + n) * 86400000);
+  const dos = x => String(x).padStart(2, '0');
+  return `${f.getUTCFullYear()}-${dos(f.getUTCMonth() + 1)}-${dos(f.getUTCDate())}`;
+}
+
 // El día local de un momento (un Date), según la zona horaria del dispositivo.
 function diaLocal(momento) {
   const dos = n => String(n).padStart(2, '0');
@@ -257,17 +472,36 @@ function fechaLarga(dia) {
   return `${DIAS_SEMANA[f.getUTCDay()]} ${f.getUTCDate()} de ${MESES[f.getUTCMonth()]}`;
 }
 
-if (typeof module === 'object') module.exports = { diasEntre, diaLocal, fechaLarga };
+if (typeof module === 'object') module.exports = { diasEntre, sumarDias, diaLocal, fechaLarga };
 // El estado guardado (localStorage, clave 'casa-v1'). Puro: recibe el texto guardado y devuelve el estado listo para usar.
 // Cada cambio en la forma de guardar sube VERSION y suma en MIGRACIONES cómo pasar de la versión anterior a la nueva.
+// Las migraciones no se cambian nunca después de publicadas: llevan sus datos adentro.
 
-const VERSION = 1;
+const VERSION = 2;
 
-// MIGRACIONES[n]: datos de la versión n → datos de la versión n + 1. Vacía por ahora.
-const MIGRACIONES = {};
+// MIGRACIONES[n]: datos de la versión n → datos de la versión n + 1.
+const MIGRACIONES = {
+  // 1 → 2: las 9 tareas de arranque (docs/vision.md) y el historial, vacío.
+  // Cada tarea: minutos que lleva, cada cuántos días toca (min a max) y su ícono. Nunca hechas: tocan hoy.
+  1: d => ({
+    ...d,
+    tareas: [
+      { id: 'cama', nombre: 'Hacer la cama', icono: 'bed', minutos: 3, min: 1, max: 1 },
+      { id: 'platos', nombre: 'Lavar los platos', icono: 'bowl-food', minutos: 10, min: 1, max: 1 },
+      { id: 'ordenar-ropa', nombre: 'Ordenar la ropa', icono: 't-shirt', minutos: 10, min: 2, max: 2 },
+      { id: 'barrer', nombre: 'Barrer', icono: 'broom', minutos: 10, min: 3, max: 3 },
+      { id: 'verduleria', nombre: 'Verdulería', icono: 'carrot', minutos: 20, min: 3, max: 4 },
+      { id: 'lavar-ropa', nombre: 'Lavar la ropa', icono: 'washing-machine', minutos: 5, min: 3, max: 4 },
+      { id: 'trapo', nombre: 'Pasar el trapo', icono: 'drop', minutos: 20, min: 7, max: 7 },
+      { id: 'bano', nombre: 'Limpiar el baño', icono: 'bathtub', minutos: 20, min: 7, max: 7 },
+      { id: 'super', nombre: 'Súper', icono: 'shopping-cart', minutos: 60, min: 7, max: 7 },
+    ],
+    historial: [],
+  }),
+};
 
-function estadoNuevo() {
-  return { app: 'casa', version: VERSION };
+function estadoNuevo(version = VERSION, migraciones = MIGRACIONES) {
+  return migrar({ app: 'casa', version: 1 }, version, migraciones);
 }
 
 // Lleva unos datos ya leídos a la versión actual.
@@ -284,16 +518,143 @@ function migrar(datos, version = VERSION, migraciones = MIGRACIONES) {
 // Texto guardado → { estado, roto }. «roto» es true si había algo que no se pudo leer (se guarda aparte, no se pierde).
 // Datos de una versión más nueva que esta app se dejan como están.
 function cargar(texto, version = VERSION, migraciones = MIGRACIONES) {
-  if (texto === null || texto === undefined || texto === '') return { estado: estadoNuevo(), roto: false };
+  if (texto === null || texto === undefined || texto === '') return { estado: estadoNuevo(version, migraciones), roto: false };
   let datos;
-  try { datos = JSON.parse(texto); } catch (e) { return { estado: estadoNuevo(), roto: true }; }
+  try { datos = JSON.parse(texto); } catch (e) { return { estado: estadoNuevo(version, migraciones), roto: true }; }
   const valido = datos && typeof datos === 'object' && datos.app === 'casa' && Number.isInteger(datos.version) && datos.version >= 1;
-  if (!valido) return { estado: estadoNuevo(), roto: true };
+  if (!valido) return { estado: estadoNuevo(version, migraciones), roto: true };
   if (datos.version > version) return { estado: datos, roto: false };
   return { estado: migrar(datos, version, migraciones), roto: false };
 }
 
-if (typeof module === 'object') module.exports = { VERSION, estadoNuevo, migrar, cargar };
+if (typeof module === 'object') module.exports = { VERSION, MIGRACIONES, estadoNuevo, migrar, cargar };
+// Las tareas: cuándo tocan, qué tan vencidas están y los cambios que hace el usuario. Funciones puras:
+// reciben «hoy» ('AAAA-MM-DD') como parámetro y devuelven datos nuevos, sin tocar los que reciben.
+const fechasT = typeof module === 'object' ? require('./fechas.js') : { diasEntre, sumarDias };
+
+// La última vez que se hizo, o null si nunca. Se lee el historial en orden: una fecha cargada a mano («ajuste»,
+// que puede ser null = nunca) reemplaza lo anterior; cada «hecha» la sube si es más reciente.
+function ultimaVez(historial, id) {
+  let ultima = null;
+  for (const h of historial) {
+    if (h.tarea !== id) continue;
+    if (h.que === 'ajuste') ultima = h.dia;
+    else if (h.que === 'hecha' && (ultima === null || h.dia > ultima)) ultima = h.dia;
+  }
+  return ultima;
+}
+
+// Días desde la última vez (null si nunca se hizo).
+function diasDesde(ultima, hoy) {
+  return ultima === null ? null : fechasT.diasEntre(ultima, hoy);
+}
+
+// Toca: si nunca se hizo, o si pasaron al menos el mínimo de días.
+function toca(tarea, ultima, hoy) {
+  const d = diasDesde(ultima, hoy);
+  return d === null || d >= tarea.min;
+}
+
+// Atrasada: pasaron más días que el máximo.
+function atrasada(tarea, ultima, hoy) {
+  const d = diasDesde(ultima, hoy);
+  return d !== null && d > tarea.max;
+}
+
+// Qué tan vencida está: días desde la última vez ÷ máximo. Nunca hecha: lo más vencido.
+function vencimiento(tarea, ultima, hoy) {
+  const d = diasDesde(ultima, hoy);
+  return d === null ? Infinity : d / tarea.max;
+}
+
+// Primero la más vencida; si empatan, la más corta; si también, por nombre (así el orden no cambia solo).
+function ordenarPorVencimiento(tareas, historial, hoy) {
+  return tareas
+    .map(t => ({ t, v: vencimiento(t, ultimaVez(historial, t.id), hoy) }))
+    .sort((a, b) => (b.v - a.v) || (a.t.minutos - b.t.minutos) || a.t.nombre.localeCompare(b.t.nombre, 'es'))
+    .map(x => x.t);
+}
+
+// La pantalla Tareas: tocan (de la más vencida a la menos), más adelante (de la que toca antes a la que toca después) y hechas hoy.
+function agrupar(tareas, historial, hoy) {
+  const tocan = [], adelante = [], hechas = [];
+  for (const t of tareas) {
+    const u = ultimaVez(historial, t.id);
+    if (u === hoy) hechas.push(t);
+    else if (toca(t, u, hoy)) tocan.push(t);
+    else adelante.push(t);
+  }
+  const faltan = t => t.min - diasDesde(ultimaVez(historial, t.id), hoy);
+  return {
+    tocan: ordenarPorVencimiento(tocan, historial, hoy),
+    adelante: adelante.sort((a, b) => (faltan(a) - faltan(b)) || (a.minutos - b.minutos) || a.nombre.localeCompare(b.nombre, 'es')),
+    hechas,
+  };
+}
+
+// La línea gris de la fila: «cada 3 días · 10 min».
+function frecuenciaTexto(t) {
+  if (t.min === 1 && t.max === 1) return 'todos los días';
+  if (t.min === t.max) return `cada ${t.min} días`;
+  return `cada ${t.min} a ${t.max} días`;
+}
+function lineaTarea(t) {
+  return `${frecuenciaTexto(t)} · ${t.minutos} min`;
+}
+
+// Una tarea está bien si tiene nombre, minutos y días enteros, y el máximo no es menor que el mínimo.
+function tareaValida(t) {
+  const entero = (n, desde) => Number.isInteger(n) && n >= desde;
+  return typeof t.nombre === 'string' && t.nombre.trim() !== '' && typeof t.icono === 'string' &&
+    entero(t.minutos, 1) && entero(t.min, 1) && entero(t.max, 1) && t.max >= t.min;
+}
+
+// Cambios del usuario: devuelven un estado nuevo.
+function guardarTarea(estado, tarea) {
+  if (!tareaValida(tarea)) throw new Error('tarea inválida');
+  const limpia = { id: tarea.id, nombre: tarea.nombre.trim(), icono: tarea.icono, minutos: tarea.minutos, min: tarea.min, max: tarea.max };
+  const existe = estado.tareas.some(t => t.id === tarea.id);
+  const tareas = existe ? estado.tareas.map(t => (t.id === tarea.id ? { ...t, ...limpia } : t)) : estado.tareas.concat(limpia);
+  return { ...estado, tareas };
+}
+
+// Borrar saca la tarea de la lista; lo que ya hiciste queda en el historial.
+function borrarTarea(estado, id) {
+  return { ...estado, tareas: estado.tareas.filter(t => t.id !== id) };
+}
+
+// Hecha: la última vez pasa a ser hoy (se suma al historial).
+function marcarHecha(estado, id, hoy) {
+  if (estado.historial.some(h => h.tarea === id && h.que === 'hecha' && h.dia === hoy)) return estado;
+  return { ...estado, historial: estado.historial.concat({ tarea: id, dia: hoy, que: 'hecha' }) };
+}
+
+// Deshacer lo de hoy (si tocaste el círculo sin querer, o cargaste «hoy» a mano). Solo lo de hoy.
+function desmarcarHecha(estado, id, hoy) {
+  return { ...estado, historial: estado.historial.filter(h => !(h.tarea === id && (h.que === 'hecha' || h.que === 'ajuste') && h.dia === hoy)) };
+}
+
+// Cargar la última vez a mano: «hace» días atrás (0 = hoy, 1 = ayer) o null = nunca. Se suma al historial.
+function cargarUltimaVez(estado, id, hace, hoy) {
+  const dia = hace === null ? null : fechasT.sumarDias(hoy, -hace);
+  if (ultimaVez(estado.historial, id) === dia) return estado;
+  return { ...estado, historial: estado.historial.concat({ tarea: id, dia, que: 'ajuste' }) };
+}
+
+// La última vez, dicha corta: «hoy», «ayer», «hace 5 días» o «nunca».
+function ultimaVezTexto(ultima, hoy) {
+  const d = diasDesde(ultima, hoy);
+  if (d === null) return 'nunca';
+  if (d === 0) return 'hoy';
+  if (d === 1) return 'ayer';
+  return `hace ${d} días`;
+}
+
+if (typeof module === 'object') module.exports = {
+  ultimaVez, diasDesde, toca, atrasada, vencimiento, ordenarPorVencimiento, agrupar,
+  frecuenciaTexto, lineaTarea, tareaValida, guardarTarea, borrarTarea, marcarHecha, desmarcarHecha,
+  cargarUltimaVez, ultimaVezTexto,
+};
 // Los datos del usuario: localStorage, clave 'casa-v1' (no se renombra nunca). La lectura y las migraciones son de reglas/estado.js.
 const CLAVE = 'casa-v1';
 let estado = null;
@@ -337,6 +698,7 @@ function mostrarPantalla(nombre) {
     if (b.dataset.pantalla === nombre) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   tituloEl.textContent = document.getElementById('pantalla-' + nombre).dataset.titulo;
+  document.getElementById('nueva-tarea').hidden = nombre !== 'tareas';
   pintarSubtitulo();
   // el título entra con un fundido corto
   tituloEl.parentNode.classList.remove('cambia'); void tituloEl.offsetWidth; tituloEl.parentNode.classList.add('cambia');
@@ -346,11 +708,248 @@ document.querySelector('.pestanas').addEventListener('click', e => {
   const b = e.target.closest('button[data-pantalla]');
   if (b) mostrarPantalla(b.dataset.pantalla);
 });
+// La pantalla Tareas: la lista (tocan, más adelante, hechas hoy), marcar hecha y la hoja de tarea.
+// Las reglas (qué toca, en qué orden) son de reglas/tareas.js; acá solo se dibuja y se guarda.
+
+const ic = (id, clase = '') => `<svg class="ic ${clase}" aria-hidden="true"><use href="#${id}"/></svg>`;
+const hoyLocal = () => diaLocal(new Date());
+const escapar = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// Los íconos de tarea: Phosphor rellenos, de la casa (docs/diseno.md)
+const ICONOS_TAREA = [
+  ['check-circle', 'Tarea'], ['broom', 'Escoba'], ['bowl-food', 'Platos'], ['bed', 'Cama'],
+  ['t-shirt', 'Remera'], ['washing-machine', 'Lavarropas'], ['coat-hanger', 'Percha'], ['carrot', 'Verdura'],
+  ['shopping-cart', 'Carrito'], ['bathtub', 'Bañera'], ['toilet', 'Inodoro'], ['drop', 'Gota'],
+  ['spray-bottle', 'Rociador'], ['trash', 'Basura'], ['cooking-pot', 'Olla'], ['plant', 'Planta'],
+];
+
+// ---- La lista
+
+const listaTareas = document.getElementById('lista-tareas');
+
+function filaTarea(t, estadoFila) {
+  return `<button class="fila" data-id="${t.id}" data-estado="${estadoFila}">` +
+    `<span class="estado" data-circulo><i>${ic('check-bold', 'i-check')}</i></span>` +
+    `<span class="texto"><span class="nombre">${escapar(t.nombre)}</span><span class="linea">${lineaTarea(t)}</span></span></button>`;
+}
+
+function pintarTareas() {
+  const g = agrupar(estado.tareas, estado.historial, hoyLocal());
+  const seccion = (titulo, lista, estadoFila) => lista.length
+    ? `<section class="seccion"><h2>${titulo}</h2><div>${lista.map(t => filaTarea(t, estadoFila)).join('')}</div></section>` : '';
+  listaTareas.innerHTML = `<div class="lista">${seccion('tocan', g.tocan, 'toca')}${seccion('más adelante', g.adelante, 'no')}${seccion('hechas hoy', g.hechas, 'hecha')}</div>`;
+}
+
+// Tocar el círculo marca hecha (o deshace la de hoy); tocar la fila abre la hoja.
+listaTareas.addEventListener('click', e => {
+  const fila = e.target.closest('.fila');
+  if (!fila) return;
+  const tarea = estado.tareas.find(t => t.id === fila.dataset.id);
+  if (!tarea) return;
+  if (e.target.closest('[data-circulo]')) {
+    const hoy = hoyLocal();
+    const yaHecha = ultimaVez(estado.historial, tarea.id) === hoy;
+    estado = yaHecha ? desmarcarHecha(estado, tarea.id, hoy) : marcarHecha(estado, tarea.id, hoy);
+    guardarDatos();
+    // el círculo cambia ahí mismo; después la fila pasa a su grupo
+    fila.dataset.estado = yaHecha ? 'toca' : 'hecha';
+    setTimeout(pintarTareas, 450);
+    return;
+  }
+  abrirHojaTarea(tarea);
+});
+
+// ---- Controles de la hoja
+
+// Contador − y +, con la lista de valores posibles. Devuelve get, set y la forma de cambiar los límites.
+function contador(el, { valores, unidad, mostrar, alCambiar }) {
+  el.innerHTML = `<button data-menos aria-label="Menos">${ic('minus-bold')}</button>` +
+    `<div class="cifra"><b class="num"></b><span></span></div>` +
+    `<button data-mas aria-label="Más">${ic('plus-bold')}</button>`;
+  const menos = el.querySelector('[data-menos]'), mas = el.querySelector('[data-mas]'), cifra = el.querySelector('.cifra');
+  let lista = valores, valor = valores[0];
+  const pintar = (avisar = true) => {
+    cifra.querySelector('b').textContent = mostrar ? mostrar(valor) : valor;
+    cifra.querySelector('span').textContent = typeof unidad === 'function' ? unidad(valor) : unidad;
+    cifra.classList.remove('cambia'); void cifra.offsetWidth; cifra.classList.add('cambia');
+    menos.disabled = valor <= lista[0];
+    mas.disabled = valor >= lista[lista.length - 1];
+    if (avisar && alCambiar) alCambiar(valor);
+  };
+  menos.onclick = () => { valor = [...lista].reverse().find(v => v < valor) ?? valor; pintar(); };
+  mas.onclick = () => { valor = lista.find(v => v > valor) ?? valor; pintar(); };
+  return {
+    get: () => valor,
+    set: (v, avisar = false) => { if (!lista.includes(v)) lista = [...lista, v].sort((a, b) => a - b); valor = v; pintar(avisar); },
+    limites: nuevos => { lista = nuevos; if (!lista.includes(valor)) valor = lista.find(v => v >= valor) ?? lista[lista.length - 1]; pintar(false); },
+  };
+}
+
+const desdeHasta = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+// Minutos: de a 1 hasta 10, de a 5 hasta 60 y después de a 15 o 30.
+const VALORES_MINUTOS = [...desdeHasta(1, 10), 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 75, 90, 120, 150, 180];
+const VALORES_DIAS = desdeHasta(1, 60);
+// Última vez: nunca (-1), hoy (0), ayer (1), y hasta 60 días atrás. Arranca en «nunca»: con el + se llega rápido a «hace 2 días».
+const NUNCA = -1;
+const VALORES_ULTIMA = [NUNCA, ...desdeHasta(0, 60)];
+
+// ---- La hoja de tarea, como «nuevo hábito»
+
+const hojaTarea = document.getElementById('hoja-tarea');
+const hojaIconos = document.getElementById('hoja-iconos');
+const nombreTarea = document.getElementById('nombre-tarea');
+const guardarBtn = document.getElementById('guardar-tarea');
+const borrarBtn = document.getElementById('borrar-tarea');
+const firma = document.getElementById('firma');
+const grilla = document.getElementById('grilla-iconos');
+const modoEl = document.getElementById('modo');
+const notaFrec = document.getElementById('nota-frec');
+let enEdicion = null, icono = 'check-circle', modo = 'cada', original = '', ultimaOriginal = NUNCA, armando = false;
+
+const cMinutos = contador(document.getElementById('c-minutos'), { valores: VALORES_MINUTOS, unidad: 'minutos', alCambiar: revisar });
+const cDesde = contador(document.getElementById('c-desde'), {
+  valores: VALORES_DIAS, unidad: n => (modo === 'cada' ? (n === 1 ? 'día' : 'días') : 'desde'),
+  alCambiar: () => { ajustarHasta(); pintarNota(); revisar(); },
+});
+const cHasta = contador(document.getElementById('c-hasta'), { valores: VALORES_DIAS, unidad: 'hasta', alCambiar: () => { pintarNota(); revisar(); } });
+const cUltima = contador(document.getElementById('c-ultima'), {
+  valores: VALORES_ULTIMA, alCambiar: revisar,
+  mostrar: v => (v === NUNCA ? 'nunca' : v === 0 ? 'hoy' : v === 1 ? 'ayer' : v),
+  unidad: v => (v >= 2 ? 'días atrás' : ''),
+});
+
+// Con «Entre», el máximo es siempre mayor que el mínimo.
+function ajustarHasta() {
+  cHasta.limites(desdeHasta(cDesde.get() + 1, 61));
+}
+
+function tareaDeLaHoja() {
+  const min = cDesde.get();
+  return { id: enEdicion ? enEdicion.id : 't' + Date.now().toString(36), nombre: nombreTarea.value, icono,
+    minutos: cMinutos.get(), min, max: modo === 'entre' ? cHasta.get() : min };
+}
+const firmaDe = t => JSON.stringify([t.nombre.trim(), t.icono, t.minutos, t.min, t.max]);
+
+// «Guardar» se prende cuando la tarea está completa y cambió algo.
+function revisar() {
+  if (armando) return;
+  const t = tareaDeLaHoja();
+  guardarBtn.disabled = !tareaValida(t) || (firmaDe(t) === original && cUltima.get() === ultimaOriginal);
+}
+
+// La nota de la frecuencia, solo con «Entre».
+function pintarNota() {
+  notaFrec.hidden = modo !== 'entre';
+  notaFrec.textContent = `Toca a partir de los ${cDesde.get()} días; después de los ${cHasta.get()}, está atrasada.`;
+}
+
+function pintarModo() {
+  modoEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.op === modo));
+  document.getElementById('c-hasta').hidden = modo === 'cada';
+  cDesde.set(cDesde.get()); // la unidad cambia entre «días» y «desde»
+  ajustarHasta();
+  pintarNota();
+}
+modoEl.addEventListener('click', e => {
+  const b = e.target.closest('button[data-op]');
+  if (!b || b.dataset.op === modo) return;
+  modo = b.dataset.op;
+  pintarModo();
+  revisar();
+});
+
+function pintarIcono() {
+  firma.innerHTML = ic(icono + '-fill') + `<span class="lapiz">${ic('pencil-simple-fill')}</span>`;
+  grilla.innerHTML = ICONOS_TAREA.map(([id, nombre]) =>
+    `<button data-id="${id}" aria-pressed="${id === icono}">${ic(id + '-fill')}${nombre}</button>`).join('');
+}
+firma.onclick = () => abrirHoja(hojaIconos);
+grilla.addEventListener('click', e => {
+  const b = e.target.closest('button[data-id]');
+  if (!b) return;
+  icono = b.dataset.id;
+  pintarIcono();
+  revisar();
+  setTimeout(() => cerrarHoja(hojaIconos), 150);
+});
+
+function abrirHoja(h) { h.classList.add('abierta'); }
+function cerrarHoja(h) { h.classList.remove('abierta'); }
+
+function abrirHojaTarea(t) {
+  armando = true;
+  enEdicion = t || null;
+  const base = t || { nombre: '', icono: 'check-circle', minutos: 10, min: 3, max: 3 };
+  nombreTarea.value = base.nombre;
+  icono = base.icono;
+  modo = base.min === base.max ? 'cada' : 'entre';
+  cMinutos.set(base.minutos);
+  cDesde.set(base.min);
+  ajustarHasta();
+  cHasta.set(base.max > base.min ? base.max : base.min + 1);
+  pintarModo();
+  pintarIcono();
+  const d = t ? diasDesde(ultimaVez(estado.historial, t.id), hoyLocal()) : null;
+  ultimaOriginal = d === null || d < 0 ? NUNCA : d;
+  cUltima.set(ultimaOriginal);
+  borrarBtn.hidden = !t;
+  reiniciarBorrar();
+  armando = false;
+  original = t ? firmaDe(t) : '';
+  revisar();
+  hojaTarea.querySelector('.hoja-cuerpo').scrollTop = 0;
+  abrirHoja(hojaTarea);
+}
+function cerrarHojaTarea() {
+  nombreTarea.blur();
+  cerrarHoja(hojaIconos);
+  cerrarHoja(hojaTarea);
+}
+
+nombreTarea.addEventListener('input', revisar);
+guardarBtn.onclick = () => {
+  const t = tareaDeLaHoja();
+  if (!tareaValida(t)) return;
+  estado = guardarTarea(estado, t);
+  // la última vez cargada a mano se suma al historial con esa fecha
+  if (cUltima.get() !== ultimaOriginal) estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
+  guardarDatos();
+  cerrarHojaTarea();
+  pintarTareas();
+};
+
+// Borrar pide 2 toques: el 1.º avisa, el 2.º borra (si no, se vuelve a «Borrar tarea» a los 3 segundos).
+let borrarEspera = null;
+function reiniciarBorrar() {
+  clearTimeout(borrarEspera);
+  borrarEspera = null;
+  borrarBtn.textContent = 'Borrar tarea';
+}
+borrarBtn.onclick = () => {
+  if (!enEdicion) return;
+  if (!borrarEspera) {
+    borrarBtn.textContent = 'Tocá de nuevo para borrar';
+    borrarEspera = setTimeout(reiniciarBorrar, 3000);
+    return;
+  }
+  reiniciarBorrar();
+  estado = borrarTarea(estado, enEdicion.id);
+  guardarDatos();
+  cerrarHojaTarea();
+  pintarTareas();
+};
+
+document.getElementById('cerrar-tarea').onclick = cerrarHojaTarea;
+document.getElementById('velo-tarea').onclick = cerrarHojaTarea;
+document.getElementById('cerrar-iconos').onclick = () => cerrarHoja(hojaIconos);
+document.getElementById('velo-iconos').onclick = () => cerrarHoja(hojaIconos);
+document.getElementById('nueva-tarea').onclick = () => abrirHojaTarea(null);
 // Al abrir: leer los datos, pedir que no se borren, poner la fecha y dejar la app lista para usarse sin internet.
 leerDatos();
 pintarSubtitulo();
-// si la app queda abierta y cambia el día, la fecha se actualiza al volver
-document.addEventListener('visibilitychange', () => { if (!document.hidden) pintarSubtitulo(); });
+pintarTareas();
+// si la app queda abierta y cambia el día, la fecha y lo que toca se actualizan al volver
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { pintarSubtitulo(); pintarTareas(); } });
 
 pedirQueNoSeBorren().then(si => {
   document.getElementById('persistente').textContent = si ? 'para siempre' : 'mientras haya lugar';

@@ -74,13 +74,111 @@ function chequear(nombre, ok, detalle = '') {
   chequear('pestañas: toques de 44 px como mínimo', toques);
 
   // datos
-  const guardado = await p.evaluate(() => localStorage.getItem('casa-v1'));
-  chequear('datos: guarda en casa-v1 con la versión', guardado === JSON.stringify({ app: 'casa', version: 1 }), guardado);
+  const guardado = await p.evaluate(() => JSON.parse(localStorage.getItem('casa-v1')));
+  chequear('datos: guarda en casa-v1 con la versión 2 y las 9 tareas', guardado.app === 'casa' && guardado.version === 2 && guardado.tareas.length === 9 && guardado.historial.length === 0, JSON.stringify(guardado).slice(0, 80));
   await p.evaluate(() => localStorage.setItem('casa-v1', '{roto'));
   await p.reload();
-  const tras = await p.evaluate(() => [localStorage.getItem('casa-v1'), localStorage.getItem('casa-v1-roto')]);
-  chequear('datos: si lo guardado está roto, lo guarda aparte y arranca', tras[0] === JSON.stringify({ app: 'casa', version: 1 }) && tras[1] === '{roto', JSON.stringify(tras));
-  await p.evaluate(() => localStorage.removeItem('casa-v1-roto'));
+  const tras = await p.evaluate(() => [JSON.parse(localStorage.getItem('casa-v1')), localStorage.getItem('casa-v1-roto')]);
+  chequear('datos: si lo guardado está roto, lo guarda aparte y arranca', tras[0].version === 2 && tras[0].tareas.length === 9 && tras[1] === '{roto', JSON.stringify(tras).slice(0, 80));
+  await p.evaluate(() => { localStorage.setItem('casa-v1-roto', ''); localStorage.setItem('casa-v1', JSON.stringify({ app: 'casa', version: 1, otra: 1 })); });
+  await p.reload();
+  const migrado = await p.evaluate(() => JSON.parse(localStorage.getItem('casa-v1')));
+  chequear('datos: migra de la versión 1 a la 2 con las 9 tareas', migrado.version === 2 && migrado.tareas.length === 9 && migrado.otra === 1);
+
+  // tareas
+  const filas = () => p.$$eval('#lista-tareas .seccion', ss => ss.map(s => [s.querySelector('h2').textContent, [...s.querySelectorAll('.fila .nombre')].map(n => n.textContent)]));
+  const guardadas = () => p.evaluate(() => JSON.parse(localStorage.getItem('casa-v1')));
+  chequear('tareas: el «+» solo en Tareas', await p.isHidden('#nueva-tarea'));
+  await p.tap('.pestanas [data-pantalla="tareas"]');
+  chequear('tareas: el «+» aparece en Tareas', await p.isVisible('#nueva-tarea'));
+  let g = await filas();
+  chequear('tareas: las 9 tocan (nunca hechas), de la más corta a la más larga', JSON.stringify(g) === JSON.stringify([['tocan',
+    ['Hacer la cama', 'Lavar la ropa', 'Barrer', 'Lavar los platos', 'Ordenar la ropa', 'Limpiar el baño', 'Pasar el trapo', 'Verdulería', 'Súper']]]), JSON.stringify(g));
+  chequear('tareas: 1 línea gris corta', (await p.textContent('#lista-tareas [data-id="verduleria"] .linea')) === 'cada 3 a 4 días · 20 min');
+  chequear('tareas: las filas no tienen ícono de tarea, solo el círculo', (await p.$$('#lista-tareas .fila svg')).length === 9);
+  await p.tap('#lista-tareas [data-id="barrer"] [data-circulo]');
+  chequear('tareas: tocar el círculo lo llena al toque', (await p.getAttribute('#lista-tareas [data-id="barrer"]', 'data-estado')) === 'hecha');
+  await p.waitForTimeout(700);
+  g = await filas();
+  chequear('tareas: hecha pasa a «hechas hoy»', g.length === 2 && g[1][0] === 'hechas hoy' && g[1][1][0] === 'Barrer', JSON.stringify(g));
+  const hist = (await guardadas()).historial;
+  chequear('tareas: la última vez pasa a ser hoy (queda guardado)', hist.length === 1 && hist[0].tarea === 'barrer' && /^\d{4}-\d{2}-\d{2}$/.test(hist[0].dia) && hist[0].que === 'hecha', JSON.stringify(hist));
+  await p.reload();
+  await p.tap('.pestanas [data-pantalla="tareas"]');
+  g = await filas();
+  chequear('tareas: después de recargar sigue hecha', !!g[1] && g[1][1][0] === 'Barrer');
+  await p.tap('#lista-tareas [data-id="barrer"] [data-circulo]');
+  await p.waitForTimeout(700);
+  g = await filas();
+  chequear('tareas: tocarla de nuevo la deshace', g.length === 1 && g[0][1].includes('Barrer'));
+
+  // hoja de tarea
+  await p.tap('#lista-tareas [data-id="verduleria"] .nombre');
+  await p.waitForTimeout(400);
+  const hoja = await p.evaluate(() => ({
+    abierta: document.getElementById('hoja-tarea').classList.contains('abierta'),
+    nombre: document.getElementById('nombre-tarea').value,
+    icono: document.querySelector('#firma > svg use').getAttribute('href'),
+    entre: document.querySelector('#modo [data-op="entre"]').getAttribute('aria-pressed'),
+    desde: document.querySelector('#c-desde b').textContent, hasta: document.querySelector('#c-hasta b').textContent,
+    minutos: document.querySelector('#c-minutos b').textContent,
+    nota: !document.getElementById('nota-frec').hidden, guardar: document.getElementById('guardar-tarea').disabled,
+  }));
+  chequear('hoja: abre con los datos de la tarea', hoja.abierta && hoja.nombre === 'Verdulería' && hoja.icono === '#carrot-fill' && hoja.entre === 'true' && hoja.desde === '3' && hoja.hasta === '4' && hoja.minutos === '20', JSON.stringify(hoja));
+  chequear('hoja: con «Entre», la nota; «Guardar» apagado hasta cambiar algo', hoja.nota && hoja.guardar);
+  await p.tap('#c-minutos [data-mas]');
+  chequear('hoja: al cambiar algo se prende «Guardar»', !(await p.isDisabled('#guardar-tarea')));
+  await p.tap('#modo [data-op="cada"]');
+  chequear('hoja: con «Cada», 1 contador y sin nota', await p.isHidden('#c-hasta') && await p.isHidden('#nota-frec'));
+  await p.tap('#modo [data-op="entre"]');
+  await p.tap('#firma');
+  await p.waitForTimeout(400);
+  chequear('hoja: el círculo abre la lista de 16 íconos', await p.evaluate(() => document.getElementById('hoja-iconos').classList.contains('abierta') && document.querySelectorAll('#grilla-iconos button').length === 16));
+  await p.tap('#grilla-iconos [data-id="plant"]');
+  await p.waitForTimeout(500);
+  chequear('hoja: elegir un ícono lo pone en el círculo y cierra la lista', (await p.getAttribute('#firma > svg use', 'href')) === '#plant-fill' && await p.evaluate(() => !document.getElementById('hoja-iconos').classList.contains('abierta')));
+  await p.tap('#guardar-tarea');
+  await p.waitForTimeout(400);
+  chequear('hoja: guardar cambia la tarea', (await p.textContent('#lista-tareas [data-id="verduleria"] .linea')) === 'cada 3 a 4 días · 25 min' &&
+    (await guardadas()).tareas.find(t => t.id === 'verduleria').icono === 'plant');
+
+  // última vez, cargada a mano
+  await p.tap('#lista-tareas [data-id="barrer"] .nombre');
+  await p.waitForTimeout(400);
+  chequear('última vez: en las de arranque arranca en «nunca»', (await p.textContent('#c-ultima b')) === 'nunca' && await p.isDisabled('#c-ultima [data-menos]'));
+  for (let i = 0; i < 3; i++) await p.tap('#c-ultima [data-mas]');
+  chequear('última vez: con el + pasa por hoy y ayer hasta «2 días atrás»', (await p.textContent('#c-ultima b')) === '2' && (await p.textContent('#c-ultima span')) === 'días atrás');
+  chequear('última vez: cambiarla prende «Guardar»', !(await p.isDisabled('#guardar-tarea')));
+  await p.tap('#guardar-tarea');
+  await p.waitForTimeout(400);
+  g = await filas();
+  const adelante = g.find(x => x[0] === 'más adelante');
+  chequear('última vez: hace 2 días, Barrer (cada 3) pasa a «más adelante»', !!adelante && adelante[1].includes('Barrer'), JSON.stringify(g));
+  const ajustes = (await guardadas()).historial.filter(h => h.que === 'ajuste');
+  chequear('última vez: queda en el historial con esa fecha', ajustes.length === 1 && ajustes[0].tarea === 'barrer' && /^\d{4}-\d{2}-\d{2}$/.test(ajustes[0].dia), JSON.stringify(ajustes));
+  await p.tap('#lista-tareas [data-id="barrer"] .nombre');
+  await p.waitForTimeout(400);
+  chequear('última vez: al volver a abrir, dice 2', (await p.textContent('#c-ultima b')) === '2' && await p.isDisabled('#guardar-tarea'));
+  await p.tap('#cerrar-tarea');
+  await p.waitForTimeout(400);
+
+  // nueva y borrar
+  await p.tap('#nueva-tarea');
+  await p.waitForTimeout(400);
+  chequear('nueva: arranca vacía, con el ícono «Tarea» y sin «Borrar»', (await p.inputValue('#nombre-tarea')) === '' && (await p.getAttribute('#firma > svg use', 'href')) === '#check-circle-fill' && await p.isHidden('#borrar-tarea') && await p.isDisabled('#guardar-tarea'));
+  await p.fill('#nombre-tarea', 'Regar las plantas');
+  await p.tap('#guardar-tarea');
+  await p.waitForTimeout(400);
+  const nuevas = (await guardadas()).tareas;
+  chequear('nueva: se guarda y aparece en la lista', nuevas.length === 10 && (await p.textContent('#lista-tareas')).includes('Regar las plantas'));
+  await p.tap('#lista-tareas [data-id="' + nuevas[9].id + '"] .nombre');
+  await p.waitForTimeout(400);
+  await p.tap('#borrar-tarea');
+  chequear('borrar: el 1.º toque avisa y no borra', (await p.textContent('#borrar-tarea')) === 'Tocá de nuevo para borrar' && (await guardadas()).tareas.length === 10);
+  await p.tap('#borrar-tarea');
+  await p.waitForTimeout(400);
+  chequear('borrar: el 2.º toque la borra', (await guardadas()).tareas.length === 9 && !(await p.textContent('#lista-tareas')).includes('Regar'));
+  await p.tap('.pestanas [data-pantalla="hoy"]');
 
   // instalable
   const man = await (await p.request.get(U + 'manifest.json')).json();

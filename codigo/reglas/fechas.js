@@ -19,6 +19,13 @@ function diasEntre(desde, hasta) {
   return numeroDeDia(hasta) - numeroDeDia(desde);
 }
 
+// El día que queda n días después (o antes, con n negativo).
+function sumarDias(dia, n) {
+  const f = new Date((numeroDeDia(dia) + n) * 86400000);
+  const dos = x => String(x).padStart(2, '0');
+  return `${f.getUTCFullYear()}-${dos(f.getUTCMonth() + 1)}-${dos(f.getUTCDate())}`;
+}
+
 // El día local de un momento (un Date), según la zona horaria del dispositivo.
 function diaLocal(momento) {
   const dos = n => String(n).padStart(2, '0');
@@ -35,4 +42,4 @@ function fechaLarga(dia) {
   return `${DIAS_SEMANA[f.getUTCDay()]} ${f.getUTCDate()} de ${MESES[f.getUTCMonth()]}`;
 }
 
-if (typeof module === 'object') module.exports = { diasEntre, diaLocal, fechaLarga };
+if (typeof module === 'object') module.exports = { diasEntre, sumarDias, diaLocal, fechaLarga };
