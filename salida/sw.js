@@ -1,7 +1,7 @@
 /* casa · después de la 1.ª visita funciona sin internet.
    Primero la red (así llegan las actualizaciones); sin red, lo guardado. El nombre del caché no se cambia nunca. */
 const CACHE = 'casa-v1';
-const BASICOS = ['./', 'manifest.json', 'icono-180.png', 'icono-192.png', 'icono-512.png'];
+const BASICOS = ['./', 'manifest.json', 'str3ak-180.png', 'str3ak-192.png', 'str3ak-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASICOS)).then(() => self.skipWaiting()));

@@ -392,7 +392,7 @@ function chequear(nombre, ok, detalle = '') {
   chequear('instalable: el nombre que se ve es «str3ak» (manifest, título y apple-mobile-web-app-title)', man.name === 'str3ak' && man.short_name === 'str3ak' &&
     (await p.title()) === 'str3ak' && (await p.getAttribute('meta[name="apple-mobile-web-app-title"]', 'content')) === 'str3ak');
   const icono = await p.getAttribute('link[rel="apple-touch-icon"]', 'href');
-  chequear('instalable: apple-touch-icon', icono === 'icono-180.png' && (await p.request.get(U + icono)).ok());
+  chequear('instalable: apple-touch-icon', icono === 'str3ak-180.png' && (await p.request.get(U + icono)).ok());
   chequear('instalable: los íconos del manifest existen', (await Promise.all(man.icons.map(i => p.request.get(U + i.src)))).every(r => r.ok()));
 
   // sin internet: con el service worker activo, cortar la red y recargar

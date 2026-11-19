@@ -39,7 +39,8 @@ pagina = pagina.replace('__FUENTE__', fuente)
 SALIDA.mkdir(exist_ok=True)
 (SALIDA / 'index.html').write_text(pagina)
 shutil.copy(CODIGO / 'sw.js', SALIDA / 'sw.js')
-for f in ('icono-180.png', 'icono-192.png', 'icono-512.png', 'OFL-league-spartan.txt'):
+# los íconos llevan el nombre en el archivo: si cambian, cambia el nombre, así Safari (que guarda los íconos por nombre) baja el nuevo
+for f in ('str3ak-180.png', 'str3ak-192.png', 'str3ak-512.png', 'OFL-league-spartan.txt'):
     shutil.copy(RECURSOS / f, SALIDA / f)
 
 # start_url y scope no se cambian nunca (cambiarlos rompe la app instalada)
@@ -49,9 +50,9 @@ manifest = {
     'start_url': './', 'scope': './', 'display': 'standalone',
     'background_color': '#000000', 'theme_color': '#000000',
     'icons': [
-        {'src': 'icono-180.png', 'sizes': '180x180', 'type': 'image/png'},
-        {'src': 'icono-192.png', 'sizes': '192x192', 'type': 'image/png'},
-        {'src': 'icono-512.png', 'sizes': '512x512', 'type': 'image/png'},
+        {'src': 'str3ak-180.png', 'sizes': '180x180', 'type': 'image/png'},
+        {'src': 'str3ak-192.png', 'sizes': '192x192', 'type': 'image/png'},
+        {'src': 'str3ak-512.png', 'sizes': '512x512', 'type': 'image/png'},
     ],
 }
 (SALIDA / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
