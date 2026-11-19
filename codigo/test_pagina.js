@@ -75,20 +75,22 @@ function chequear(nombre, ok, detalle = '') {
 
   // datos
   const guardado = await p.evaluate(() => JSON.parse(localStorage.getItem('casa-v1')));
-  chequear('datos: guarda en casa-v1 con la versión 3 y las 9 tareas', guardado.app === 'casa' && guardado.version === 3 && guardado.tareas.length === 9 && guardado.historial.length === 0, JSON.stringify(guardado).slice(0, 80));
+  chequear('datos: guarda en casa-v1 con la versión 4 y las 9 tareas', guardado.app === 'casa' && guardado.version === 4 && guardado.tareas.length === 9 && guardado.historial.length === 0, JSON.stringify(guardado).slice(0, 80));
   await p.evaluate(() => localStorage.setItem('casa-v1', '{roto'));
   await p.reload();
   const tras = await p.evaluate(() => [JSON.parse(localStorage.getItem('casa-v1')), localStorage.getItem('casa-v1-roto')]);
-  chequear('datos: si lo guardado está roto, lo guarda aparte y arranca', tras[0].version === 3 &&tras[0].tareas.length === 9 && tras[1] === '{roto', JSON.stringify(tras).slice(0, 80));
+  chequear('datos: si lo guardado está roto, lo guarda aparte y arranca', tras[0].version === 4 &&tras[0].tareas.length === 9 && tras[1] === '{roto', JSON.stringify(tras).slice(0, 80));
   await p.evaluate(() => { localStorage.setItem('casa-v1-roto', ''); localStorage.setItem('casa-v1', JSON.stringify({ app: 'casa', version: 1, otra: 1 })); });
   await p.reload();
   const migrado = await p.evaluate(() => JSON.parse(localStorage.getItem('casa-v1')));
-  chequear('datos: migra de la versión 1 a la 3 con las 9 tareas', migrado.version === 3 && migrado.tareas.length === 9 && migrado.otra === 1);
+  chequear('datos: migra de la versión 1 a la 4 con las 9 tareas', migrado.version === 4 && migrado.tareas.length === 9 && migrado.otra === 1);
 
   // tareas
   const filas = () => p.$$eval('#lista-tareas .seccion', ss => ss.map(s => [s.querySelector('h2').textContent, [...s.querySelectorAll('.fila .nombre')].map(n => n.textContent)]));
   const guardadas = () => p.evaluate(() => JSON.parse(localStorage.getItem('casa-v1')));
-  chequear('tareas: el «+» solo en Tareas', await p.isHidden('#nueva-tarea'));
+  chequear('tareas: el «+» está en Hoy', await p.isVisible('#nueva-tarea'));
+  await p.tap('.pestanas [data-pantalla="ajustes"]');
+  chequear('tareas: en Ajustes no hay «+»', await p.isHidden('#nueva-tarea'));
   await p.tap('.pestanas [data-pantalla="tareas"]');
   chequear('tareas: el «+» aparece en Tareas', await p.isVisible('#nueva-tarea'));
   let g = await filas();
@@ -211,10 +213,11 @@ function chequear(nombre, ok, detalle = '') {
   await p.tap('#lista-hoy [data-id="cama"] [data-circulo]');
   await p.tap('#lista-hoy [data-id="lavar-ropa"] [data-circulo]');
   await p.waitForTimeout(600);
-  await p.tap('#minutos [data-op="5"]');
-  chequear('hoy: si no entra ninguna, dice la más corta y apaga «Empezar»', (await p.textContent('#nota-tengo')) === 'No entra ninguna. La más corta: Barrer, 10 min.' && await p.isDisabled('#empezar'), await p.textContent('#nota-tengo'));
+  chequear('hoy: el 5 va apagado (no entra ninguna), sin mensaje', await p.isDisabled('#minutos [data-op="5"]') && !(await p.$('#nota-tengo')) &&
+    !(await p.isDisabled('#minutos [data-op="10"]')));
+  chequear('hoy: abajo dice solo «tengo»', (await p.textContent('.tengo .cabeza')).trim() === 'tengo');
   await p.tap('#minutos [data-op="30"]');
-  chequear('hoy: con 30 entra y se prende «Empezar»', (await p.textContent('#nota-tengo')) === '' && !(await p.isDisabled('#empezar')));
+  chequear('hoy: con 30 entra y se prende «Empezar»', (await p.getAttribute('#minutos [data-op="30"]', 'aria-pressed')) === 'true' && !(await p.isDisabled('#empezar')));
   // con 30: barrer 10 (las 3 de hoy), después platos 10 y ordenar la ropa 10
   await p.tap('#empezar');
   await p.waitForTimeout(450);
@@ -236,8 +239,10 @@ function chequear(nombre, ok, detalle = '') {
   await p.tap('#listo');
   await p.waitForTimeout(500);
   hoyFilas = await filasHoy();
-  chequear('hoy: las 3 siguen fijas, con su estado; el día está cumplido', JSON.stringify(hoyFilas) === JSON.stringify([['Hacer la cama', 'hecha'], ['Lavar la ropa', 'hecha'], ['Barrer', 'hecha']]) &&
+  chequear('hoy: las 3 siguen fijas, con su estado; el día está cumplido', JSON.stringify(hoyFilas.slice(0, 3)) === JSON.stringify([['Hacer la cama', 'hecha'], ['Lavar la ropa', 'hecha'], ['Barrer', 'hecha']]) &&
     (await p.textContent('#lista-hoy h2')) === 'las 3 de hoy · cumplido', JSON.stringify(hoyFilas));
+  const secciones = await p.$$eval('#lista-hoy .seccion h2', hs => hs.map(h => h.textContent));
+  chequear('hoy: con las 3 hechas, aparecen hasta 3 más en «también tocan»', secciones[1] === 'también tocan' && hoyFilas.length === 6 && hoyFilas.slice(3).every(f => f[1] === 'toca'), JSON.stringify(secciones));
   await p.tap('#minutos [data-op="60"]');
   await p.tap('#empezar');
   await p.waitForTimeout(450);
@@ -248,6 +253,91 @@ function chequear(nombre, ok, detalle = '') {
   chequear('tareas: a medias y salteada se ven en «tocan»', (await p.getAttribute('#lista-tareas [data-id="ordenar-ropa"]', 'data-estado')) === 'a-medias' &&
     (await p.getAttribute('#lista-tareas [data-id="platos"]', 'data-estado')) === 'salteada');
   await p.tap('.pestanas [data-pantalla="hoy"]');
+
+  // tareas de 1 vez: anotar rápido desde Hoy
+  await p.evaluate(() => localStorage.clear());
+  await p.reload();
+  await p.tap('#nueva-tarea');
+  await p.waitForTimeout(400);
+  const rapida = await p.evaluate(() => ({
+    modo: document.querySelector('#modo [aria-pressed="true"]').dataset.op,
+    fecha: document.querySelector('#fecha-unavez [aria-pressed="true"]').dataset.op,
+    minutos: document.querySelector('#c-minutos b').textContent,
+    foco: document.activeElement.id,
+    sinUltima: document.getElementById('bloque-ultima').hidden,
+  }));
+  chequear('1 vez: el «+» de Hoy abre la hoja en «1 vez · hoy», 10 min y el teclado en el nombre', rapida.modo === 'unavez' && rapida.fecha === 'hoy' &&
+    rapida.minutos === '10' && rapida.foco === 'nombre-tarea' && rapida.sinUltima, JSON.stringify(rapida));
+  await p.keyboard.type('Llamar al plomero');
+  await p.keyboard.press('Enter');
+  await p.waitForTimeout(500);
+  const anotada = (await guardadas()).tareas.at(-1);
+  chequear('1 vez: «Listo» en el teclado guarda (2 toques)', anotada.nombre === 'Llamar al plomero' && anotada.unaVez === true && /^\d{4}-\d{2}-\d{2}$/.test(anotada.fecha) &&
+    await p.evaluate(() => !document.getElementById('hoja-tarea').classList.contains('abierta')), JSON.stringify(anotada));
+  const seccionesHoy = await p.$$eval('#lista-hoy .seccion', ss => ss.map(s => [s.querySelector('h2').textContent, [...s.querySelectorAll('.nombre')].map(n => n.textContent)]));
+  chequear('1 vez: aparece en «para hoy», arriba de las 3 de hoy', seccionesHoy[0][0] === 'para hoy' && seccionesHoy[0][1][0] === 'Llamar al plomero' && seccionesHoy[1][0] === 'las 3 de hoy', JSON.stringify(seccionesHoy));
+  await p.tap('#minutos [data-op="10"]');
+  await p.tap('#empezar');
+  await p.waitForTimeout(450);
+  chequear('1 vez: entra primero en «Tengo X minutos»', (await p.textContent('#curso h3')) === 'Llamar al plomero');
+  await p.tap('#curso [data-r="hecha"]');
+  await p.waitForTimeout(1500);
+  await p.tap('#listo');
+  await p.waitForTimeout(500);
+  chequear('1 vez: hecha, sale de las listas y queda en el historial', !(await p.textContent('#lista-hoy')).includes('plomero') &&
+    (await guardadas()).historial.some(h => h.tarea === anotada.id && h.que === 'hecha'));
+  // atrasada y próxima
+  await p.evaluate(() => {
+    const e = JSON.parse(localStorage.getItem('casa-v1'));
+    const dia = n => { const f = new Date(); f.setDate(f.getDate() + n); return `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`; };
+    e.tareas.push({ id: 'banco', nombre: 'Ir al banco', icono: 'check-circle', minutos: 20, unaVez: true, fecha: dia(-1) });
+    e.tareas.push({ id: 'regalo', nombre: 'Comprar regalo', icono: 'check-circle', minutos: 30, unaVez: true, fecha: dia(1) });
+    localStorage.setItem('casa-v1', JSON.stringify(e));
+  });
+  await p.reload();
+  const atrasada = await p.evaluate(() => {
+    const s = document.querySelector('#lista-hoy [data-id="banco"] .atraso');
+    return s && [s.textContent, getComputedStyle(s).color];
+  });
+  chequear('1 vez: sin hacer, pasa al día siguiente con «de ayer» en blanco', !!atrasada && atrasada[0] === 'de ayer' && atrasada[1] === 'rgb(255, 255, 255)', JSON.stringify(atrasada));
+  chequear('1 vez: las futuras no están en Hoy', !(await p.textContent('#lista-hoy')).includes('regalo'));
+  await p.tap('.pestanas [data-pantalla="tareas"]');
+  const proximas = await p.$$eval('#lista-tareas .seccion', ss => ss.map(s => [s.querySelector('h2').textContent, [...s.querySelectorAll('.linea')].map(n => n.textContent)]));
+  const prox = proximas.find(x => x[0] === 'próximas');
+  chequear('1 vez: en Tareas, las futuras en «próximas», con la fecha', !!prox && prox[1][0] === 'mañana · 30 min' && proximas[0][0] === 'para hoy', JSON.stringify(proximas));
+  // editar una de 1 vez: elegir otro día
+  await p.tap('#lista-tareas [data-id="regalo"] .nombre');
+  await p.waitForTimeout(400);
+  chequear('1 vez: la hoja abre en «1 vez», con «Mañana» elegido', (await p.getAttribute('#modo [data-op="unavez"]', 'aria-pressed')) === 'true' &&
+    (await p.getAttribute('#fecha-unavez [data-op="manana"]', 'aria-pressed')) === 'true' && await p.isHidden('#contadores-frec'));
+  await p.tap('#fecha-unavez [data-op="hoy"]');
+  await p.tap('#guardar-tarea');
+  await p.waitForTimeout(400);
+  chequear('1 vez: pasarla a hoy la lleva a «para hoy»', (await guardadas()).tareas.find(t => t.id === 'regalo').fecha === (await guardadas()).las3.dia);
+  await p.tap('.pestanas [data-pantalla="hoy"]');
+
+  // el error de «Hola»: con menos de 3 en las 3 de hoy, lo que se crea después y toca aparece en Hoy
+  await p.evaluate(() => {
+    const e = JSON.parse(localStorage.getItem('casa-v1'));
+    e.tareas = e.tareas.filter(t => !t.unaVez).slice(0, 1);
+    e.las3 = null;
+    localStorage.setItem('casa-v1', JSON.stringify(e));
+  });
+  await p.reload();
+  await p.tap('#lista-hoy [data-id="cama"] [data-circulo]');
+  await p.waitForTimeout(600);
+  await p.tap('.pestanas [data-pantalla="tareas"]');
+  await p.tap('#nueva-tarea');
+  await p.waitForTimeout(400);
+  await p.fill('#nombre-tarea', 'Hola');
+  await p.tap('#guardar-tarea');
+  await p.waitForTimeout(400);
+  await p.tap('.pestanas [data-pantalla="hoy"]');
+  const conHola = await filasHoy();
+  chequear('hoy: lo que toca y se crea después aparece en Hoy (nunca «no toca nada» si hay algo)', conHola.some(f => f[0] === 'Hola' && f[1] === 'toca') &&
+    !(await p.textContent('#lista-hoy')).includes('no toca nada'), JSON.stringify(conHola));
+  await p.evaluate(() => localStorage.clear());
+  await p.reload();
 
   // copia de seguridad
   await p.tap('.pestanas [data-pantalla="ajustes"]');

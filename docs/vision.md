@@ -42,13 +42,13 @@ Provisorias: se revisan con el uso.
 - **Días desde la última vez:** días locales entre hoy y la última vez que la hice. Si nunca la hice, toca hoy.
 - **Toca:** cuando pasaron al menos el mínimo de días. **Atrasada:** cuando pasaron más que el máximo.
 - **Qué tan vencida está:** días desde la última vez dividido el máximo. Así 1 día de atraso en algo diario pesa más que 1 día de atraso en algo semanal. Primero lo más vencido; si empatan, la más corta.
-- **«Tengo X minutos»:** recorre las tareas que tocan, de la más vencida a la menos, y se queda con las que entran en el tiempo. Me las da de a 1. Si no entra ninguna, me dice cuál es la más corta que toca y cuánto lleva.
+- **«Tengo X minutos»:** recorre las tareas que tocan (primero las de 1 vez para hoy, después las 3 de hoy y después de la más vencida a la menos) y se queda con las que entran en el tiempo. Me las da de a 1. Los minutos en los que no entra ninguna van apagados.
 - **La última vez a mano:** en la hoja de cada tarea se puede cargar cuándo se hizo por última vez (hoy, ayer, hace N días o nunca). Queda en el historial; cuenta esa fecha y lo que se haga después.
 - **Al terminar cada tarea:**
   - **Hecha:** la última vez pasa a ser hoy.
   - **Salteada:** no me la vuelve a ofrecer hoy; mañana sigue igual de vencida (o más).
   - **A medias:** queda anotada, no reinicia la cuenta y mañana es lo primero que me ofrece (ese día no me la vuelve a ofrecer).
-- **La mañana:** la 1.ª vez que abro la app en el día, elige las 3 más vencidas que tocan. Si después cambio «última vez» de una tarea y todavía no hice nada con esas 3 (ni hecha, ni a medias, ni salteada), se vuelven a elegir. Son «las 3 de hoy»: «Tengo X minutos» las ofrece antes que el resto. El día está cumplido con esas 3, aunque haga más.
+- **La mañana:** la 1.ª vez que abro la app en el día, elige las 3 más vencidas que tocan. Si después cambio «última vez» de una tarea y todavía no hice nada con esas 3 (ni hecha, ni a medias, ni salteada), se vuelven a elegir. Si las 3 tienen lugar libre (eran menos de 3, o se borró alguna) y aparece algo que toca, se completan; con las 3 sin nada pendiente, «hoy» muestra hasta 3 más en «también tocan». Son «las 3 de hoy»: «Tengo X minutos» las ofrece antes que el resto. El día está cumplido con esas 3, aunque haga más.
 - **La ropa como cadena:** lavar la ropa son 3 pasos.
   1. **Meter** (5 min): cuando toca, como cualquier tarea.
   2. **Colgar:** desde 1 hora y media después de meterla. Cuando está lista, va antes que todo (la ropa mojada no espera).
@@ -63,10 +63,11 @@ Provisorias: se revisan con el uso.
 4. La ropa como cadena.
 5. Copia de seguridad: bajar y volver a cargar mis datos.
 6. **Tareas de 1 sola vez** (después de «hoy»). La idea: abrir la app y ver todo lo del día en 1 solo lugar, no solo lo de la casa.
-   - En la hoja, la opción «1 vez» con fecha (hoy, mañana o elegir día) y minutos.
+   - En la hoja, la opción «1 vez» con fecha (hoy, mañana o elegir día) y minutos (10 por defecto).
+   - Anotar rápido: el «+» de «hoy» abre la hoja en «1 vez · hoy» con el teclado en el nombre; «Listo» guarda (2 toques).
    - Ese día aparece en «hoy», antes que las repetitivas, y entra en «Tengo X minutos».
    - Si no se hace, pasa al día siguiente marcada como atrasada, bien visible.
-   - Hecha, desaparece de las listas y queda en el historial.
+   - Hecha, desaparece de las listas y queda en el historial. En «tareas», las futuras van en «próximas», con la fecha.
 
 Avisos: en la versión 1 la app **no avisa sola** (en el iPhone, una app web sin servidor no puede mandar notificaciones con la app cerrada). Cuando la abro, me muestra lo que está esperando («Colgar la ropa: desde las 19:30»).
 

@@ -18,6 +18,14 @@
 .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
 .cabeza svg { width: 20px; height: 20px; }
 .bloque-hoja .pastillas { margin-bottom: var(--esp-4); }
+/* «Elegir» día: una pastilla con el calendario del iPhone encima, invisible (tocarla lo abre) */
+.elegir-fecha {
+  position: relative; display: grid; place-items: center; height: var(--alto-pastilla); border-radius: var(--radio-capsula);
+  border: var(--trazo) solid var(--linea); color: var(--texto); font: var(--letra-encabezado);
+  transition: background var(--t-corta), color var(--t-corta), border-color var(--t-corta);
+}
+.elegir-fecha[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
+.elegir-fecha input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; -webkit-appearance: none; appearance: none; }
 .contadores { display: flex; justify-content: center; gap: var(--esp-6); }
 .contadores .contador { gap: var(--esp-2); }
 .contadores .contador button { width: var(--toque); height: var(--toque); }

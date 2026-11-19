@@ -46,9 +46,11 @@ function ordenarPorVencimiento(tareas, historial, hoy) {
 }
 
 // La pantalla Tareas: tocan (de la más vencida a la menos), más adelante (de la que toca antes a la que toca después) y hechas hoy.
+// (solo las repetitivas: las de 1 vez van aparte, en reglas/unavez.js)
 function agrupar(tareas, historial, hoy) {
   const tocan = [], adelante = [], hechas = [];
   for (const t of tareas) {
+    if (t.unaVez) continue;
     const u = ultimaVez(historial, t.id);
     if (u === hoy) hechas.push(t);
     else if (toca(t, u, hoy)) tocan.push(t);
@@ -72,19 +74,25 @@ function lineaTarea(t) {
   return `${frecuenciaTexto(t)} · ${t.minutos} min`;
 }
 
-// Una tarea está bien si tiene nombre, minutos y días enteros, y el máximo no es menor que el mínimo.
+// Una tarea está bien si tiene nombre, ícono y minutos enteros; las repetitivas, días enteros con el máximo no menor
+// que el mínimo; las de 1 vez, una fecha 'AAAA-MM-DD' válida.
 function tareaValida(t) {
   const entero = (n, desde) => Number.isInteger(n) && n >= desde;
-  return typeof t.nombre === 'string' && t.nombre.trim() !== '' && typeof t.icono === 'string' &&
-    entero(t.minutos, 1) && entero(t.min, 1) && entero(t.max, 1) && t.max >= t.min;
+  const base = typeof t.nombre === 'string' && t.nombre.trim() !== '' && typeof t.icono === 'string' && entero(t.minutos, 1);
+  if (!base) return false;
+  if (t.unaVez === true) {
+    try { fechasT.diasEntre(t.fecha, t.fecha); return true; } catch (e) { return false; }
+  }
+  return entero(t.min, 1) && entero(t.max, 1) && t.max >= t.min;
 }
 
 // Cambios del usuario: devuelven un estado nuevo.
 function guardarTarea(estado, tarea) {
   if (!tareaValida(tarea)) throw new Error('tarea inválida');
-  const limpia = { id: tarea.id, nombre: tarea.nombre.trim(), icono: tarea.icono, minutos: tarea.minutos, min: tarea.min, max: tarea.max };
+  const base = { id: tarea.id, nombre: tarea.nombre.trim(), icono: tarea.icono, minutos: tarea.minutos };
+  const limpia = tarea.unaVez === true ? { ...base, unaVez: true, fecha: tarea.fecha } : { ...base, min: tarea.min, max: tarea.max };
   const existe = estado.tareas.some(t => t.id === tarea.id);
-  const tareas = existe ? estado.tareas.map(t => (t.id === tarea.id ? { ...t, ...limpia } : t)) : estado.tareas.concat(limpia);
+  const tareas = existe ? estado.tareas.map(t => (t.id === tarea.id ? limpia : t)) : estado.tareas.concat(limpia);
   return { ...estado, tareas };
 }
 

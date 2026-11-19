@@ -6,10 +6,7 @@
 .tengo { flex: none; padding: var(--esp-5) var(--margen) var(--esp-4); border-top: var(--trazo) solid var(--linea); }
 .tengo .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
 .tengo .cabeza svg { width: 20px; height: 20px; }
-.tengo .cabeza span:last-child { margin-left: auto; }
-.tengo .nota { font: var(--letra-nota); color: var(--texto-2); text-align: center; padding: var(--esp-3) 0; min-height: var(--esp-4); }
-.tengo .nota:empty { padding: 0; }
-.tengo .nota:not(:empty) { animation: fundido var(--t-corta); }
+.tengo .opciones { margin-bottom: var(--esp-4); }
 
 /* Círculos para elegir (los minutos): el elegido, blanco lleno con letra negra; los demás, contorno fino gris */
 .opciones { display: flex; justify-content: space-between; }
@@ -20,6 +17,8 @@
 }
 .opciones button[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
 .opciones button:active { transform: scale(.95); }
+/* En los minutos que no alcanzan para ninguna tarea: apagado, no se puede elegir */
+.opciones button[disabled] { color: var(--texto-3); border-color: var(--gris-lleno); pointer-events: none; }
 
 /* Tarea en curso */
 .cuenta { font: var(--letra-secundaria); color: var(--texto-2); }
