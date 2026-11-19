@@ -1,4 +1,4 @@
-// Hoy: las 3 de hoy, «Tengo X minutos» y la tarea en curso, de a 1.
+// Hoy: la lista de lo que entra en los minutos elegidos, «Empezar» y la tarea en curso, de a 1.
 // Las reglas (cuáles son las 3, qué entra, el orden) son de reglas/hoy.js; acá solo se dibuja y se guarda.
 
 const listaHoy = document.getElementById('lista-hoy');
@@ -13,24 +13,21 @@ function prepararDia() {
   if (estado !== antes) guardarDatos();
 }
 
-// Hoy: para hoy (las de 1 vez), las 3 de hoy y, si esas ya no tienen nada pendiente, también tocan.
+// Hoy: la lista sigue a los minutos. Muestra todo lo que entra en ese tiempo, en el orden en que se va a ofrecer
+// (las de 1 vez primero; después las 3 de hoy, sin marcarlas; después lo más vencido). Lo que no entra no se muestra.
 function pintarHoy() {
   const hoy = hoyLocal();
-  const conEstado = t => estadoDelDia(estado.historial, t.id, hoy) || 'toca';
-  const unaVez = paraHoyUnaVez(estado.tareas, estado.historial, hoy).map(t => filaTarea(t, conEstado(t), lineaUnaVez(t, hoy)));
-  const tres = lasTres(estado).map(t => filaTarea(t, conEstado(t), `${t.minutos} min`));
-  const mas = tambienTocan(estado, hoy).map(t => filaTarea(t, 'toca', `${t.minutos} min`));
-  const titulo = diaCumplido(estado, hoy) ? 'las 3 de hoy · cumplido' : 'las 3 de hoy';
-  listaHoy.innerHTML = unaVez.length || tres.length || mas.length
-    ? '<div class="lista">' + seccionFilas('para hoy', unaVez) + seccionFilas(titulo, tres) + seccionFilas('también tocan', mas) + '</div>'
+  const lista = paraOfrecer(estado, hoy);
+  pintarMinutos(lista);
+  const { entran } = queEntra(lista, minutos);
+  listaHoy.innerHTML = entran.length
+    ? '<div class="lista">' + entran.map(t => filaTarea(t, 'toca', t.unaVez ? lineaUnaVez(t, hoy) : `${t.minutos} min`)).join('') + '</div>'
     : '<p class="nada lista">Hoy no toca nada.</p>';
-  pintarTengo();
 }
 
-// «Tengo X minutos»: los minutos que no alcanzan para ninguna tarea van apagados; si el elegido quedó apagado,
+// Los minutos: los que no alcanzan para ninguna tarea van apagados; si el elegido quedó apagado,
 // pasa al más chico que alcanza. Sin ninguno, «Empezar» apagado.
-function pintarTengo() {
-  const lista = paraOfrecer(estado, hoyLocal());
+function pintarMinutos(lista) {
   const botones = [...minutosEl.querySelectorAll('button')];
   const posibles = minutosPosibles(lista, botones.map(b => +b.dataset.op));
   if (!posibles.includes(minutos) && posibles.length) minutos = posibles[0];
@@ -47,8 +44,7 @@ minutosEl.addEventListener('click', e => {
   const b = e.target.closest('button[data-op]');
   if (!b) return;
   minutos = +b.dataset.op;
-  minutosEl.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
-  pintarTengo();
+  pintarHoy();
 });
 
 listaHoy.addEventListener('click', e => {
@@ -73,7 +69,6 @@ function pintarTareaEnCurso(entrando) {
       <h3>${escapar(t.nombre)}</h3>
       <p class="num">${t.minutos} min</p>
       <button class="estado" data-r="hecha" aria-label="Hecha"><i>${ic(t.icono + '-fill', 'i-tarea')}${iconosEstado()}</i></button>
-      <div class="etiqueta">hecha</div>
     </div>
     <div class="otras">
       <button class="boton-texto" data-r="a-medias">A medias</button>
@@ -84,14 +79,12 @@ function pintarTareaEnCurso(entrando) {
   curso.querySelectorAll('[data-r]').forEach(b => { b.onclick = () => marcarEnCurso(t, b.dataset.r, tarea); });
 }
 
-const ETIQUETAS = { 'hecha': 'hecha', 'a-medias': 'a medias', 'salteada': 'salteada' };
 function marcarEnCurso(t, r, tarea) {
   curso.querySelectorAll('[data-r]').forEach(b => { b.disabled = true; });
   const hoy = hoyLocal();
   estado = r === 'hecha' ? marcarHecha(estado, t.id, hoy) : r === 'a-medias' ? marcarAMedias(estado, t.id, hoy) : marcarSalteada(estado, t.id, hoy);
   guardarDatos();
   tarea.dataset.estado = r;
-  tarea.querySelector('.etiqueta').textContent = ETIQUETAS[r];
   resultados.push([t, r]);
   setTimeout(() => {
     tarea.classList.add('sale');

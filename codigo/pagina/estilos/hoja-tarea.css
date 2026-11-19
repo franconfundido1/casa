@@ -30,16 +30,14 @@
 .contadores .contador { gap: var(--esp-2); }
 .contadores .contador button { width: var(--toque); height: var(--toque); }
 .contadores .contador .cifra { min-width: 52px; }
-.nota-frec { font: var(--letra-nota); color: var(--texto-2); text-align: center; margin-top: var(--esp-3); }
 .pie { padding: var(--esp-3) var(--margen) 0; display: flex; flex-direction: column; align-items: center; gap: var(--esp-1); }
 
 /* Hoja para elegir el ícono, encima de la de la tarea */
 .hoja.chica { top: auto; z-index: 23; }
 .hoja.chica + .velo { z-index: 22; }
-.hoja.chica .hoja-arriba h2 { font: var(--letra-titulo); }
 .grilla-iconos { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--esp-2); padding: var(--esp-4) 0 var(--esp-2); }
 .grilla-iconos button {
-  height: 92px; border-radius: var(--esp-5); border: 2px solid transparent;
+  height: 72px; border-radius: var(--esp-5); border: 2px solid transparent;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--esp-2);
   font: var(--letra-nota); color: var(--texto-2); transition: border-color var(--t-corta), color var(--t-corta), transform 100ms;
 }

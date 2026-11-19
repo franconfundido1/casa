@@ -6,7 +6,7 @@ Los valores viven como variables CSS en `bocetos/sistema.css`; el código de la 
 
 ## Identidad
 
-- **Contraste total.** Lo elegido es **blanco lleno con letra negra** (el «20» de «tengo», «Cada», la pestaña elegida, el botón principal, el «+»). Lo no elegido es **solo contorno fino gris o texto gris**. Sin pastillas ni cajas grises de relleno.
+- **Contraste total.** Lo elegido es **blanco lleno con letra negra** (el «20» de los minutos, «Cada», la pestaña elegida, el botón principal). Lo no elegido es **solo contorno fino gris o texto gris**. Sin pastillas ni cajas grises de relleno.
 - **Formas llenas y grandes:** círculos de estado grandes y gruesos, opciones en círculos, íconos rellenos donde importan.
 - **League Spartan para todo** (no solo los títulos). Títulos en minúscula, como «hábitos»: «hoy», «tareas».
 - **El círculo como firma:** el mismo círculo es el estado de cada tarea, la acción grande de la tarea en curso, el círculo de arriba de la hoja y el ícono de la app (el círculo lleno de «hecha», blanco sobre negro, sin texto: `bocetos/icono-180.png`).
@@ -22,7 +22,7 @@ Los valores viven como variables CSS en `bocetos/sistema.css`; el código de la 
 | `--texto-3` | `#48484A` | Lo apagado: un − o + en el tope, el texto de ejemplo |
 | `--linea` | `#3A3A3C` | Contornos finos de lo no elegido, separadores, la línea bajo el título, borde de la hoja |
 | `--gris-lleno` | `#2C2C2E` | Círculo sin hacer (como los días sin hacer de hábitos) y el «×» de la hoja |
-| `--borrar` | `#FF453A` | **Única excepción de color:** solo «Borrar tarea» (el rojo de iOS) |
+| `--borrar` | `#FF453A` | **Única excepción de color:** solo «Borrar» (el rojo de iOS) |
 | `--velo` | `rgba(44,44,46,.6)` | Lo de atrás de una hoja abierta (como el gris de la de hábitos, dado vuelta) |
 
 Sin degradés, sin desenfoque, sin transparencias, sin sombras (sobre negro no se ven; lo que flota se separa con el borde fino `--linea`).
@@ -57,7 +57,7 @@ En la tarea en curso, el mismo círculo a 120 px con trazo de 3 px.
 | `--letra-encabezado` | 18 / 24 | 600 | Botones, pastillas, opciones |
 | `--letra-cuerpo` | 18 / 24 | 500 | Nombre de la tarea en la fila |
 | `--letra-secundaria` | 16 / 20 | 400 | La línea gris de la fila; botones de texto |
-| `--letra-seccion` | 15 / 20 | 400 | Encabezado de sección, en minúscula y gris («las 3 de hoy», como el «nov» de hábitos) |
+| `--letra-seccion` | 15 / 20 | 400 | Texto gris chico (la fecha debajo de «hoy», como el «nov» de hábitos) |
 | `--letra-nota` | 14 / 18 | 400 | Notas, la unidad debajo de un número |
 | `--letra-pestana` | 12 / 14 | 500 | Etiqueta de la pestaña |
 
@@ -66,8 +66,8 @@ Números con cifras siempre, y `tabular-nums` en minutos y horas.
 ## Menos texto
 
 - 1 sola línea gris por fila, corta. En Tareas: «cada 3 días · 10 min». En Hoy: solo «10 min» (lo que espera: «desde las 19:30»).
-- Cada dato en 1 solo lugar: el «20» de «tengo» está solo en su círculo elegido.
-- Una nota solo cuando hace falta: «No entra ninguna. La más corta: Barrer, 10 min.»; en la hoja, la nota de la frecuencia solo con «Entre».
+- Cada dato en 1 solo lugar: el «20» de los minutos está solo en su círculo elegido.
+- **Si un ícono, la forma o el comportamiento lo explica, no se escribe** (regla 8 de `CLAUDE.md`). Nada de títulos de sección, etiquetas ni frases que repitan lo que ya se ve. Por eso no hay «tengo», «las 3 de hoy», «para hoy», «tocan», «frecuencia», «lleva», «última vez», «elegir ícono», «tus datos» ni la nota de «Entre»: lo dicen el reloj, el orden, el círculo, los íconos y los contadores.
 
 ## Espacios y medidas
 
@@ -94,7 +94,7 @@ Números con cifras siempre, y `tabular-nums` en minutos y horas.
 | Cerrar / Agregar | `x` (bold) / `plus-circle` (contorno) |
 | Contador | `minus` / `plus` (bold) |
 | Hecha / Salteada / Esperando | `check` (bold) / `arrow-right` (bold) / `clock` |
-| Encabezados de la hoja y de «tengo» | `repeat` (frecuencia), `timer` (minutos) |
+| Bloques de la hoja (solos, sin texto) | `repeat` (frecuencia), `timer` (minutos), `clock` (última vez) |
 
 ### Ícono de cada tarea
 
@@ -125,7 +125,7 @@ Nada de emojis ni SF Symbols.
 
 ### Pantalla y barra de pestañas
 
-- La pantalla, lo fijo de abajo (en Hoy, «tengo») y la barra **se reparten el alto**: solo la lista se desplaza; nada queda debajo de otra cosa. Sin barra de desplazamiento.
+- La pantalla, lo fijo de abajo (en Hoy, los minutos y «Empezar») y la barra **se reparten el alto**: solo la lista se desplaza; nada queda debajo de otra cosa. Sin barra de desplazamiento.
 - Barra **plana** como la de hábitos: negra, a lo ancho, con una línea fina arriba, **pegada a la barra de inicio** (la zona segura se cuenta 1 sola vez). **Instalada** (`display-mode: standalone`), el iPhone (iOS 26) ya termina la pantalla de la app arriba de la barra de inicio: ahí lo fijo abajo (la barra, las hojas, «Empezar») no suma la zona segura de abajo, porque se contaría 2 veces y quedaría una franja negra. En Safari, sí la suma. 3 pestañas con ícono y etiqueta abajo. La elegida, **cápsula blanca llena** con ícono relleno y letra negra; las otras, en gris, sin fondo.
 
 ### Título
@@ -134,7 +134,7 @@ Como «hábitos»: una **cabecera fija** con el título en minúscula, grande, a
 
 ### Lista y fila
 
-- Encabezado de sección chico, gris y en minúscula.
+- Sin títulos de sección: los grupos (en Tareas: para hoy, tocan, más adelante, próximas, hechas hoy) se separan con aire, y el círculo (aro, gris, ✓) y la línea (la fecha, el atraso) dicen qué es cada uno.
 - Fila directo sobre el negro, de 68 px: círculo de estado (con el ícono de la tarea adentro), nombre y 1 línea gris corta. Separador fino que empieza después del círculo. Sin cajas.
 - En Tareas: tocar el círculo marca hecha; tocar la fila abre la hoja. Al tocar, la fila se aclara 100 ms.
 
@@ -146,7 +146,7 @@ Como «hábitos»: una **cabecera fija** con el título en minúscula, grande, a
 ### Elegir 1 opción
 
 - **Pastillas** (2 opciones, como Diario / objetivo semanal): la elegida, blanca llena con letra negra; la otra, contorno fino gris. En la hoja: «Cada» / «Entre».
-- **Círculos** (varias opciones cortas, como los días de la semana de hábitos): en «tengo», 5, 10, 20, 30 y 60, en círculos de 56 px. El elegido, blanco lleno.
+- **Círculos** (varias opciones cortas, como los días de la semana de hábitos): en Hoy, los minutos 5, 10, 20, 30 y 60, en círculos de 56 px. El elegido, blanco lleno.
 
 ### Contador
 
@@ -155,28 +155,28 @@ Como «1 vez al día» de hábitos: «−» en un círculo de contorno, el núme
 ### Botones
 
 - **Principal:** cápsula de 56 px a lo ancho, **blanca con letra negra**. 1 por pantalla, abajo. **Apagado: solo contorno fino y letra gris**, como «Crear hábito».
-- **De texto:** la palabra sola, en gris, con 44 px de toque, para lo secundario («A medias», «Saltear»). En rojo, «Borrar tarea».
+- **De texto:** la palabra sola, en gris, con 44 px de toque, para lo secundario («A medias», «Saltear»). En rojo, «Borrar».
 
 ### Hoja
 
 - Sube desde abajo (300 ms); lo de atrás queda velado en gris. Negra, con las esquinas de arriba redondeadas y el borde fino. Se cierra con el «×» (arriba a la derecha, como en hábitos) o tocando afuera.
-- **Hoja de tarea, como «nuevo hábito»:** arriba al centro, el círculo grande blanco lleno con **el ícono de la tarea** en negro y un lápiz chico en el borde. Al tocarlo se abre encima **otra hoja, «elegir ícono»**: los 16 íconos en una grilla de 4, con su nombre abajo; el elegido, con un borde blanco (como en hábitos). Tocar uno lo elige y cierra esa hoja. Después, el nombre centrado, grande, con una rayita abajo; «frecuencia» con las pastillas «Cada» / «Entre» / «1 vez» y sus contadores (con «1 vez», en vez de contadores, las pastillas «Hoy» / «Mañana» / «Elegir»; «Elegir» abre el calendario del iPhone y muestra el día elegido, «vie 21», y no hay «última vez») (1 con «Cada»; «desde» y «hasta» con «Entre», y solo ahí la nota); «lleva» con el contador de minutos; «última vez» con un contador que va de «nunca» a «hoy», «ayer» y «N días atrás» (cargarla suma una entrada al historial con esa fecha; sirve para poner al día las de arranque el primer día). Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar tarea» en rojo (solo al editar), que pide 2 toques: el 1.º cambia el texto a «Tocá de nuevo para borrar» y, si no se toca otra vez en 3 segundos, vuelve. Los minutos van de a 1 hasta 10, de a 5 hasta 60 y después 75, 90, 120, 150 y 180.
+- **Hoja de tarea, como «nuevo hábito»:** arriba al centro, el círculo grande blanco lleno con **el ícono de la tarea** en negro y un lápiz chico en el borde. Al tocarlo se abre encima **otra hoja**, sin título: los 16 íconos en una grilla de 4, sin nombre (el ícono se explica solo); el elegido, con un borde blanco (como en hábitos). Tocar uno lo elige y cierra esa hoja. Después, el nombre centrado, grande, con una rayita abajo; el ícono de repetir (sin texto) con las pastillas «Cada» / «Entre» / «1 vez» y sus contadores (con «1 vez», en vez de contadores, las pastillas «Hoy» / «Mañana» / «Elegir»; «Elegir» abre el calendario del iPhone y muestra el día elegido, «vie 21», y no hay «última vez») (1 con «Cada»; «desde» y «hasta» con «Entre»); el reloj con el contador de minutos; el ícono de reloj de «última vez» con un contador que va de «nunca» a «hoy», «ayer» y «N días atrás» (cargarla suma una entrada al historial con esa fecha; sirve para poner al día las de arranque el primer día). Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar» en rojo (solo al editar), que pide 2 toques: el 1.º cambia el texto a «¿Borrar?» y, si no se toca otra vez en 3 segundos, vuelve. Los minutos van de a 1 hasta 10, de a 5 hasta 60 y después 75, 90, 120, 150 y 180.
 
 ### Tarea en curso
 
-En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **el círculo de 120 px para tocar = hecha**: gris oscuro con aro blanco y **el ícono de la tarea grande y blanco adentro**; al tocarlo, el ícono deja lugar al ✓ y el círculo se llena de blanco (con «A medias», a la mitad; con «Saltear», la flecha gris). Debajo, «hecha» en gris. «A medias» y «Saltear», botones de texto abajo. Arriba a la izquierda, «1 de 2» en gris. Al terminar: «listo por ahora», las filas con su estado y «Cerrar».
+En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **el círculo de 120 px para tocar = hecha**: gris oscuro con aro blanco y **el ícono de la tarea grande y blanco adentro**; al tocarlo, el ícono deja lugar al ✓ y el círculo se llena de blanco (con «A medias», a la mitad; con «Saltear», la flecha gris). «A medias» y «Saltear», botones de texto abajo. Arriba a la izquierda, «1 de 2» en gris. Al terminar: «listo por ahora», las filas con su estado y «Cerrar».
 
 ### Hoy
 
-De arriba abajo: «para hoy» (las de 1 vez de hoy y las atrasadas; el atraso, «de ayer» o «hace N días», va en blanco y negrita dentro de la línea gris, para que se vea sin color), «las 3 de hoy» y, cuando esas 3 ya no tienen nada pendiente, «también tocan» con hasta 3 más. El «+» de la cabecera anota rápido una de 1 vez para hoy.
+**La lista sigue a los minutos:** muestra todo lo que entra en el tiempo elegido, en el orden en que se va a ofrecer, sin títulos. Primero las de 1 vez (las atrasadas con «de ayer» o «hace N días» en blanco y negrita dentro de la línea gris, para que se vea sin color), después las 3 de hoy (sin marcarlas: cuentan por dentro para el día cumplido) y después lo más vencido. Lo que no entra no se muestra; lo hecho, salteado o a medias de hoy, tampoco. Al cambiar los minutos, la lista cambia con un fundido: eso explica qué son los círculos. El «+» de la cabecera anota rápido una de 1 vez para hoy.
 
-### «Tengo X minutos»
+### Minutos y «Empezar»
 
-**Fijo, siempre visible, arriba de la barra de pestañas**, con una línea fina arriba; la lista se desplaza por encima. Una línea gris chica («tengo»), los 5 círculos de opciones y «Empezar». Los minutos en los que no entra ninguna tarea van apagados (gris oscuro, no se pueden elegir): no hace falta ningún mensaje.
+**Fijo, siempre visible, arriba de la barra de pestañas**, con una línea fina arriba; la lista se desplaza por encima. Los 5 círculos de minutos y «Empezar», sin texto arriba. Los minutos en los que no entra ninguna tarea van apagados (gris oscuro, no se pueden elegir): no hace falta ningún mensaje.
 
 ### Ajustes › copia de seguridad
 
-2 filas que son botones, con el ícono a la derecha (`download-simple`, `upload-simple`): «Bajar copia» abre el menú de compartir del iPhone (desde ahí, «Guardar en Archivos»; si el navegador no puede compartir archivos, baja el `.json`). «Cargar copia» abre Archivos; antes de reemplazar, una hoja chica dice de qué día es la copia y cuántas tareas tiene, con «Reemplazar mis datos». Si el archivo no sirve, la hoja lo dice y no ofrece reemplazar.
+2 filas que son botones, sin título arriba, con el ícono a la derecha (`download-simple`, `upload-simple`): «Bajar copia» abre el menú de compartir del iPhone (desde ahí, «Guardar en Archivos»; si el navegador no puede compartir archivos, baja el `.json`). «Cargar copia» abre Archivos; antes de reemplazar, una hoja chica sin título dice de qué día es la copia y cuántas tareas tiene, con «Reemplazar mis datos». Si el archivo no sirve, la hoja lo dice y no ofrece reemplazar.
 
 ### Transiciones
 
