@@ -126,7 +126,7 @@ Nada de emojis ni SF Symbols.
 ### Pantalla y barra de pestañas
 
 - La pantalla, lo fijo de abajo (en Hoy, «tengo») y la barra **se reparten el alto**: solo la lista se desplaza; nada queda debajo de otra cosa. Sin barra de desplazamiento.
-- Barra **plana** como la de hábitos: negra, a lo ancho, con una línea fina arriba, **pegada a la barra de inicio** (la zona segura se cuenta 1 sola vez). 3 pestañas con ícono y etiqueta abajo. La elegida, **cápsula blanca llena** con ícono relleno y letra negra; las otras, en gris, sin fondo.
+- Barra **plana** como la de hábitos: negra, a lo ancho, con una línea fina arriba, **pegada a la barra de inicio** (la zona segura se cuenta 1 sola vez). Instalada, si el iPhone le da a la app un alto menor que la pantalla (que ya deja afuera la barra de inicio), la app toma el alto de la pantalla (`logica/pantalla.js`); si no, la zona segura se contaría 2 veces y quedaría una franja negra. 3 pestañas con ícono y etiqueta abajo. La elegida, **cápsula blanca llena** con ícono relleno y letra negra; las otras, en gris, sin fondo.
 
 ### Título
 

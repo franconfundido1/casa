@@ -101,6 +101,17 @@ function chequear(nombre, ok, detalle = '') {
   chequear('sin internet: la letra sigue (va embebida)', await p.evaluate(() => document.fonts.check('700 40px "League Spartan"')));
   await ctx.setOffline(false);
 
+  // instalada, con un alto menor que la pantalla (el iPhone deja afuera la barra de inicio): la app igual llega hasta abajo
+  const ctx2 = await browser.newContext({ viewport: { width: 390, height: 810 }, screen: { width: 390, height: 844 }, isMobile: motor === 'chromium', hasTouch: true });
+  await ctx2.addInitScript(() => Object.defineProperty(navigator, 'standalone', { get: () => true }));
+  const p2 = await ctx2.newPage();
+  p2.on('pageerror', e => errores.push(e.message));
+  await p2.goto(U);
+  const instalada = await p2.evaluate(() => [document.body.getBoundingClientRect().height, document.querySelector('.pestanas').getBoundingClientRect().bottom]);
+  chequear('instalada: llega hasta abajo de la pantalla, sin franja', instalada[0] === 844 && instalada[1] === 844, JSON.stringify(instalada));
+  await ctx2.close();
+  chequear('en Safari (sin instalar): no cambia el alto', await p.evaluate(() => !document.documentElement.classList.contains('alto-pantalla')));
+
   chequear('sin errores en la consola', errores.length === 0, errores.join(' | '));
   console.log(`\n${pasan} de ${pasan + fallan} pasan`);
   await browser.close();
