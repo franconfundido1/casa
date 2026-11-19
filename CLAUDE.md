@@ -4,6 +4,7 @@ Lo que hace falta para cualquier tarea. El detalle va en `docs/` (índice abajo)
 
 ## Qué es
 
+- **El nombre que se ve es «str3ak»** (en minúscula): en el manifest, el `<title>`, `apple-mobile-web-app-title` y el archivo de la copia (`str3ak-copia-AAAA-MM-DD.json`). Los nombres internos siguen siendo `casa` (abajo, en «Reglas de datos»).
 - App personal para ordenar el día en la casa: tareas, ropa, comida y súper. **La app decide qué hacer y cuándo**; el usuario solo dice cuánto tiempo tiene y marca lo que hizo.
 - Se usa en un **iPhone, en vertical, instalada desde Safari** («Agregar a inicio»). No en la tablet ni en Chrome.
 - 1 solo archivo HTML, sin servidor. Funciona sin internet (service worker).
@@ -102,7 +103,7 @@ Igual que en Akordia, que funcionó:
   | Suite | Pasan |
   |---|---|
   | reglas (`node --test`) | 72 |
-  | página (`test_pagina.js`) | 96 |
+  | página (`test_pagina.js`) | 97 |
 
 - Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 

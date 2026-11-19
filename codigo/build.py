@@ -44,7 +44,7 @@ for f in ('icono-180.png', 'icono-192.png', 'icono-512.png', 'OFL-league-spartan
 
 # start_url y scope no se cambian nunca (cambiarlos rompe la app instalada)
 manifest = {
-    'name': 'casa', 'short_name': 'casa', 'lang': 'es-AR',
+    'name': 'str3ak', 'short_name': 'str3ak', 'lang': 'es-AR',
     'description': 'Ordena el día en la casa: te dice qué hacer y cuándo.',
     'start_url': './', 'scope': './', 'display': 'standalone',
     'background_color': '#000000', 'theme_color': '#000000',

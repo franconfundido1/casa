@@ -7,18 +7,18 @@ function armarCopia(estado, dia, hora) {
   return JSON.stringify({ ...estado, copia: { dia, hora } }, null, 1);
 }
 
-// El nombre del archivo: casa-copia-AAAA-MM-DD.json
+// El nombre del archivo: str3ak-copia-AAAA-MM-DD.json (el nombre que se ve; adentro sigue app: 'casa')
 function nombreCopia(dia) {
-  return `casa-copia-${dia}.json`;
+  return `str3ak-copia-${dia}.json`;
 }
 
 // Leer una copia: { ok: true, estado, resumen } o { ok: false, error } (con un texto corto para el usuario).
 // Si es de una versión vieja, la migra; si es de una más nueva que esta app, no la carga.
 function leerCopia(texto) {
   let datos;
-  try { datos = JSON.parse(texto); } catch (e) { return { ok: false, error: 'El archivo no es una copia de casa.' }; }
+  try { datos = JSON.parse(texto); } catch (e) { return { ok: false, error: 'El archivo no es una copia de str3ak.' }; }
   if (!datos || typeof datos !== 'object' || datos.app !== 'casa' || !Number.isInteger(datos.version) || datos.version < 1) {
-    return { ok: false, error: 'El archivo no es una copia de casa.' };
+    return { ok: false, error: 'El archivo no es una copia de str3ak.' };
   }
   if (datos.version > estadoC.VERSION) return { ok: false, error: 'La copia es de una versión más nueva de la app. Actualizala y probá de nuevo.' };
   const { copia, ...resto } = datos;

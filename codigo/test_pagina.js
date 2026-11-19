@@ -356,14 +356,14 @@ function chequear(nombre, ok, detalle = '') {
   const [bajada] = await Promise.all([p.waitForEvent('download'), p.tap('#bajar-copia')]);
   const textoBajado = fs.readFileSync(await bajada.path(), 'utf8');
   const copiaJson = JSON.parse(textoBajado);
-  chequear('copia: «Bajar copia» baja un .json con todo el estado', /^casa-copia-\d{4}-\d{2}-\d{2}\.json$/.test(bajada.suggestedFilename()) &&
+  chequear('copia: «Bajar copia» baja un .json con todo el estado', /^str3ak-copia-\d{4}-\d{2}-\d{2}\.json$/.test(bajada.suggestedFilename()) &&
     copiaJson.app === 'casa' && copiaJson.version === antesCopia.version && copiaJson.tareas.length === antesCopia.tareas.length &&
     copiaJson.historial.length === antesCopia.historial.length && /^\d{2}:\d{2}$/.test(copiaJson.copia.hora), bajada.suggestedFilename());
   // cambiar algo y después volver a la copia
   await p.evaluate(() => { const e = JSON.parse(localStorage.getItem('casa-v1')); e.tareas = e.tareas.slice(1); localStorage.setItem('casa-v1', JSON.stringify(e)); });
   await p.reload();
   await p.tap('.pestanas [data-pantalla="ajustes"]');
-  await p.setInputFiles('#archivo-copia', { name: 'casa-copia.json', mimeType: 'application/json', buffer: Buffer.from(textoBajado) });
+  await p.setInputFiles('#archivo-copia', { name: 'str3ak-copia.json', mimeType: 'application/json', buffer: Buffer.from(textoBajado) });
   await p.waitForTimeout(450);
   chequear('copia: al cargarla, pide confirmación con un resumen', await p.evaluate(() => document.getElementById('hoja-copia').classList.contains('abierta')) &&
     (await p.textContent('#texto-copia')).includes(`${antesCopia.tareas.length} tareas`) && await p.isVisible('#reemplazar'), await p.textContent('#texto-copia'));
@@ -375,7 +375,7 @@ function chequear(nombre, ok, detalle = '') {
     JSON.stringify(despues.historial) === JSON.stringify(antesCopia.historial) && despues.copia === undefined && (await p.textContent('#nota-copia')) === 'Copia cargada.');
   await p.setInputFiles('#archivo-copia', { name: 'otra.json', mimeType: 'application/json', buffer: Buffer.from('{"app":"atril","version":1}') });
   await p.waitForTimeout(450);
-  chequear('copia: un archivo que no es una copia no se carga', (await p.textContent('#texto-copia')) === 'El archivo no es una copia de casa.' && await p.isHidden('#reemplazar'));
+  chequear('copia: un archivo que no es una copia no se carga', (await p.textContent('#texto-copia')) === 'El archivo no es una copia de str3ak.' && await p.isHidden('#reemplazar'));
   await p.tap('#cerrar-copia');
   await p.waitForTimeout(400);
   await p.setInputFiles('#archivo-copia', { name: 'vieja.json', mimeType: 'application/json', buffer: Buffer.from('{"app":"casa","version":1}') });
@@ -389,6 +389,8 @@ function chequear(nombre, ok, detalle = '') {
   // instalable
   const man = await (await p.request.get(U + 'manifest.json')).json();
   chequear('instalable: manifest con start_url y scope neutros', man.start_url === './' && man.scope === './' && man.display === 'standalone', JSON.stringify(man));
+  chequear('instalable: el nombre que se ve es «str3ak» (manifest, título y apple-mobile-web-app-title)', man.name === 'str3ak' && man.short_name === 'str3ak' &&
+    (await p.title()) === 'str3ak' && (await p.getAttribute('meta[name="apple-mobile-web-app-title"]', 'content')) === 'str3ak');
   const icono = await p.getAttribute('link[rel="apple-touch-icon"]', 'href');
   chequear('instalable: apple-touch-icon', icono === 'icono-180.png' && (await p.request.get(U + icono)).ok());
   chequear('instalable: los íconos del manifest existen', (await Promise.all(man.icons.map(i => p.request.get(U + i.src)))).every(r => r.ok()));
