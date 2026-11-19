@@ -2,39 +2,46 @@
 // Las reglas (cuáles son las 3, qué entra, el orden) son de reglas/hoy.js; acá solo se dibuja y se guarda.
 
 const listaHoy = document.getElementById('lista-hoy');
-const notaTengo = document.getElementById('nota-tengo');
 const empezarBtn = document.getElementById('empezar');
 const minutosEl = document.getElementById('minutos');
 let minutos = 20;
 
-// La 1.ª vez del día elige las 3 de hoy (después quedan fijas hasta mañana).
+// La 1.ª vez del día elige las 3 de hoy (después quedan fijas hasta mañana); si les falta lugar, se completan.
 function prepararDia() {
   const antes = estado;
-  estado = asegurarLasTres(estado, hoyLocal());
+  estado = completarLasTres(asegurarLasTres(estado, hoyLocal()), hoyLocal());
   if (estado !== antes) guardarDatos();
 }
 
+// Hoy: para hoy (las de 1 vez), las 3 de hoy y, si esas ya no tienen nada pendiente, también tocan.
 function pintarHoy() {
   const hoy = hoyLocal();
-  const tres = lasTres(estado);
+  const conEstado = t => estadoDelDia(estado.historial, t.id, hoy) || 'toca';
+  const unaVez = paraHoyUnaVez(estado.tareas, estado.historial, hoy).map(t => filaTarea(t, conEstado(t), lineaUnaVez(t, hoy)));
+  const tres = lasTres(estado).map(t => filaTarea(t, conEstado(t), `${t.minutos} min`));
+  const mas = tambienTocan(estado, hoy).map(t => filaTarea(t, 'toca', `${t.minutos} min`));
   const titulo = diaCumplido(estado, hoy) ? 'las 3 de hoy · cumplido' : 'las 3 de hoy';
-  listaHoy.innerHTML = tres.length
-    ? `<div class="lista"><section class="seccion"><h2>${titulo}</h2><div>${tres.map(t =>
-      filaTarea(t, estadoDelDia(estado.historial, t.id, hoy) || 'toca', `${t.minutos} min`)).join('')}</div></section></div>`
+  listaHoy.innerHTML = unaVez.length || tres.length || mas.length
+    ? '<div class="lista">' + seccionFilas('para hoy', unaVez) + seccionFilas(titulo, tres) + seccionFilas('también tocan', mas) + '</div>'
     : '<p class="nada lista">Hoy no toca nada.</p>';
   pintarTengo();
 }
 
-// «Tengo X minutos»: qué entra; si no entra ninguna, la más corta y «Empezar» apagado.
+// «Tengo X minutos»: los minutos que no alcanzan para ninguna tarea van apagados; si el elegido quedó apagado,
+// pasa al más chico que alcanza. Sin ninguno, «Empezar» apagado.
 function pintarTengo() {
-  const { entran, masCorta } = queEntra(paraOfrecer(estado, hoyLocal()), minutos);
-  empezarBtn.disabled = !entran.length;
-  if (entran.length) notaTengo.textContent = '';
-  else if (masCorta) notaTengo.textContent = `No entra ninguna. La más corta: ${masCorta.nombre}, ${masCorta.minutos} min.`;
-  else notaTengo.textContent = 'No queda nada que toque hoy.';
+  const lista = paraOfrecer(estado, hoyLocal());
+  const botones = [...minutosEl.querySelectorAll('button')];
+  const posibles = minutosPosibles(lista, botones.map(b => +b.dataset.op));
+  if (!posibles.includes(minutos) && posibles.length) minutos = posibles[0];
+  botones.forEach(b => {
+    b.disabled = !posibles.includes(+b.dataset.op);
+    b.setAttribute('aria-pressed', posibles.length > 0 && +b.dataset.op === minutos);
+  });
+  empezarBtn.disabled = !posibles.length;
 }
 
-function pintarTodo() { pintarHoy(); pintarTareas(); }
+function pintarTodo() { prepararDia(); pintarHoy(); pintarTareas(); }
 
 minutosEl.addEventListener('click', e => {
   const b = e.target.closest('button[data-op]');

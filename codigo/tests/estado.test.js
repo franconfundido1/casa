@@ -4,8 +4,8 @@ const assert = require('node:assert/strict');
 const { VERSION, MIGRACIONES, estadoNuevo, migrar, cargar } = require('../reglas/estado.js');
 const { tareaValida } = require('../reglas/tareas.js');
 
-test('VERSION es 3', () => {
-  assert.equal(VERSION, 3);
+test('VERSION es 4', () => {
+  assert.equal(VERSION, 4);
 });
 
 test('estadoNuevo: app casa, versión actual, las 9 tareas de arranque y el historial vacío', () => {
@@ -37,13 +37,13 @@ test('las 9 tareas de arranque: las de docs/vision.md, con su ícono', () => {
 test('migración 2 → 3: suma las 3 de hoy, vacías, y no toca lo demás', () => {
   const v2 = { app: 'casa', version: 2, tareas: estadoNuevo().tareas, historial: [{ tarea: 'barrer', dia: '2026-11-18', que: 'hecha' }] };
   const r = cargar(JSON.stringify(v2));
-  assert.deepEqual(r.estado, { ...v2, version: 3, las3: null });
+  assert.deepEqual(r.estado, { ...v2, version: 4, las3: null });
 });
 
 test('migración 1 → 2: lo guardado en la versión 1 recibe las 9 tareas y no pierde lo que tenía', () => {
   const r = cargar(JSON.stringify({ app: 'casa', version: 1, otra: 'cosa' }));
   assert.equal(r.roto, false);
-  assert.equal(r.estado.version, 3);
+  assert.equal(r.estado.version, 4);
   assert.equal(r.estado.tareas.length, 9);
   assert.deepEqual(r.estado.historial, []);
   assert.equal(r.estado.otra, 'cosa');
@@ -84,5 +84,10 @@ test('migrar: aplica las migraciones de a 1, en orden', () => {
 });
 
 test('migrar: si falta una migración, error (no se pierde nada en silencio)', () => {
-  assert.throws(() => migrar({ app: 'casa', version: 3 }, 4, MIGRACIONES), /falta la migración de la versión 3/);
+  assert.throws(() => migrar({ app: 'casa', version: 4 }, 5, MIGRACIONES), /falta la migración de la versión 4/);
+});
+
+test('migración 3 → 4: lo guardado no cambia (llegan las tareas de 1 vez)', () => {
+  const v3 = { ...estadoNuevo(), version: 3, las3: { dia: '2026-11-18', ids: ['cama'] } };
+  assert.deepEqual(cargar(JSON.stringify(v3)).estado, { ...v3, version: 4 });
 });

@@ -90,6 +90,8 @@
 .fila .nombre, .fila .linea { display: block; }
 .fila .nombre { font: var(--letra-cuerpo); transition: color var(--t-corta); }
 .fila .linea { font: var(--letra-secundaria); color: var(--texto-2); margin-top: 2px; }
+/* Una de 1 vez atrasada: «de ayer» o «hace N días» en blanco, para que se vea dentro del blanco y negro */
+.fila .linea .atraso { color: var(--texto); font-weight: 600; }
 
 /* Círculo de estado, como los días de hábitos: lo sin hacer, gris oscuro lleno; se distingue por relleno, aro e ícono */
 .estado {

@@ -15,7 +15,7 @@ function mostrarPantalla(nombre) {
     if (b.dataset.pantalla === nombre) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   tituloEl.textContent = document.getElementById('pantalla-' + nombre).dataset.titulo;
-  document.getElementById('nueva-tarea').hidden = nombre !== 'tareas';
+  document.getElementById('nueva-tarea').hidden = nombre === 'ajustes';
   pintarSubtitulo();
   // el título entra con un fundido corto
   tituloEl.parentNode.classList.remove('cambia'); void tituloEl.offsetWidth; tituloEl.parentNode.classList.add('cambia');

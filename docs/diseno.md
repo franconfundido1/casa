@@ -160,15 +160,19 @@ Como «1 vez al día» de hábitos: «−» en un círculo de contorno, el núme
 ### Hoja
 
 - Sube desde abajo (300 ms); lo de atrás queda velado en gris. Negra, con las esquinas de arriba redondeadas y el borde fino. Se cierra con el «×» (arriba a la derecha, como en hábitos) o tocando afuera.
-- **Hoja de tarea, como «nuevo hábito»:** arriba al centro, el círculo grande blanco lleno con **el ícono de la tarea** en negro y un lápiz chico en el borde. Al tocarlo se abre encima **otra hoja, «elegir ícono»**: los 16 íconos en una grilla de 4, con su nombre abajo; el elegido, con un borde blanco (como en hábitos). Tocar uno lo elige y cierra esa hoja. Después, el nombre centrado, grande, con una rayita abajo; «frecuencia» con las pastillas «Cada» / «Entre» y sus contadores (1 con «Cada»; «desde» y «hasta» con «Entre», y solo ahí la nota); «lleva» con el contador de minutos; «última vez» con un contador que va de «nunca» a «hoy», «ayer» y «N días atrás» (cargarla suma una entrada al historial con esa fecha; sirve para poner al día las de arranque el primer día). Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar tarea» en rojo (solo al editar), que pide 2 toques: el 1.º cambia el texto a «Tocá de nuevo para borrar» y, si no se toca otra vez en 3 segundos, vuelve. Los minutos van de a 1 hasta 10, de a 5 hasta 60 y después 75, 90, 120, 150 y 180.
+- **Hoja de tarea, como «nuevo hábito»:** arriba al centro, el círculo grande blanco lleno con **el ícono de la tarea** en negro y un lápiz chico en el borde. Al tocarlo se abre encima **otra hoja, «elegir ícono»**: los 16 íconos en una grilla de 4, con su nombre abajo; el elegido, con un borde blanco (como en hábitos). Tocar uno lo elige y cierra esa hoja. Después, el nombre centrado, grande, con una rayita abajo; «frecuencia» con las pastillas «Cada» / «Entre» / «1 vez» y sus contadores (con «1 vez», en vez de contadores, las pastillas «Hoy» / «Mañana» / «Elegir»; «Elegir» abre el calendario del iPhone y muestra el día elegido, «vie 21», y no hay «última vez») (1 con «Cada»; «desde» y «hasta» con «Entre», y solo ahí la nota); «lleva» con el contador de minutos; «última vez» con un contador que va de «nunca» a «hoy», «ayer» y «N días atrás» (cargarla suma una entrada al historial con esa fecha; sirve para poner al día las de arranque el primer día). Abajo, fijo, **«Guardar»** grande, apagado hasta que cambie algo; debajo, «Borrar tarea» en rojo (solo al editar), que pide 2 toques: el 1.º cambia el texto a «Tocá de nuevo para borrar» y, si no se toca otra vez en 3 segundos, vuelve. Los minutos van de a 1 hasta 10, de a 5 hasta 60 y después 75, 90, 120, 150 y 180.
 
 ### Tarea en curso
 
 En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **el círculo de 120 px para tocar = hecha**: gris oscuro con aro blanco y **el ícono de la tarea grande y blanco adentro**; al tocarlo, el ícono deja lugar al ✓ y el círculo se llena de blanco (con «A medias», a la mitad; con «Saltear», la flecha gris). Debajo, «hecha» en gris. «A medias» y «Saltear», botones de texto abajo. Arriba a la izquierda, «1 de 2» en gris. Al terminar: «listo por ahora», las filas con su estado y «Cerrar».
 
+### Hoy
+
+De arriba abajo: «para hoy» (las de 1 vez de hoy y las atrasadas; el atraso, «de ayer» o «hace N días», va en blanco y negrita dentro de la línea gris, para que se vea sin color), «las 3 de hoy» y, cuando esas 3 ya no tienen nada pendiente, «también tocan» con hasta 3 más. El «+» de la cabecera anota rápido una de 1 vez para hoy.
+
 ### «Tengo X minutos»
 
-**Fijo, siempre visible, arriba de la barra de pestañas**, con una línea fina arriba; la lista se desplaza por encima. Una línea gris chica («tengo» a la izquierda, «minutos» a la derecha), los 5 círculos de opciones y «Empezar».
+**Fijo, siempre visible, arriba de la barra de pestañas**, con una línea fina arriba; la lista se desplaza por encima. Una línea gris chica («tengo»), los 5 círculos de opciones y «Empezar». Los minutos en los que no entra ninguna tarea van apagados (gris oscuro, no se pueden elegir): no hace falta ningún mensaje.
 
 ### Ajustes › copia de seguridad
 

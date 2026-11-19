@@ -197,6 +197,8 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .fila .nombre, .fila .linea { display: block; }
 .fila .nombre { font: var(--letra-cuerpo); transition: color var(--t-corta); }
 .fila .linea { font: var(--letra-secundaria); color: var(--texto-2); margin-top: 2px; }
+/* Una de 1 vez atrasada: «de ayer» o «hace N días» en blanco, para que se vea dentro del blanco y negro */
+.fila .linea .atraso { color: var(--texto); font-weight: 600; }
 
 /* Círculo de estado, como los días de hábitos: lo sin hacer, gris oscuro lleno; se distingue por relleno, aro e ícono */
 .estado {
@@ -309,6 +311,14 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
 .cabeza svg { width: 20px; height: 20px; }
 .bloque-hoja .pastillas { margin-bottom: var(--esp-4); }
+/* «Elegir» día: una pastilla con el calendario del iPhone encima, invisible (tocarla lo abre) */
+.elegir-fecha {
+  position: relative; display: grid; place-items: center; height: var(--alto-pastilla); border-radius: var(--radio-capsula);
+  border: var(--trazo) solid var(--linea); color: var(--texto); font: var(--letra-encabezado);
+  transition: background var(--t-corta), color var(--t-corta), border-color var(--t-corta);
+}
+.elegir-fecha[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
+.elegir-fecha input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; -webkit-appearance: none; appearance: none; }
 .contadores { display: flex; justify-content: center; gap: var(--esp-6); }
 .contadores .contador { gap: var(--esp-2); }
 .contadores .contador button { width: var(--toque); height: var(--toque); }
@@ -337,10 +347,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .tengo { flex: none; padding: var(--esp-5) var(--margen) var(--esp-4); border-top: var(--trazo) solid var(--linea); }
 .tengo .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
 .tengo .cabeza svg { width: 20px; height: 20px; }
-.tengo .cabeza span:last-child { margin-left: auto; }
-.tengo .nota { font: var(--letra-nota); color: var(--texto-2); text-align: center; padding: var(--esp-3) 0; min-height: var(--esp-4); }
-.tengo .nota:empty { padding: 0; }
-.tengo .nota:not(:empty) { animation: fundido var(--t-corta); }
+.tengo .opciones { margin-bottom: var(--esp-4); }
 
 /* Círculos para elegir (los minutos): el elegido, blanco lleno con letra negra; los demás, contorno fino gris */
 .opciones { display: flex; justify-content: space-between; }
@@ -351,6 +358,8 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 }
 .opciones button[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
 .opciones button:active { transform: scale(.95); }
+/* En los minutos que no alcanzan para ninguna tarea: apagado, no se puede elegir */
+.opciones button[disabled] { color: var(--texto-3); border-color: var(--gris-lleno); pointer-events: none; }
 
 /* Tarea en curso */
 .cuenta { font: var(--letra-secundaria); color: var(--texto-2); }
@@ -422,14 +431,14 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 </svg>
 <header class="titulo">
   <div><h1 id="titulo">hoy</h1><small id="subtitulo"></small></div>
-  <button class="boton-icono" id="nueva-tarea" aria-label="Nueva tarea" hidden><svg class="ic" aria-hidden="true"><use href="#plus-circle"/></svg></button>
+  <button class="boton-icono" id="nueva-tarea" aria-label="Nueva tarea"><svg class="ic" aria-hidden="true"><use href="#plus-circle"/></svg></button>
 </header>
 <main class="pantallas">
 <section class="pantalla pantalla-hoy" id="pantalla-hoy" data-titulo="hoy">
   <div class="lista-hoy" id="lista-hoy"></div>
   <!-- «Tengo X minutos»: fijo arriba de la barra de pestañas; la lista se mueve por encima -->
   <div class="tengo">
-    <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg><span>tengo</span><span>minutos</span></div>
+    <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg><span>tengo</span></div>
     <div class="opciones num" id="minutos">
       <button data-op="5">5</button>
       <button data-op="10">10</button>
@@ -437,7 +446,6 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
       <button data-op="30">30</button>
       <button data-op="60">60</button>
     </div>
-    <p class="nota" id="nota-tengo"></p>
     <button class="boton" id="empezar">Empezar</button>
   </div>
 </section>
@@ -470,7 +478,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
   </div>
   <div class="hoja-cuerpo">
     <button class="firma" id="firma" aria-label="Cambiar el ícono"></button>
-    <input class="nombre-tarea" id="nombre-tarea" placeholder="nombrá la tarea" autocomplete="off" maxlength="40">
+    <input class="nombre-tarea" id="nombre-tarea" placeholder="nombrá la tarea" autocomplete="off" maxlength="40" enterkeyhint="done">
     <div class="rayita"></div>
 
     <div class="bloque-hoja">
@@ -478,8 +486,15 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
       <div class="pastillas" id="modo">
         <button data-op="cada">Cada</button>
         <button data-op="entre">Entre</button>
+        <button data-op="unavez">1 vez</button>
       </div>
-      <div class="contadores">
+      <!-- 1 vez: el día (hoy, mañana o elegir en el calendario del iPhone) -->
+      <div class="pastillas" id="fecha-unavez">
+        <button data-op="hoy">Hoy</button>
+        <button data-op="manana">Mañana</button>
+        <label class="elegir-fecha" data-op="elegir"><span id="texto-elegir">Elegir</span><input type="date" id="fecha-elegir"></label>
+      </div>
+      <div class="contadores" id="contadores-frec">
         <div class="contador" id="c-desde"></div>
         <div class="contador" id="c-hasta"></div>
       </div>
@@ -491,7 +506,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
       <div class="contador" id="c-minutos"></div>
     </div>
 
-    <div class="bloque-hoja">
+    <div class="bloque-hoja" id="bloque-ultima">
       <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#clock"/></svg>última vez</div>
       <div class="contador" id="c-ultima"></div>
     </div>
@@ -581,7 +596,7 @@ if (typeof module === 'object') module.exports = { diasEntre, sumarDias, diaLoca
 // Cada cambio en la forma de guardar sube VERSION y suma en MIGRACIONES cómo pasar de la versión anterior a la nueva.
 // Las migraciones no se cambian nunca después de publicadas: llevan sus datos adentro.
 
-const VERSION = 3;
+const VERSION = 4;
 
 // MIGRACIONES[n]: datos de la versión n → datos de la versión n + 1.
 const MIGRACIONES = {
@@ -604,6 +619,9 @@ const MIGRACIONES = {
   }),
   // 2 → 3: las 3 de hoy (se eligen la 1.ª vez que se abre la app en el día). El historial suma «a-medias» y «salteada».
   2: d => ({ ...d, las3: null }),
+  // 3 → 4: llegan las tareas de 1 vez ({ unaVez: true, fecha: 'AAAA-MM-DD' } en vez de min y max). Lo guardado no cambia;
+  // el número nuevo evita que una versión vieja de la app (o una copia) lea tareas que no entiende.
+  3: d => ({ ...d }),
 };
 
 function estadoNuevo(version = VERSION, migraciones = MIGRACIONES) {
@@ -682,9 +700,11 @@ function ordenarPorVencimiento(tareas, historial, hoy) {
 }
 
 // La pantalla Tareas: tocan (de la más vencida a la menos), más adelante (de la que toca antes a la que toca después) y hechas hoy.
+// (solo las repetitivas: las de 1 vez van aparte, en reglas/unavez.js)
 function agrupar(tareas, historial, hoy) {
   const tocan = [], adelante = [], hechas = [];
   for (const t of tareas) {
+    if (t.unaVez) continue;
     const u = ultimaVez(historial, t.id);
     if (u === hoy) hechas.push(t);
     else if (toca(t, u, hoy)) tocan.push(t);
@@ -708,19 +728,25 @@ function lineaTarea(t) {
   return `${frecuenciaTexto(t)} · ${t.minutos} min`;
 }
 
-// Una tarea está bien si tiene nombre, minutos y días enteros, y el máximo no es menor que el mínimo.
+// Una tarea está bien si tiene nombre, ícono y minutos enteros; las repetitivas, días enteros con el máximo no menor
+// que el mínimo; las de 1 vez, una fecha 'AAAA-MM-DD' válida.
 function tareaValida(t) {
   const entero = (n, desde) => Number.isInteger(n) && n >= desde;
-  return typeof t.nombre === 'string' && t.nombre.trim() !== '' && typeof t.icono === 'string' &&
-    entero(t.minutos, 1) && entero(t.min, 1) && entero(t.max, 1) && t.max >= t.min;
+  const base = typeof t.nombre === 'string' && t.nombre.trim() !== '' && typeof t.icono === 'string' && entero(t.minutos, 1);
+  if (!base) return false;
+  if (t.unaVez === true) {
+    try { fechasT.diasEntre(t.fecha, t.fecha); return true; } catch (e) { return false; }
+  }
+  return entero(t.min, 1) && entero(t.max, 1) && t.max >= t.min;
 }
 
 // Cambios del usuario: devuelven un estado nuevo.
 function guardarTarea(estado, tarea) {
   if (!tareaValida(tarea)) throw new Error('tarea inválida');
-  const limpia = { id: tarea.id, nombre: tarea.nombre.trim(), icono: tarea.icono, minutos: tarea.minutos, min: tarea.min, max: tarea.max };
+  const base = { id: tarea.id, nombre: tarea.nombre.trim(), icono: tarea.icono, minutos: tarea.minutos };
+  const limpia = tarea.unaVez === true ? { ...base, unaVez: true, fecha: tarea.fecha } : { ...base, min: tarea.min, max: tarea.max };
   const existe = estado.tareas.some(t => t.id === tarea.id);
-  const tareas = existe ? estado.tareas.map(t => (t.id === tarea.id ? { ...t, ...limpia } : t)) : estado.tareas.concat(limpia);
+  const tareas = existe ? estado.tareas.map(t => (t.id === tarea.id ? limpia : t)) : estado.tareas.concat(limpia);
   return { ...estado, tareas };
 }
 
@@ -761,9 +787,50 @@ if (typeof module === 'object') module.exports = {
   frecuenciaTexto, lineaTarea, tareaValida, guardarTarea, borrarTarea, marcarHecha, desmarcarHecha,
   cargarUltimaVez, ultimaVezTexto,
 };
+// Tareas de 1 sola vez: tienen una fecha en vez de una frecuencia. Funciones puras: reciben «hoy» ('AAAA-MM-DD').
+// Si no se hacen ese día, siguen al día siguiente como atrasadas; hechas, salen de las listas y quedan en el historial.
+const fechasU = typeof module === 'object' ? require('./fechas.js') : { diasEntre, fechaLarga };
+
+function esUnaVez(t) { return t.unaVez === true; }
+
+// Pendiente: de 1 vez y todavía sin hacer (una vez hecha, no vuelve).
+function unaVezPendiente(t, historial) {
+  return esUnaVez(t) && !historial.some(h => h.tarea === t.id && h.que === 'hecha');
+}
+
+const porFecha = (a, b) => (a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0) || (a.minutos - b.minutos) || a.nombre.localeCompare(b.nombre, 'es');
+
+// Para hoy: las de hoy y las atrasadas, primero la más atrasada.
+function paraHoyUnaVez(tareas, historial, hoy) {
+  return tareas.filter(t => unaVezPendiente(t, historial) && t.fecha <= hoy).sort(porFecha);
+}
+
+// Próximas: las de días que todavía no llegaron, por fecha.
+function proximasUnaVez(tareas, historial, hoy) {
+  return tareas.filter(t => unaVezPendiente(t, historial) && t.fecha > hoy).sort(porFecha);
+}
+
+// El atraso, dicho corto: null (es de hoy), «de ayer» o «hace N días».
+function atrasoTexto(fecha, hoy) {
+  const d = fechasU.diasEntre(fecha, hoy);
+  if (d <= 0) return null;
+  return d === 1 ? 'de ayer' : `hace ${d} días`;
+}
+
+// Cuándo es una próxima: «mañana» o «viernes 21 de noviembre».
+function cuandoTexto(fecha, hoy) {
+  const d = fechasU.diasEntre(hoy, fecha);
+  if (d === 0) return 'hoy';
+  if (d === 1) return 'mañana';
+  return fechasU.fechaLarga(fecha);
+}
+
+if (typeof module === 'object') module.exports = { esUnaVez, unaVezPendiente, paraHoyUnaVez, proximasUnaVez, atrasoTexto, cuandoTexto };
 // «Hoy»: las 3 de hoy, el orden en que se ofrecen las tareas y qué entra en «Tengo X minutos».
 // Funciones puras: reciben «hoy» ('AAAA-MM-DD') y devuelven datos nuevos, sin tocar los que reciben.
 const tareasH = typeof module === 'object' ? require('./tareas.js') : { ultimaVez, toca, ordenarPorVencimiento };
+const unaVezH = typeof module === 'object' ? require('./unavez.js') : { paraHoyUnaVez };
+const repetitivas = tareas => tareas.filter(t => !t.unaVez);
 
 // Lo que pasó hoy con una tarea: 'hecha', 'a-medias', 'salteada' o null (nada todavía).
 function estadoDelDia(historial, id, hoy) {
@@ -789,7 +856,7 @@ function ordenParaHoy(tareas, historial, hoy) {
 
 // Las 3 de hoy: las 3 primeras que tocan, en el orden de arriba.
 function elegirLasTres(tareas, historial, hoy) {
-  const tocan = tareas.filter(t => tareasH.toca(t, tareasH.ultimaVez(historial, t.id), hoy));
+  const tocan = repetitivas(tareas).filter(t => tareasH.toca(t, tareasH.ultimaVez(historial, t.id), hoy));
   return ordenParaHoy(tocan, historial, hoy).slice(0, 3).map(t => t.id);
 }
 
@@ -808,6 +875,24 @@ function reelegirSiNoEmpezo(estado, hoy) {
   return { ...estado, las3: { dia: hoy, ids: elegirLasTres(estado.tareas, estado.historial, hoy) } };
 }
 
+// Si a las 3 de hoy les falta lugar (eran menos de 3, o se borró alguna) y aparece algo que toca, se completan.
+function completarLasTres(estado, hoy) {
+  if (!estado.las3 || estado.las3.dia !== hoy) return asegurarLasTres(estado, hoy);
+  const ids = lasTres(estado).map(t => t.id);
+  if (ids.length >= 3) return ids.length === estado.las3.ids.length ? estado : { ...estado, las3: { dia: hoy, ids } };
+  const nuevas = elegirLasTres(estado.tareas.filter(t => !ids.includes(t.id) && estadoDelDia(estado.historial, t.id, hoy) === null), estado.historial, hoy);
+  const completas = ids.concat(nuevas).slice(0, 3);
+  if (completas.length === estado.las3.ids.length && completas.every((id, i) => id === estado.las3.ids[i])) return estado;
+  return { ...estado, las3: { dia: hoy, ids: completas } };
+}
+
+// Cuando las 3 de hoy ya no tienen nada pendiente (hechas, a medias o salteadas), hasta 3 más de las que tocan.
+function tambienTocan(estado, hoy) {
+  const tres = lasTres(estado);
+  if (tres.some(t => estadoDelDia(estado.historial, t.id, hoy) === null)) return [];
+  return paraOfrecer(estado, hoy).filter(t => !t.unaVez && !tres.includes(t)).slice(0, 3);
+}
+
 // Las 3 de hoy, como tareas (sin las que se borraron).
 function lasTres(estado) {
   if (!estado.las3) return [];
@@ -820,15 +905,21 @@ function diaCumplido(estado, hoy) {
   return tres.length > 0 && tres.every(t => estadoDelDia(estado.historial, t.id, hoy) === 'hecha');
 }
 
-// Lo que se puede ofrecer ahora: las que tocan y hoy no se hicieron, no se saltearon ni quedaron a medias.
-// Primero las 3 de hoy (en su orden) y después las demás, en el orden de ordenParaHoy.
+// Lo que se puede ofrecer ahora: lo que hoy no se hizo, no se salteó ni quedó a medias.
+// Primero las de 1 vez para hoy (las atrasadas antes), después las 3 de hoy (en su orden) y después las demás que tocan.
 function paraOfrecer(estado, hoy) {
-  const libres = estado.tareas.filter(t =>
+  const unaVez = unaVezH.paraHoyUnaVez(estado.tareas, estado.historial, hoy).filter(t => estadoDelDia(estado.historial, t.id, hoy) === null);
+  const libres = repetitivas(estado.tareas).filter(t =>
     tareasH.toca(t, tareasH.ultimaVez(estado.historial, t.id), hoy) && estadoDelDia(estado.historial, t.id, hoy) === null);
   const tresIds = estado.las3 && estado.las3.dia === hoy ? estado.las3.ids : [];
   const deLasTres = tresIds.map(id => libres.find(t => t.id === id)).filter(Boolean);
   const resto = ordenParaHoy(libres.filter(t => !deLasTres.includes(t)), estado.historial, hoy);
-  return deLasTres.concat(resto);
+  return unaVez.concat(deLasTres, resto);
+}
+
+// Los minutos que se pueden elegir en «Tengo X minutos»: solo los que alcanzan para al menos 1 tarea.
+function minutosPosibles(lista, opciones) {
+  return opciones.filter(m => queEntra(lista, m).entran.length > 0);
 }
 
 // «Tengo X minutos»: recorre la lista en orden y se queda con las que entran en el tiempo.
@@ -852,8 +943,8 @@ function marcarSalteada(estado, id, hoy) { return anotar(estado, id, hoy, 'salte
 function marcarAMedias(estado, id, hoy) { return anotar(estado, id, hoy, 'a-medias'); }
 
 if (typeof module === 'object') module.exports = {
-  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, reelegirSiNoEmpezo, lasTres, diaCumplido,
-  paraOfrecer, queEntra, marcarSalteada, marcarAMedias,
+  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, reelegirSiNoEmpezo, completarLasTres, tambienTocan,
+  lasTres, diaCumplido, paraOfrecer, queEntra, minutosPosibles, marcarSalteada, marcarAMedias,
 };
 // La copia de seguridad: un .json con todo el estado (app: 'casa' y la versión). Funciones puras.
 const estadoC = typeof module === 'object' ? require('./estado.js') : { VERSION, migrar };
@@ -933,7 +1024,7 @@ function mostrarPantalla(nombre) {
     if (b.dataset.pantalla === nombre) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   tituloEl.textContent = document.getElementById('pantalla-' + nombre).dataset.titulo;
-  document.getElementById('nueva-tarea').hidden = nombre !== 'tareas';
+  document.getElementById('nueva-tarea').hidden = nombre === 'ajustes';
   pintarSubtitulo();
   // el título entra con un fundido corto
   tituloEl.parentNode.classList.remove('cambia'); void tituloEl.offsetWidth; tituloEl.parentNode.classList.add('cambia');
@@ -943,7 +1034,7 @@ document.querySelector('.pestanas').addEventListener('click', e => {
   const b = e.target.closest('button[data-pantalla]');
   if (b) mostrarPantalla(b.dataset.pantalla);
 });
-// La pantalla Tareas: la lista (tocan, más adelante, hechas hoy), marcar hecha y la hoja de tarea.
+// La pantalla Tareas: la lista (para hoy, tocan, más adelante, próximas, hechas hoy), marcar hecha y la hoja de tarea.
 // Las reglas (qué toca, en qué orden) son de reglas/tareas.js; acá solo se dibuja y se guarda.
 
 const ic = (id, clase = '') => `<svg class="ic ${clase}" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -982,13 +1073,27 @@ function tocarCirculo(fila, tarea) {
   setTimeout(pintarTodo, 450);
 }
 
+// La línea de una de 1 vez para hoy: los minutos y, si está atrasada, «de ayer» o «hace N días» en blanco.
+function lineaUnaVez(t, hoy) {
+  const atraso = atrasoTexto(t.fecha, hoy);
+  return `${t.minutos} min` + (atraso ? ` · <span class="atraso">${atraso}</span>` : '');
+}
+
+function seccionFilas(titulo, filas) {
+  return filas.length ? `<section class="seccion"><h2>${titulo}</h2><div>${filas.join('')}</div></section>` : '';
+}
+
 function pintarTareas() {
-  const g = agrupar(estado.tareas, estado.historial, hoyLocal());
-  const seccion = (titulo, lista, estadoFila) => lista.length
-    ? `<section class="seccion"><h2>${titulo}</h2><div>${lista.map(t => filaTarea(t, estadoFila)).join('')}</div></section>` : '';
   const hoy = hoyLocal();
-  const tocan = g.tocan.map(t => filaTarea(t, estadoDelDia(estado.historial, t.id, hoy) || 'toca')).join('');
-  listaTareas.innerHTML = `<div class="lista">${g.tocan.length ? `<section class="seccion"><h2>tocan</h2><div>${tocan}</div></section>` : ''}${seccion('más adelante', g.adelante, 'no')}${seccion('hechas hoy', g.hechas, 'hecha')}</div>`;
+  const g = agrupar(estado.tareas, estado.historial, hoy);
+  const conEstado = t => estadoDelDia(estado.historial, t.id, hoy) || 'toca';
+  listaTareas.innerHTML = '<div class="lista">' +
+    seccionFilas('para hoy', paraHoyUnaVez(estado.tareas, estado.historial, hoy).map(t => filaTarea(t, conEstado(t), lineaUnaVez(t, hoy)))) +
+    seccionFilas('tocan', g.tocan.map(t => filaTarea(t, conEstado(t)))) +
+    seccionFilas('más adelante', g.adelante.map(t => filaTarea(t, 'no'))) +
+    seccionFilas('próximas', proximasUnaVez(estado.tareas, estado.historial, hoy).map(t => filaTarea(t, 'no', `${cuandoTexto(t.fecha, hoy)} · ${t.minutos} min`))) +
+    seccionFilas('hechas hoy', g.hechas.map(t => filaTarea(t, 'hecha'))) +
+    '</div>';
 }
 
 // Tocar el círculo marca hecha (o deshace la de hoy); tocar la fila abre la hoja.
@@ -1046,7 +1151,9 @@ const firma = document.getElementById('firma');
 const grilla = document.getElementById('grilla-iconos');
 const modoEl = document.getElementById('modo');
 const notaFrec = document.getElementById('nota-frec');
-let enEdicion = null, icono = 'check-circle', modo = 'cada', original = '', ultimaOriginal = NUNCA, armando = false;
+const fechaEl = document.getElementById('fecha-unavez');
+const fechaElegir = document.getElementById('fecha-elegir');
+let enEdicion = null, icono = 'check-circle', modo = 'cada', fechaUnaVez = null, original = '', ultimaOriginal = NUNCA, armando = false;
 
 const cMinutos = contador(document.getElementById('c-minutos'), { valores: VALORES_MINUTOS, unidad: 'minutos', alCambiar: revisar });
 const cDesde = contador(document.getElementById('c-desde'), {
@@ -1066,18 +1173,45 @@ function ajustarHasta() {
 }
 
 function tareaDeLaHoja() {
+  const base = { id: enEdicion ? enEdicion.id : 't' + Date.now().toString(36), nombre: nombreTarea.value, icono, minutos: cMinutos.get() };
+  if (modo === 'unavez') return { ...base, unaVez: true, fecha: fechaUnaVez };
   const min = cDesde.get();
-  return { id: enEdicion ? enEdicion.id : 't' + Date.now().toString(36), nombre: nombreTarea.value, icono,
-    minutos: cMinutos.get(), min, max: modo === 'entre' ? cHasta.get() : min };
+  return { ...base, min, max: modo === 'entre' ? cHasta.get() : min };
 }
-const firmaDe = t => JSON.stringify([t.nombre.trim(), t.icono, t.minutos, t.min, t.max]);
+const firmaDe = t => JSON.stringify([t.nombre.trim(), t.icono, t.minutos, t.unaVez ? t.fecha : [t.min, t.max]]);
 
 // «Guardar» se prende cuando la tarea está completa y cambió algo.
 function revisar() {
   if (armando) return;
   const t = tareaDeLaHoja();
-  guardarBtn.disabled = !tareaValida(t) || (firmaDe(t) === original && cUltima.get() === ultimaOriginal);
+  const cambioUltima = modo !== 'unavez' && cUltima.get() !== ultimaOriginal;
+  guardarBtn.disabled = !tareaValida(t) || (firmaDe(t) === original && !cambioUltima);
 }
+
+// 1 vez: el día, con «Hoy», «Mañana» o «Elegir» (el calendario del iPhone); un día elegido se ve en la pastilla.
+const DIAS_CORTOS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+function pintarFecha() {
+  const hoy = hoyLocal(), manana = sumarDias(hoy, 1);
+  const cual = fechaUnaVez === hoy ? 'hoy' : fechaUnaVez === manana ? 'manana' : 'elegir';
+  fechaEl.querySelectorAll('[data-op]').forEach(b => b.setAttribute('aria-pressed', b.dataset.op === cual));
+  const f = new Date(fechaUnaVez + 'T12:00:00');
+  document.getElementById('texto-elegir').textContent = cual === 'elegir' ? `${DIAS_CORTOS[f.getDay()]} ${f.getDate()}` : 'Elegir';
+  fechaElegir.min = hoy;
+  fechaElegir.value = fechaUnaVez;
+}
+fechaEl.addEventListener('click', e => {
+  const b = e.target.closest('button[data-op]');
+  if (!b) return;
+  fechaUnaVez = b.dataset.op === 'hoy' ? hoyLocal() : sumarDias(hoyLocal(), 1);
+  pintarFecha();
+  revisar();
+});
+fechaElegir.addEventListener('change', () => {
+  if (!fechaElegir.value) return;
+  fechaUnaVez = fechaElegir.value < hoyLocal() ? hoyLocal() : fechaElegir.value;
+  pintarFecha();
+  revisar();
+});
 
 // La nota de la frecuencia, solo con «Entre».
 function pintarNota() {
@@ -1087,6 +1221,12 @@ function pintarNota() {
 
 function pintarModo() {
   modoEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.op === modo));
+  // 1 vez: el día en vez de la frecuencia, y sin «última vez»
+  const unaVez = modo === 'unavez';
+  fechaEl.hidden = !unaVez;
+  document.getElementById('contadores-frec').hidden = unaVez;
+  document.getElementById('bloque-ultima').hidden = unaVez;
+  if (unaVez) { if (!fechaUnaVez) fechaUnaVez = hoyLocal(); pintarFecha(); }
   document.getElementById('c-hasta').hidden = modo === 'cada';
   cDesde.set(cDesde.get()); // la unidad cambia entre «días» y «desde»
   ajustarHasta();
@@ -1118,17 +1258,20 @@ grilla.addEventListener('click', e => {
 function abrirHoja(h) { h.classList.add('abierta'); }
 function cerrarHoja(h) { h.classList.remove('abierta'); }
 
-function abrirHojaTarea(t) {
+// t: la tarea a editar (o null para una nueva). unaVezHoy: la nueva arranca en «1 vez · hoy» (el «+» de Hoy).
+function abrirHojaTarea(t, { unaVezHoy = false } = {}) {
   armando = true;
   enEdicion = t || null;
-  const base = t || { nombre: '', icono: 'check-circle', minutos: 10, min: 3, max: 3 };
+  const base = t || (unaVezHoy ? { nombre: '', icono: 'check-circle', minutos: 10, unaVez: true, fecha: hoyLocal() }
+    : { nombre: '', icono: 'check-circle', minutos: 10, min: 3, max: 3 });
   nombreTarea.value = base.nombre;
   icono = base.icono;
-  modo = base.min === base.max ? 'cada' : 'entre';
+  modo = base.unaVez ? 'unavez' : base.min === base.max ? 'cada' : 'entre';
+  fechaUnaVez = base.unaVez ? base.fecha : null;
   cMinutos.set(base.minutos);
-  cDesde.set(base.min);
+  cDesde.set(base.unaVez ? 3 : base.min);
   ajustarHasta();
-  cHasta.set(base.max > base.min ? base.max : base.min + 1);
+  cHasta.set(!base.unaVez && base.max > base.min ? base.max : cDesde.get() + 1);
   pintarModo();
   pintarIcono();
   const d = t ? diasDesde(ultimaVez(estado.historial, t.id), hoyLocal()) : null;
@@ -1149,12 +1292,18 @@ function cerrarHojaTarea() {
 }
 
 nombreTarea.addEventListener('input', revisar);
+// «Listo» en el teclado guarda (así anotar rápido es: «+», escribir y «Listo»)
+nombreTarea.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  if (!guardarBtn.disabled) guardarBtn.click();
+});
 guardarBtn.onclick = () => {
   const t = tareaDeLaHoja();
   if (!tareaValida(t)) return;
   estado = guardarTarea(estado, t);
   // la última vez cargada a mano se suma al historial con esa fecha
-  if (cUltima.get() !== ultimaOriginal) {
+  if (!t.unaVez && cUltima.get() !== ultimaOriginal) {
     estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
     // si todavía no empezaste con las 3 de hoy, se vuelven a elegir con la fecha nueva
     estado = reelegirSiNoEmpezo(estado, hoyLocal());
@@ -1189,44 +1338,59 @@ document.getElementById('cerrar-tarea').onclick = cerrarHojaTarea;
 document.getElementById('velo-tarea').onclick = cerrarHojaTarea;
 document.getElementById('cerrar-iconos').onclick = () => cerrarHoja(hojaIconos);
 document.getElementById('velo-iconos').onclick = () => cerrarHoja(hojaIconos);
-document.getElementById('nueva-tarea').onclick = () => abrirHojaTarea(null);
+// El «+» de la cabecera: en Hoy, anotar rápido (1 vez · hoy, con el teclado abierto); en Tareas, una tarea nueva.
+document.getElementById('nueva-tarea').onclick = () => {
+  if (pantallaActual === 'hoy') {
+    abrirHojaTarea(null, { unaVezHoy: true });
+    nombreTarea.focus();
+  } else {
+    abrirHojaTarea(null);
+  }
+};
 // Hoy: las 3 de hoy, «Tengo X minutos» y la tarea en curso, de a 1.
 // Las reglas (cuáles son las 3, qué entra, el orden) son de reglas/hoy.js; acá solo se dibuja y se guarda.
 
 const listaHoy = document.getElementById('lista-hoy');
-const notaTengo = document.getElementById('nota-tengo');
 const empezarBtn = document.getElementById('empezar');
 const minutosEl = document.getElementById('minutos');
 let minutos = 20;
 
-// La 1.ª vez del día elige las 3 de hoy (después quedan fijas hasta mañana).
+// La 1.ª vez del día elige las 3 de hoy (después quedan fijas hasta mañana); si les falta lugar, se completan.
 function prepararDia() {
   const antes = estado;
-  estado = asegurarLasTres(estado, hoyLocal());
+  estado = completarLasTres(asegurarLasTres(estado, hoyLocal()), hoyLocal());
   if (estado !== antes) guardarDatos();
 }
 
+// Hoy: para hoy (las de 1 vez), las 3 de hoy y, si esas ya no tienen nada pendiente, también tocan.
 function pintarHoy() {
   const hoy = hoyLocal();
-  const tres = lasTres(estado);
+  const conEstado = t => estadoDelDia(estado.historial, t.id, hoy) || 'toca';
+  const unaVez = paraHoyUnaVez(estado.tareas, estado.historial, hoy).map(t => filaTarea(t, conEstado(t), lineaUnaVez(t, hoy)));
+  const tres = lasTres(estado).map(t => filaTarea(t, conEstado(t), `${t.minutos} min`));
+  const mas = tambienTocan(estado, hoy).map(t => filaTarea(t, 'toca', `${t.minutos} min`));
   const titulo = diaCumplido(estado, hoy) ? 'las 3 de hoy · cumplido' : 'las 3 de hoy';
-  listaHoy.innerHTML = tres.length
-    ? `<div class="lista"><section class="seccion"><h2>${titulo}</h2><div>${tres.map(t =>
-      filaTarea(t, estadoDelDia(estado.historial, t.id, hoy) || 'toca', `${t.minutos} min`)).join('')}</div></section></div>`
+  listaHoy.innerHTML = unaVez.length || tres.length || mas.length
+    ? '<div class="lista">' + seccionFilas('para hoy', unaVez) + seccionFilas(titulo, tres) + seccionFilas('también tocan', mas) + '</div>'
     : '<p class="nada lista">Hoy no toca nada.</p>';
   pintarTengo();
 }
 
-// «Tengo X minutos»: qué entra; si no entra ninguna, la más corta y «Empezar» apagado.
+// «Tengo X minutos»: los minutos que no alcanzan para ninguna tarea van apagados; si el elegido quedó apagado,
+// pasa al más chico que alcanza. Sin ninguno, «Empezar» apagado.
 function pintarTengo() {
-  const { entran, masCorta } = queEntra(paraOfrecer(estado, hoyLocal()), minutos);
-  empezarBtn.disabled = !entran.length;
-  if (entran.length) notaTengo.textContent = '';
-  else if (masCorta) notaTengo.textContent = `No entra ninguna. La más corta: ${masCorta.nombre}, ${masCorta.minutos} min.`;
-  else notaTengo.textContent = 'No queda nada que toque hoy.';
+  const lista = paraOfrecer(estado, hoyLocal());
+  const botones = [...minutosEl.querySelectorAll('button')];
+  const posibles = minutosPosibles(lista, botones.map(b => +b.dataset.op));
+  if (!posibles.includes(minutos) && posibles.length) minutos = posibles[0];
+  botones.forEach(b => {
+    b.disabled = !posibles.includes(+b.dataset.op);
+    b.setAttribute('aria-pressed', posibles.length > 0 && +b.dataset.op === minutos);
+  });
+  empezarBtn.disabled = !posibles.length;
 }
 
-function pintarTodo() { pintarHoy(); pintarTareas(); }
+function pintarTodo() { prepararDia(); pintarHoy(); pintarTareas(); }
 
 minutosEl.addEventListener('click', e => {
   const b = e.target.closest('button[data-op]');

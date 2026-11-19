@@ -2,7 +2,7 @@
 // Cada cambio en la forma de guardar sube VERSION y suma en MIGRACIONES cómo pasar de la versión anterior a la nueva.
 // Las migraciones no se cambian nunca después de publicadas: llevan sus datos adentro.
 
-const VERSION = 3;
+const VERSION = 4;
 
 // MIGRACIONES[n]: datos de la versión n → datos de la versión n + 1.
 const MIGRACIONES = {
@@ -25,6 +25,9 @@ const MIGRACIONES = {
   }),
   // 2 → 3: las 3 de hoy (se eligen la 1.ª vez que se abre la app en el día). El historial suma «a-medias» y «salteada».
   2: d => ({ ...d, las3: null }),
+  // 3 → 4: llegan las tareas de 1 vez ({ unaVez: true, fecha: 'AAAA-MM-DD' } en vez de min y max). Lo guardado no cambia;
+  // el número nuevo evita que una versión vieja de la app (o una copia) lea tareas que no entiende.
+  3: d => ({ ...d }),
 };
 
 function estadoNuevo(version = VERSION, migraciones = MIGRACIONES) {
