@@ -33,9 +33,25 @@ function tocarCirculo(fila, tarea) {
   const yaHecha = ultimaVez(estado.historial, tarea.id) === hoy;
   estado = yaHecha ? desmarcarHecha(estado, tarea.id, hoy) : marcarHecha(estado, tarea.id, hoy);
   guardarDatos();
-  // el círculo cambia ahí mismo; después se acomodan las listas
+  // el círculo se llena ahí mismo (con el salto de premio); después la fila sale y se acomodan las listas
   fila.dataset.estado = yaHecha ? 'toca' : 'hecha';
-  setTimeout(pintarTodo, 450);
+  if (!yaHecha) fila.classList.add('premio');
+  setTimeout(() => sacarFila(fila, () => { pintarTodo(); entrarFila(tarea.id); }), 320);
+}
+
+// La fila sale de la lista: se achica y cierra su lugar (300 ms); después, «despues».
+function sacarFila(fila, despues) {
+  fila.style.height = fila.offsetHeight + 'px';
+  void fila.offsetHeight;
+  fila.classList.add('sale');
+  fila.style.height = '0px';
+  fila.style.minHeight = '0px';
+  setTimeout(despues, 300);
+}
+
+// La fila de una tarea entra en su lugar (si está en alguna lista).
+function entrarFila(id) {
+  document.querySelectorAll(`.fila[data-id="${id}"]`).forEach(f => f.classList.add('entra'));
 }
 
 // La línea de una de 1 vez para hoy: los minutos y, si está atrasada, «de ayer» o «hace N días» en blanco.
@@ -270,6 +286,8 @@ guardarBtn.onclick = () => {
   guardarDatos();
   cerrarHojaTarea();
   pintarTodo();
+  // la tarea nueva entra en la lista en su lugar
+  if (!enEdicion) entrarFila(t.id);
 };
 
 // Borrar pide 2 toques: el 1.º avisa, el 2.º borra (si no, se vuelve a «Borrar tarea» a los 3 segundos).

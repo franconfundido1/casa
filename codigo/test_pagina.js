@@ -399,8 +399,51 @@ function chequear(nombre, ok, detalle = '') {
   await p.tap('.pestanas [data-pantalla="ajustes"]');
   const firmaApp = await p.evaluate(() => { const f = document.querySelector('.firma-app'); const r = f.getBoundingClientRect(), n = document.querySelector('.pestanas').getBoundingClientRect();
     return [[...f.children].map(c => c.textContent.trim()).filter(Boolean).join(' '), f.querySelector('use').getAttribute('href'), Math.round(n.top - r.bottom)]; });
-  chequear('ajustes: abajo de todo, el logo chico con «str3ak» y la versión', firmaApp[0] === 'str3ak 1.0' && firmaApp[1] === '#logo' && firmaApp[2] < 40, JSON.stringify(firmaApp));
+  chequear('ajustes: abajo de todo, el logo chico con «str3ak» y la versión', firmaApp[0] === 'str3ak 1.1' && firmaApp[1] === '#logo' && firmaApp[2] < 40, JSON.stringify(firmaApp));
   await p.tap('.pestanas [data-pantalla="hoy"]');
+
+  // movimiento: premio, salida, entrada y día cumplido
+  await p.evaluate(() => localStorage.clear());
+  await p.reload();
+  await p.waitForTimeout(900);
+  await p.tap('#lista-hoy [data-id="cama"] [data-circulo]');
+  const alTocar = await p.getAttribute('#lista-hoy [data-id="cama"]', 'class');
+  await p.waitForTimeout(400);
+  const saliendo = await p.evaluate(() => { const f = document.querySelector('#lista-hoy [data-id="cama"]'); return f ? [f.className, f.style.height] : null; });
+  chequear('movimiento: al completar, el círculo da el salto de premio y después la fila se achica y sale', /premio/.test(alTocar) && saliendo && /sale/.test(saliendo[0]) && saliendo[1] === '0px', JSON.stringify([alTocar, saliendo]));
+  await p.waitForTimeout(400);
+  chequear('movimiento: después de salir, ya no está en Hoy', !(await p.$('#lista-hoy [data-id="cama"]')));
+  await p.tap('.pestanas [data-pantalla="tareas"]');
+  await p.tap('#nueva-tarea');
+  await p.waitForTimeout(400);
+  await p.fill('#nombre-tarea', 'Regar');
+  await p.tap('#guardar-tarea');
+  const idNueva = (await guardadas()).tareas.at(-1).id;
+  chequear('movimiento: la tarea nueva entra en su lugar, con animación', /entra/.test(await p.getAttribute(`#lista-tareas [data-id="${idNueva}"]`, 'class')));
+  await p.tap('.pestanas [data-pantalla="hoy"]');
+  // todo hecho: día cumplido
+  await p.evaluate(() => {
+    const e = JSON.parse(localStorage.getItem('casa-v1'));
+    const f = new Date(), dia = `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`;
+    e.tareas = e.tareas.slice(0, 2);
+    e.historial = e.tareas.map(t => ({ tarea: t.id, dia, que: 'hecha' }));
+    e.las3 = null;
+    localStorage.setItem('casa-v1', JSON.stringify(e));
+  });
+  await p.reload();
+  await p.waitForTimeout(900);
+  const cumplido = await p.evaluate(() => { const c = document.querySelector('#lista-hoy .cumplido'); return c && [c.dataset.estado, getComputedStyle(c.querySelector('.estado i')).backgroundColor, c.textContent.trim()]; });
+  chequear('movimiento: con todo hecho, «día cumplido» con el círculo grande lleno', !!cumplido && cumplido[0] === 'hecha' && cumplido[1] === 'rgb(255, 255, 255)' && cumplido[2] === 'día cumplido', JSON.stringify(cumplido));
+  const ctxQuieto2 = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const pq2 = await ctxQuieto2.newPage();
+  await pq2.goto(U);
+  chequear('movimiento: con «reducir movimiento», sin animaciones', await pq2.evaluate(() => {
+    const s = document.createElement('div'); s.className = 'fila entra'; document.body.append(s);
+    return getComputedStyle(s).animationName === 'none';
+  }));
+  await ctxQuieto2.close();
+  await p.evaluate(() => localStorage.clear());
+  await p.reload();
 
   // instalable
   const man = await (await p.request.get(U + 'manifest.json')).json();

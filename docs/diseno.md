@@ -189,8 +189,12 @@ El logo chico (`#logo`, los 3 círculos), «str3ak» y la versión en gris (`VER
 | Entrada (al abrir la app) | Los 3 círculos del logo crecen de a 1 (toca, a medias, hecha); después el logo crece un poco y todo se desvanece, y queda «hoy» debajo. No tapa los toques | 700 ms en total: cada círculo 220 ms con `--curva-ios`, 80 ms entre uno y otro; salida 220 ms `ease-in` desde los 480 ms |
 | Hoja | Sube desde abajo; lo de atrás se vela | 300 ms, `--curva-ios` (`cubic-bezier(.32,.72,0,1)`) |
 | Cambio de pestaña | Fundido del contenido | 200 ms |
-| Siguiente tarea | La actual sale a la izquierda, la nueva entra desde la derecha | 250 ms |
-| Cambio de estado del círculo | Se llena con un leve rebote | 250 ms |
+| Completar (premio) | El círculo se llena de blanco con el ✓ y da un salto corto (crece a 1,25 y vuelve). En las listas, solo en la fila que se acaba de marcar; en la tarea en curso, en el círculo grande (también con a medias y saltear) | 320 ms, `--curva-ios` |
+| Sale de la lista | Después del premio, la fila se achica (a 0,96), se desvanece y cierra su lugar; las de abajo suben | 300 ms, `--curva-ios` (el desvanecido, 240 ms `ease-out`) |
+| Entra a la lista | La tarea nueva (o la que cambió de grupo en Tareas) abre su lugar y aparece | 300 ms, `--curva-ios` |
+| Siguiente tarea (en curso) | La actual sale a la izquierda, la nueva entra deslizándose desde la derecha | 250 ms, `--curva-ios` |
+| Día cumplido | Con todo lo del día hecho, en vez de la lista vacía: un círculo grande (120 px) que crece desde 0,7 y se llena de blanco con el ✓, con «día cumplido» en gris abajo | 400 ms, `--curva-ios` (pasa por 1,08) |
+| Cambiar los minutos (Hoy) | La lista nueva entra con un fundido | 200 ms |
 | Elegir una opción | Se llena de blanco | 200 ms |
 | Número que cambia | Fundido | 150 ms |
 

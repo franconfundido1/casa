@@ -181,7 +181,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .boton-circulo svg { width: 20px; height: 20px; }
 
 /* Fila de tarea: directo sobre el negro, con mucho aire; el separador empieza después del círculo */
-.lista { animation: fundido var(--t-corta) ease-out; }
+.lista.fundir { animation: fundido var(--t-corta) ease-out; }
 .fila {
   display: flex; align-items: center; gap: var(--esp-3);
   min-height: var(--alto-fila); padding: 0 var(--margen) 0 calc(var(--margen) - 7px);
@@ -213,13 +213,13 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 }
 .estado i svg { position: absolute; width: 60%; height: 60%; opacity: 0; transition: opacity var(--t-corta); }
 [data-estado="toca"] .estado i { border-color: var(--texto); }
-[data-estado="hecha"] .estado i { background: var(--texto); border-color: var(--texto); animation: rebote var(--t-tarea); }
+[data-estado="hecha"] .estado i { background: var(--texto); border-color: var(--texto); }
 [data-estado="hecha"] .estado i .i-check { opacity: 1; }
 /* A medias: aro blanco y la mitad llena; salteada: gris oscuro con la flecha gris (lo único que brilla es el blanco) */
 .estado i::after { content: ""; position: absolute; inset: 0 50% 0 0; background: var(--texto); transform: scaleX(0); transform-origin: left; transition: transform var(--t-corta); }
-[data-estado="a-medias"] .estado i { border-color: var(--texto); animation: rebote var(--t-tarea); }
+[data-estado="a-medias"] .estado i { border-color: var(--texto); }
 [data-estado="a-medias"] .estado i::after { transform: scaleX(1); }
-[data-estado="salteada"] .estado i { color: var(--texto-2); animation: rebote var(--t-tarea); }
+[data-estado="salteada"] .estado i { color: var(--texto-2); }
 [data-estado="salteada"] .estado i .i-salteada { opacity: 1; }
 [data-estado="hecha"] .nombre, [data-estado="salteada"] .nombre, [data-estado="no"] .nombre { color: var(--texto-2); }
 /* En las listas, el ícono de la tarea va adentro del círculo, chico y del color del aro (blanco si toca, gris si no);
@@ -227,7 +227,19 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .fila .estado i .i-tarea { width: 55%; height: 55%; opacity: 1; color: var(--texto-2); }
 .fila[data-estado="toca"] .estado i .i-tarea { color: var(--texto); }
 .fila[data-estado="hecha"] .estado i .i-tarea, .fila[data-estado="salteada"] .estado i .i-tarea, .fila[data-estado="a-medias"] .estado i .i-tarea { opacity: 0; }
-@keyframes rebote { 50% { transform: scale(1.15); } }
+/* Movimiento (docs/diseno.md › Transiciones). Todo entre 200 y 400 ms; con «reducir movimiento», nada (base.css). */
+/* Premio al completar: el círculo se llena de blanco y da un salto corto (320 ms) */
+.fila.premio .estado i,
+.tarea[data-estado="hecha"] .estado i, .tarea[data-estado="a-medias"] .estado i, .tarea[data-estado="salteada"] .estado i { animation: premio 320ms var(--curva-ios); }
+@keyframes premio { 40% { transform: scale(1.25); } }
+/* Sale de la lista: se achica, se desvanece y cierra su lugar (300 ms) */
+.fila.sale {
+  overflow: hidden; opacity: 0; transform: scale(.96);
+  transition: height 300ms var(--curva-ios), min-height 300ms var(--curva-ios), opacity 240ms ease-out, transform 300ms var(--curva-ios);
+}
+/* Entra a la lista: abre su lugar y aparece (300 ms) */
+.fila.entra { overflow: hidden; animation: fila-entra 300ms var(--curva-ios) both; }
+@keyframes fila-entra { from { opacity: 0; max-height: 0; min-height: 0; transform: scale(.96); } to { opacity: 1; max-height: 120px; transform: none; } }
 
 /* Pastillas para elegir: lo elegido, blanco lleno con letra negra; lo demás, contorno fino gris */
 .pastillas { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--esp-3); }
@@ -387,6 +399,18 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .fin .fila:active { opacity: 1; }
 .fin .fila + .fila::before { left: calc(var(--circulo) + var(--esp-5)); right: 0; }
 .fin + .boton { margin-bottom: var(--esp-2); }
+
+/* Día cumplido: con todo lo del día hecho, un círculo grande que se llena de blanco (400 ms) */
+.cumplido { display: flex; flex-direction: column; align-items: center; gap: var(--esp-4); padding-top: 18vh; }
+.cumplido .estado { width: auto; height: auto; }
+.cumplido .estado i { --circulo: var(--circulo-grande); border-width: 3px; animation: cumplido 400ms var(--curva-ios) both; }
+.cumplido .estado i svg { width: 50%; height: 50%; }
+.cumplido p { font: var(--letra-seccion); color: var(--texto-2); animation: fundido 400ms ease-out both; }
+@keyframes cumplido {
+  from { transform: scale(.7); background: var(--gris-lleno); border-color: var(--texto); }
+  60% { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
 /* La entrada (docs/diseno.md › Transiciones): 700 ms en total, para que no moleste cada vez que se abre.
    0–380 ms: los 3 círculos crecen de a 1 (220 ms cada uno, 80 ms entre uno y otro, curva iOS).
    480–700 ms: el logo crece un poco y todo se desvanece, y queda «hoy» debajo. Sin animación si se pide menos movimiento. */
@@ -495,7 +519,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
     <input type="file" id="archivo-copia" accept=".json,application/json" hidden>
     <p class="nota-ajustes" id="nota-copia"></p>
   </div>
-  <div class="firma-app"><svg aria-hidden="true"><use href="#logo"/></svg><b>str3ak</b><span class="num">1.0</span></div>
+  <div class="firma-app"><svg aria-hidden="true"><use href="#logo"/></svg><b>str3ak</b><span class="num">1.1</span></div>
 </section>
 </main>
 <nav class="pestanas">
@@ -1102,9 +1126,25 @@ function tocarCirculo(fila, tarea) {
   const yaHecha = ultimaVez(estado.historial, tarea.id) === hoy;
   estado = yaHecha ? desmarcarHecha(estado, tarea.id, hoy) : marcarHecha(estado, tarea.id, hoy);
   guardarDatos();
-  // el círculo cambia ahí mismo; después se acomodan las listas
+  // el círculo se llena ahí mismo (con el salto de premio); después la fila sale y se acomodan las listas
   fila.dataset.estado = yaHecha ? 'toca' : 'hecha';
-  setTimeout(pintarTodo, 450);
+  if (!yaHecha) fila.classList.add('premio');
+  setTimeout(() => sacarFila(fila, () => { pintarTodo(); entrarFila(tarea.id); }), 320);
+}
+
+// La fila sale de la lista: se achica y cierra su lugar (300 ms); después, «despues».
+function sacarFila(fila, despues) {
+  fila.style.height = fila.offsetHeight + 'px';
+  void fila.offsetHeight;
+  fila.classList.add('sale');
+  fila.style.height = '0px';
+  fila.style.minHeight = '0px';
+  setTimeout(despues, 300);
+}
+
+// La fila de una tarea entra en su lugar (si está en alguna lista).
+function entrarFila(id) {
+  document.querySelectorAll(`.fila[data-id="${id}"]`).forEach(f => f.classList.add('entra'));
 }
 
 // La línea de una de 1 vez para hoy: los minutos y, si está atrasada, «de ayer» o «hace N días» en blanco.
@@ -1339,6 +1379,8 @@ guardarBtn.onclick = () => {
   guardarDatos();
   cerrarHojaTarea();
   pintarTodo();
+  // la tarea nueva entra en la lista en su lugar
+  if (!enEdicion) entrarFila(t.id);
 };
 
 // Borrar pide 2 toques: el 1.º avisa, el 2.º borra (si no, se vuelve a «Borrar tarea» a los 3 segundos).
@@ -1392,14 +1434,21 @@ function prepararDia() {
 
 // Hoy: la lista sigue a los minutos. Muestra todo lo que entra en ese tiempo, en el orden en que se va a ofrecer
 // (las de 1 vez primero; después las 3 de hoy, sin marcarlas; después lo más vencido). Lo que no entra no se muestra.
-function pintarHoy() {
+// fundir: la lista entra con un fundido (al cambiar los minutos).
+function pintarHoy(fundir = false) {
   const hoy = hoyLocal();
   const lista = paraOfrecer(estado, hoy);
   pintarMinutos(lista);
   const { entran } = queEntra(lista, minutos);
-  listaHoy.innerHTML = entran.length
-    ? '<div class="lista">' + entran.map(t => filaTarea(t, 'toca', t.unaVez ? lineaUnaVez(t, hoy) : `${t.minutos} min`)).join('') + '</div>'
-    : '<p class="nada lista">Hoy no toca nada.</p>';
+  const algoHecho = estado.historial.some(h => h.dia === hoy && h.que === 'hecha');
+  if (entran.length) {
+    listaHoy.innerHTML = `<div class="lista${fundir ? ' fundir' : ''}">` + entran.map(t => filaTarea(t, 'toca', t.unaVez ? lineaUnaVez(t, hoy) : `${t.minutos} min`)).join('') + '</div>';
+  } else if (algoHecho) {
+    // todo lo del día hecho: día cumplido, un círculo grande que se llena
+    listaHoy.innerHTML = `<div class="cumplido" data-estado="hecha"><span class="estado"><i>${ic('check-bold', 'i-check')}</i></span><p>día cumplido</p></div>`;
+  } else {
+    listaHoy.innerHTML = '<p class="nada lista fundir">Hoy no toca nada.</p>';
+  }
 }
 
 // Los minutos: los que no alcanzan para ninguna tarea van apagados; si el elegido quedó apagado,
@@ -1421,7 +1470,7 @@ minutosEl.addEventListener('click', e => {
   const b = e.target.closest('button[data-op]');
   if (!b) return;
   minutos = +b.dataset.op;
-  pintarHoy();
+  pintarHoy(true);
 });
 
 listaHoy.addEventListener('click', e => {

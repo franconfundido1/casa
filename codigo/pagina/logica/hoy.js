@@ -15,14 +15,21 @@ function prepararDia() {
 
 // Hoy: la lista sigue a los minutos. Muestra todo lo que entra en ese tiempo, en el orden en que se va a ofrecer
 // (las de 1 vez primero; después las 3 de hoy, sin marcarlas; después lo más vencido). Lo que no entra no se muestra.
-function pintarHoy() {
+// fundir: la lista entra con un fundido (al cambiar los minutos).
+function pintarHoy(fundir = false) {
   const hoy = hoyLocal();
   const lista = paraOfrecer(estado, hoy);
   pintarMinutos(lista);
   const { entran } = queEntra(lista, minutos);
-  listaHoy.innerHTML = entran.length
-    ? '<div class="lista">' + entran.map(t => filaTarea(t, 'toca', t.unaVez ? lineaUnaVez(t, hoy) : `${t.minutos} min`)).join('') + '</div>'
-    : '<p class="nada lista">Hoy no toca nada.</p>';
+  const algoHecho = estado.historial.some(h => h.dia === hoy && h.que === 'hecha');
+  if (entran.length) {
+    listaHoy.innerHTML = `<div class="lista${fundir ? ' fundir' : ''}">` + entran.map(t => filaTarea(t, 'toca', t.unaVez ? lineaUnaVez(t, hoy) : `${t.minutos} min`)).join('') + '</div>';
+  } else if (algoHecho) {
+    // todo lo del día hecho: día cumplido, un círculo grande que se llena
+    listaHoy.innerHTML = `<div class="cumplido" data-estado="hecha"><span class="estado"><i>${ic('check-bold', 'i-check')}</i></span><p>día cumplido</p></div>`;
+  } else {
+    listaHoy.innerHTML = '<p class="nada lista fundir">Hoy no toca nada.</p>';
+  }
 }
 
 // Los minutos: los que no alcanzan para ninguna tarea van apagados; si el elegido quedó apagado,
@@ -44,7 +51,7 @@ minutosEl.addEventListener('click', e => {
   const b = e.target.closest('button[data-op]');
   if (!b) return;
   minutos = +b.dataset.op;
-  pintarHoy();
+  pintarHoy(true);
 });
 
 listaHoy.addEventListener('click', e => {

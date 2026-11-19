@@ -43,3 +43,15 @@
 .fin .fila:active { opacity: 1; }
 .fin .fila + .fila::before { left: calc(var(--circulo) + var(--esp-5)); right: 0; }
 .fin + .boton { margin-bottom: var(--esp-2); }
+
+/* Día cumplido: con todo lo del día hecho, un círculo grande que se llena de blanco (400 ms) */
+.cumplido { display: flex; flex-direction: column; align-items: center; gap: var(--esp-4); padding-top: 18vh; }
+.cumplido .estado { width: auto; height: auto; }
+.cumplido .estado i { --circulo: var(--circulo-grande); border-width: 3px; animation: cumplido 400ms var(--curva-ios) both; }
+.cumplido .estado i svg { width: 50%; height: 50%; }
+.cumplido p { font: var(--letra-seccion); color: var(--texto-2); animation: fundido 400ms ease-out both; }
+@keyframes cumplido {
+  from { transform: scale(.7); background: var(--gris-lleno); border-color: var(--texto); }
+  60% { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
