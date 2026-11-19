@@ -54,19 +54,19 @@ Capturas solo si cambió algo que se ve o si las pido. Capturas a 390×844 (iPho
 Las reglas:
 
 1. **Referencias reales:** Recordatorios de Apple, Things 3, Todoist y Streaks. Lo que las hace sentir app está anotado en `docs/referencias.md`, con las capturas del usuario. Ante una duda de diseño, se mira cómo lo resuelven ellas.
-2. **Es una app de iPhone: Human Interface Guidelines de Apple.**
-   - Letra del sistema (`-apple-system`; en el iPhone, SF Pro) para el texto. Letra propia (embebida, SIL OFL) solo para los títulos y los números grandes. En el entorno de pruebas (Linux) SF Pro no está: las capturas de Playwright **no sirven para aprobar diseño**; lo que vale es lo que el usuario ve en su iPhone.
-   - Barra de pestañas fija abajo, minimalista, con 3 pestañas (ícono y etiqueta): **Hoy, Tareas y Ajustes**. Nunca pestañas de relleno.
-   - Hojas que suben desde abajo; se cierran con un botón o tocando afuera. Cerrarlas arrastrando, solo si queda igual que en iOS.
-   - Listas al estilo iOS (filas, separadores finos, agrupadas).
+2. **Lo visual sale de la app de hábitos** (`docs/referencias/habitos-*.png`), dada vuelta a modo oscuro: blanco lleno sobre negro. Si choca con Apple, en lo visual manda la de hábitos. De Apple quedan solo:
    - Zonas seguras: `env(safe-area-inset-*)` para la isla y la barra de inicio.
-3. **1 sola familia de íconos, embebida: Phosphor** (MIT), contorno en general y relleno en la pestaña elegida. Nada de emojis ni íconos de otra familia. Los SF Symbols no se usan (su licencia no lo permite en una web).
+   - Hojas que suben desde abajo; se cierran con un botón o tocando afuera. Cerrarlas arrastrando, solo si queda igual que en iOS.
+   - Barra de pestañas fija abajo, con 3 pestañas (ícono y etiqueta): **Hoy, Tareas y Ajustes**. Nunca pestañas de relleno.
+   - Todo lo de «se siente app» (regla 4).
+   - Letra: League Spartan (embebida, SIL OFL) para todo. En el entorno de pruebas (Linux) las capturas de Playwright **no sirven para aprobar diseño**; lo que vale es lo que el usuario ve en su iPhone.
+3. **1 sola familia de íconos, embebida: Phosphor** (MIT), relleno donde importa (la pestaña elegida) y contorno en lo chico. Nada de emojis ni íconos de otra familia. Los SF Symbols no se usan (su licencia no lo permite en una web).
 4. **Se siente app, no web:**
    - Transiciones cortas entre pantallas (unos 200 a 300 ms); con `prefers-reduced-motion`, sin animación.
    - Sin selección de texto al mantener apretado (salvo en los campos de texto), sin resaltado al tocar (`-webkit-tap-highlight-color: transparent`), sin menú de enlace al mantener apretado.
    - Sin «arrastrar para recargar» ni rebote de la página: la barra de pestañas y la de arriba quedan quietas, solo se mueve el contenido (`overscroll-behavior: none`).
    - Nada aparece de golpe: lo que entra o cambia, entra con una transición corta.
-   - Toques de 44 px como mínimo; botones con el estilo del sistema, no hechos a mano.
+   - Toques de 44 px como mínimo; botones con los componentes de `docs/diseno.md`, no hechos a mano.
 5. **Sombra solo en lo que flota** (hojas, menús). El resto plano: la jerarquía sale del tamaño y del color, no de cajas.
 6. **Sistema de diseño escrito** en `docs/diseno.md`: colores con 1 trabajo cada uno, escala de tamaños (variables CSS, sin valores sueltos), componentes. Bocetos aprobados en `bocetos/`.
 7. **Identidad propia y sobria.** Nada de combinaciones «premium» genéricas (degradés, violeta con negro, vidrio por todos lados). No copiar la identidad de Akordia.

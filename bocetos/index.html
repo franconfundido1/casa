@@ -8,42 +8,42 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bocetos">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icono-180.png">
 <title>Bocetos · casa</title>
 <link rel="stylesheet" href="sistema.css">
-<link rel="apple-touch-icon" href="icono-180.png">
 <style>
-  .muestra { width: 28px; height: 28px; border-radius: 50%; margin: 0 var(--esp-2); flex: none; border: .5px solid var(--separador); }
-  .fila .valor svg { width: 18px; height: 18px; color: var(--texto-3); }
+  .muestra { width: var(--circulo); height: var(--circulo); border-radius: 50%; margin: 0 7px; flex: none; border: var(--trazo) solid var(--linea); }
+  .fila .valor svg { width: 18px; height: 18px; color: var(--texto-2); }
   a.fila { padding-left: var(--margen); }
   a.fila + a.fila::before { left: var(--margen); }
-
   .icono { display: flex; align-items: center; gap: var(--esp-4); padding: var(--esp-2) var(--margen) 0; }
-  .icono img { width: 64px; height: 64px; border-radius: 15px; border: .5px solid var(--separador); }
+  .icono img { width: 64px; height: 64px; border-radius: 15px; border: var(--trazo) solid var(--linea); }
   .icono p { font: var(--letra-secundaria); color: var(--texto-2); }
 </style>
 </head>
 <body>
+<header class="titulo"><div><h1>bocetos</h1><small>para mirar en el iPhone</small></div></header>
+
 <main class="pantalla">
-  <div class="titulo"><small>Paso C · para mirar en el iPhone</small><h1>Bocetos</h1></div>
 
   <section class="seccion">
-    <h2>Pantallas</h2>
+    <h2>pantallas</h2>
     <div id="pantallas"></div>
     <p class="nota">Datos de ejemplo: miércoles 18 de noviembre, 18:40. En los bocetos, la pestaña Ajustes trae acá.</p>
   </section>
 
   <section class="seccion">
-    <h2>Ícono</h2>
+    <h2>ícono</h2>
     <div class="icono"><img src="icono-180.png" alt=""><p>El círculo de «hecha», blanco sobre negro, sin texto.</p></div>
   </section>
 
   <section class="seccion">
-    <h2>Estados</h2>
+    <h2>estados</h2>
     <div id="estados"></div>
   </section>
 
   <section class="seccion">
-    <h2>Colores</h2>
+    <h2>colores</h2>
     <div id="colores"></div>
     <p class="nota">Detalle en docs/diseno.md.</p>
   </section>
@@ -51,7 +51,7 @@
 <script src="boceto.js"></script>
 <script>
   const pantallas = [
-    ['Hoy', 'Las 3 de hoy y «Tengo X minutos»', 'hoy.html'],
+    ['Hoy', 'Las 3 de hoy y «tengo X minutos»', 'hoy.html'],
     ['Tarea en curso', 'Hecha, a medias y saltear', 'hoy.html#curso'],
     ['Tareas', 'Las 9 de arranque', 'tareas.html'],
     ['Editar tarea', 'La hoja, con Verdulería', 'tareas.html#editar'],
@@ -67,10 +67,9 @@
     fila({ nombre: n, linea: 'cada 3 días · 10 min', estado: e })).join('');
 
   const colores = [
-    ['--texto', 'Texto, lo que toca, botón principal'], ['--texto-2', 'Línea gris, encabezados, salteada'],
-    ['--texto-3', 'Apagado, lo que no toca'], ['--marca-selector', 'Opción elegida del selector'],
-    ['--superficie', 'Grupos de la hoja'], ['--flotante', 'Hoja, barra de pestañas'], ['--fondo', 'Fondo'],
-    ['--borrar', 'Solo «Borrar tarea»'],
+    ['--texto', 'Texto, lo elegido, lo que toca'], ['--texto-2', 'Texto gris, lo no elegido, la flecha de «salteada»'],
+    ['--texto-3', 'Apagado'], ['--linea', 'Contornos finos y separadores'], ['--gris-lleno', 'Círculo sin hacer, el ×'],
+    ['--borrar', 'Solo «Borrar tarea»'], ['--fondo', 'Fondo'],
   ];
   document.getElementById('colores').innerHTML = colores.map(([v, n]) =>
     `<div class="fila"><span class="muestra" style="background: var(${v})"></span><span class="texto"><span class="nombre">${n}</span><span class="linea">${v}</span></span></div>`).join('');

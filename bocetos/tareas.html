@@ -8,99 +8,124 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bocetos">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icono-180.png">
 <title>Tareas · boceto</title>
 <link rel="stylesheet" href="sistema.css">
-<link rel="apple-touch-icon" href="icono-180.png">
 <style>
-  .nombre-tarea { display: block; width: 100%; background: none; border: 0; outline: 0; padding: var(--esp-4); font: var(--letra-titulo-2); caret-color: var(--texto); }
+  /* Hoja de tarea, como «nuevo hábito» */
+  /* El círculo de la tarea con su ícono; el lápiz avisa que se toca para cambiarlo */
+  .firma { position: relative; width: 88px; height: 88px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
+    background: var(--texto); color: var(--fondo); transition: transform 100ms; }
+  .firma:active { transform: scale(.95); }
+  .firma > svg { width: 44px; height: 44px; }
+  .firma .lapiz { position: absolute; right: -2px; bottom: -2px; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--texto); border: 2px solid var(--fondo); display: grid; place-items: center; }
+  .firma .lapiz svg { width: 15px; height: 15px; }
+
+  /* Hoja para elegir el ícono, encima de la de la tarea */
+  .hoja.chica { top: auto; z-index: 23; }
+  .hoja.chica + .velo { z-index: 22; }
+  .hoja.chica .hoja-arriba h2 { font: var(--letra-titulo); color: var(--texto); }
+  .grilla-iconos { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--esp-2); padding: var(--esp-4) 0 var(--esp-2); }
+  .grilla-iconos button {
+    height: 92px; border-radius: var(--esp-5); border: 2px solid transparent;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--esp-2);
+    font: var(--letra-nota); color: var(--texto-2); transition: border-color var(--t-corta), color var(--t-corta), transform 100ms;
+  }
+  .grilla-iconos button svg { width: 34px; height: 34px; color: var(--texto); }
+  .grilla-iconos button:active { transform: scale(.95); }
+  .grilla-iconos button[aria-pressed="true"] { border-color: var(--texto); color: var(--texto); font-weight: 600; }
+  .nombre-tarea {
+    display: block; width: 100%; background: none; border: 0; outline: 0; text-align: center;
+    font: var(--letra-titulo); padding: var(--esp-5) 0 var(--esp-2); caret-color: var(--texto);
+  }
   .nombre-tarea::placeholder { color: var(--texto-3); }
-  .hoja .selector { margin-bottom: var(--esp-3); }
-  .grupo .borrar { justify-content: center; padding: 0; color: var(--borrar); font: var(--letra-cuerpo); }
-  .grupo .borrar:active { background: rgba(255, 255, 255, .06); }
-  .rango { transition: opacity var(--t-corta); }
+  .rayita { width: 56px; height: 2px; border-radius: 1px; background: var(--linea); margin: 0 auto var(--esp-7); }
+  .bloque-hoja { margin-bottom: var(--esp-7); }
+  .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
+  .cabeza svg { width: 20px; height: 20px; }
+  .pastillas { margin-bottom: var(--esp-5); }
+  .contadores { display: flex; justify-content: center; gap: var(--esp-6); }
+  .contadores .contador { gap: var(--esp-2); }
+  .contadores .contador button { width: var(--toque); height: var(--toque); }
+  .contadores .contador .cifra { min-width: 52px; }
+  .nota-frec { font: var(--letra-nota); color: var(--texto-2); text-align: center; margin-top: var(--esp-4); }
+  .pie { padding: var(--esp-3) var(--margen) 0; display: flex; flex-direction: column; align-items: center; gap: var(--esp-1); }
 </style>
 </head>
 <body>
 
+<header class="titulo">
+  <h1>tareas</h1>
+  <button class="boton-icono" id="nueva" aria-label="Nueva tarea"></button>
+</header>
+
 <main class="pantalla">
-  <div class="barra-arriba">
-    <button class="boton-circulo" id="nueva" aria-label="Nueva tarea"></button>
-  </div>
-  <div class="titulo"><h1>Tareas</h1></div>
   <div id="lista"></div>
 </main>
 
-<section class="hoja" id="hoja" aria-label="Editar tarea">
+<section class="hoja" id="hoja" aria-label="Tarea">
   <div class="hoja-arriba">
+    <span></span>
     <button class="boton-circulo" id="cerrar" aria-label="Cerrar"></button>
-    <h2 id="titulo-hoja">Editar tarea</h2>
-    <button class="boton-circulo guardar" id="guardar" aria-label="Guardar" disabled></button>
   </div>
   <div class="hoja-cuerpo">
-    <section class="grupo">
-      <div class="bloque"><input class="nombre-tarea" id="nombre" placeholder="Nombre" autocomplete="off"></div>
-    </section>
+    <button class="firma" id="firma" aria-label="Cambiar el ícono"></button>
+    <input class="nombre-tarea" id="nombre" placeholder="nombrá la tarea" autocomplete="off">
+    <div class="rayita"></div>
 
-    <section class="grupo">
-      <div class="bloque">
-        <div class="fila">
-          <span class="texto">Minutos</span>
-          <div class="contador" id="c-min">
-            <button data-menos aria-label="Menos"></button><span class="cifra num" data-valor></span><button data-mas aria-label="Más"></button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="grupo">
-      <h2>Frecuencia</h2>
-      <div class="selector" id="sel">
-        <span class="marca"></span>
+    <div class="bloque-hoja">
+      <div class="cabeza"><span class="ic-repeat"></span>frecuencia</div>
+      <div class="pastillas" id="modo">
         <button data-op="cada">Cada</button>
         <button data-op="entre">Entre</button>
       </div>
-      <div class="bloque">
-        <div class="fila">
-          <span class="texto" id="et-desde">Cada</span>
-          <div class="contador" id="c-desde">
-            <button data-menos aria-label="Menos"></button><span class="cifra num" data-valor></span><button data-mas aria-label="Más"></button>
-          </div>
-        </div>
-        <div class="fila rango" id="fila-hasta">
-          <span class="texto">Hasta</span>
-          <div class="contador" id="c-hasta">
-            <button data-menos aria-label="Menos"></button><span class="cifra num" data-valor></span><button data-mas aria-label="Más"></button>
-          </div>
-        </div>
+      <div class="contadores">
+        <div class="contador" id="c-desde"></div>
+        <div class="contador" id="c-hasta"></div>
       </div>
-      <p class="nota" id="nota-frec"></p>
-    </section>
+      <p class="nota-frec" id="nota-frec"></p>
+    </div>
 
-    <section class="grupo" id="grupo-borrar">
-      <div class="bloque"><button class="fila borrar">Borrar tarea</button></div>
-    </section>
+    <div class="bloque-hoja">
+      <div class="cabeza"><span class="ic-timer"></span>lleva</div>
+      <div class="contador" id="c-min"></div>
+    </div>
+  </div>
+  <div class="pie">
+    <button class="boton" id="guardar" disabled>Guardar</button>
+    <button class="boton-texto borrar" id="borrar">Borrar tarea</button>
   </div>
 </section>
 <div class="velo" id="velo"></div>
+
+<section class="hoja chica" id="hoja-iconos" aria-label="Elegir ícono">
+  <div class="hoja-arriba">
+    <h2>elegir ícono</h2>
+    <button class="boton-circulo" id="cerrar-iconos" aria-label="Cerrar"></button>
+  </div>
+  <div class="hoja-cuerpo"><div class="grilla-iconos" id="grilla-iconos"></div></div>
+</section>
+<div class="velo" id="velo-iconos"></div>
 
 <script src="boceto.js"></script>
 <script>
   // Datos de docs/vision.md: miércoles 18 de noviembre, 18:40. La ropa se metió a las 18:00.
   const grupos = [
-    ['Tocan', [
-      { nombre: 'Barrer', min: 10, desde: 3, hasta: 3, estado: 'toca' },
-      { nombre: 'Verdulería', min: 20, desde: 3, hasta: 4, estado: 'toca' },
-      { nombre: 'Limpiar el baño', min: 20, desde: 7, hasta: 7, estado: 'toca' },
-      { nombre: 'Ordenar la ropa', min: 10, desde: 2, hasta: 2, estado: 'toca' },
+    ['tocan', [
+      { nombre: 'Barrer', min: 10, desde: 3, hasta: 3, icono: 'broom', estado: 'toca' },
+      { nombre: 'Verdulería', min: 20, desde: 3, hasta: 4, icono: 'carrot', estado: 'toca' },
+      { nombre: 'Limpiar el baño', min: 20, desde: 7, hasta: 7, icono: 'bathtub', estado: 'toca' },
+      { nombre: 'Ordenar la ropa', min: 10, desde: 2, hasta: 2, icono: 't-shirt', estado: 'toca' },
     ]],
-    ['Más adelante', [
-      { nombre: 'Lavar la ropa', min: 5, desde: 3, hasta: 4, estado: 'esperando' },
-      { nombre: 'Pasar el trapo', min: 20, desde: 7, hasta: 7, estado: 'no' },
-      { nombre: 'Súper', min: 60, desde: 7, hasta: 7, estado: 'no' },
+    ['más adelante', [
+      { nombre: 'Lavar la ropa', min: 5, desde: 3, hasta: 4, icono: 'washing-machine', estado: 'esperando' },
+      { nombre: 'Pasar el trapo', min: 20, desde: 7, hasta: 7, icono: 'drop', estado: 'no' },
+      { nombre: 'Súper', min: 60, desde: 7, hasta: 7, icono: 'shopping-cart', estado: 'no' },
     ]],
-    ['Hechas hoy', [
-      { nombre: 'Hacer la cama', min: 3, desde: 1, hasta: 1, estado: 'hecha' },
-      { nombre: 'Lavar los platos', min: 10, desde: 1, hasta: 1, estado: 'hecha' },
+    ['hechas hoy', [
+      { nombre: 'Hacer la cama', min: 3, desde: 1, hasta: 1, icono: 'bed', estado: 'hecha' },
+      { nombre: 'Lavar los platos', min: 10, desde: 1, hasta: 1, icono: 'bowl-food', estado: 'hecha' },
     ]],
   ];
   const frec = t => t.desde === 1 && t.hasta === 1 ? 'todos los días'
@@ -113,53 +138,74 @@
       fila({ ...t, linea: linea(t) }).replace('<button', `<button data-i="${todas.indexOf(t)}"`)).join('')}</div></section>`).join('');
 
   // Íconos
-  document.getElementById('nueva').innerHTML = ic('plus');
-  document.getElementById('cerrar').innerHTML = ic('x');
-  document.getElementById('guardar').innerHTML = ic('check-bold');
-  document.querySelectorAll('[data-menos]').forEach(b => b.innerHTML = ic('minus'));
-  document.querySelectorAll('[data-mas]').forEach(b => b.innerHTML = ic('plus'));
+  document.getElementById('nueva').innerHTML = ic('plus-circle');
+  document.getElementById('cerrar').innerHTML = ic('x-bold');
+  document.getElementById('cerrar-iconos').innerHTML = ic('x-bold');
+  document.querySelector('.ic-repeat').outerHTML = ic('repeat');
+  document.querySelector('.ic-timer').outerHTML = ic('timer');
 
-  // Hoja de editar
+  // Hoja
   const hoja = document.getElementById('hoja');
   const nombre = document.getElementById('nombre');
   const guardar = document.getElementById('guardar');
-  let original = '';
-  const dias = n => n === 1 ? '1 día' : `${n} días`;
-  const leer = () => JSON.stringify([nombre.value.trim(), cMin.get(), modo, cDesde.get(), modo === 'entre' ? cHasta.get() : cDesde.get()]);
-  const revisar = () => { guardar.disabled = !nombre.value.trim() || leer() === original; };
-  let modo = 'cada', listo = false;
+  let modo = 'cada', icono = 'check-circle', original = '', listo = false;
+  const dias = n => n === 1 ? 'día' : 'días';
+  const leer = () => JSON.stringify([nombre.value.trim(), icono, cMin.get(), modo, cDesde.get(), modo === 'entre' ? cHasta.get() : cDesde.get()]);
 
-  const cMin = contador(document.getElementById('c-min'), { valor: 10, min: 5, max: 180, paso: 5, unidad: ' min', alCambiar: () => listo && original && revisar() });
-  const cHasta = contador(document.getElementById('c-hasta'), { valor: 4, min: 2, max: 60, paso: 1, unidad: dias, alCambiar: () => { if (!listo) return; notaFrec(); original && revisar(); } });
-  const cDesde = contador(document.getElementById('c-desde'), { valor: 3, min: 1, max: 60, paso: 1, unidad: dias, alCambiar: () => { if (!listo) return; notaFrec(); original && revisar(); } });
+  // El ícono: el círculo de arriba lo muestra; tocarlo abre la lista corta.
+  const firma = document.getElementById('firma');
+  const hojaIconos = document.getElementById('hoja-iconos');
+  const grilla = document.getElementById('grilla-iconos');
+  function pintarIcono() {
+    firma.innerHTML = ic(icono + '-fill') + `<span class="lapiz">${ic('pencil-simple-fill')}</span>`;
+    grilla.innerHTML = ICONOS_TAREA.map(([id, nombre]) =>
+      `<button data-id="${id}" aria-pressed="${id === icono}">${ic(id + '-fill')}${nombre}</button>`).join('');
+  }
+  firma.onclick = () => abrirHoja(hojaIconos);
+  grilla.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    icono = b.dataset.id; pintarIcono(); revisar();
+    setTimeout(() => cerrarHoja(hojaIconos), 150);
+  };
+  document.getElementById('cerrar-iconos').onclick = () => cerrarHoja(hojaIconos);
+  document.getElementById('velo-iconos').onclick = () => cerrarHoja(hojaIconos);
+  const revisar = () => { if (listo) guardar.disabled = !nombre.value.trim() || leer() === original; };
 
-  listo = true;
+  const cDesde = contador(document.getElementById('c-desde'), { valor: 3, min: 1, max: 60, paso: 1,
+    unidad: n => modo === 'cada' ? dias(n) : 'desde', alCambiar: () => { notaFrec(); revisar(); } });
+  const cHasta = contador(document.getElementById('c-hasta'), { valor: 4, min: 2, max: 60, paso: 1,
+    unidad: 'hasta', alCambiar: () => { notaFrec(); revisar(); } });
+  const cMin = contador(document.getElementById('c-min'), { valor: 10, min: 5, max: 180, paso: 5, unidad: 'minutos', alCambiar: revisar });
 
+  // La nota solo aparece con «Entre».
   function notaFrec() {
+    if (!listo) return;
     const d = cDesde.get(), h = cHasta.get();
     const nota = document.getElementById('nota-frec');
-    if (modo === 'cada') nota.textContent = d === 1 ? 'Toca todos los días.' : `Toca cada ${d} días.`;
-    else nota.textContent = h > d ? `Toca a partir de los ${d} días; después de los ${h}, está atrasada.`
+    nota.hidden = modo === 'cada';
+    nota.textContent = h > d ? `Toca a partir de los ${d} días; después de los ${h}, está atrasada.`
       : 'El segundo número tiene que ser mayor que el primero.';
   }
-  const sel = selector(document.getElementById('sel'), op => { modo = op; pintarModo(); revisar(); });
+  const selModo = elegir(document.getElementById('modo'), op => { modo = op; pintarModo(); revisar(); });
   function pintarModo() {
-    document.getElementById('et-desde').textContent = modo === 'cada' ? 'Cada' : 'Desde';
-    document.getElementById('fila-hasta').hidden = modo === 'cada';
+    document.getElementById('c-hasta').hidden = modo === 'cada';
     if (modo === 'entre' && cHasta.get() <= cDesde.get()) cHasta.set(cDesde.get() + 1);
+    cDesde.set(cDesde.get());
     notaFrec();
   }
+  listo = true;
 
   function abrir(t) {
     const nueva = !t;
-    t = t || { nombre: '', min: 10, desde: 3, hasta: 3 };
-    document.getElementById('titulo-hoja').textContent = nueva ? 'Nueva tarea' : 'Editar tarea';
-    document.getElementById('grupo-borrar').hidden = nueva;
-    original = '';
+    t = t || { nombre: '', min: 10, desde: 3, hasta: 3, icono: 'check-circle' };
+    document.getElementById('borrar').hidden = nueva;
+    listo = false;
     nombre.value = t.nombre;
+    icono = t.icono; pintarIcono();
     modo = t.desde === t.hasta ? 'cada' : 'entre';
-    sel.elegir(modo);
+    selModo.marcar(modo, false);
     cMin.set(t.min); cDesde.set(t.desde); cHasta.set(t.hasta === t.desde ? t.desde + 1 : t.hasta);
+    listo = true;
     pintarModo();
     original = nueva ? 'nueva' : leer();
     revisar();
@@ -171,7 +217,7 @@
   document.getElementById('cerrar').onclick = cerrar;
   document.getElementById('velo').onclick = cerrar;
   guardar.onclick = cerrar;
-  document.querySelector('.borrar').onclick = cerrar;
+  document.getElementById('borrar').onclick = cerrar;
   document.getElementById('nueva').onclick = () => abrir(null);
 
   // Tocar el círculo marca hecha; tocar la fila abre la hoja.

@@ -24,7 +24,7 @@ Lo que no:
 
 ## Hábitos (modo claro)
 
-`habitos-inicio.png`, `habitos-estadisticas.png`, `habitos-hoja-nuevo.png`
+`habitos-inicio.png`, `habitos-estadisticas.png`, `habitos-hoja-nuevo.png`, `habitos-iconos.png`
 
 Lo que la hace sentir app:
 - **Identidad propia y sobria:** casi monocromo (negro, grises y blanco); el único color es un punto rojo de aviso. Títulos enormes con letra propia.
@@ -81,3 +81,5 @@ Lo que no (de la hoja): es larguísima. La de esta app tiene que entrar en 1 pan
 - Solo modo oscuro.
 - Sin acento: blanco, negro y grises, como Hábitos. Lo que toca se marca con blanco y tamaño; los estados, con relleno e ícono. Solo el rojo de iOS para borrar.
 - Listas sin cajas, directo sobre el negro (como Recordatorios); las cajas, solo en la hoja.
+- **Cambio de rumbo:** en lo visual manda la app de hábitos, dada vuelta a modo oscuro (blanco lleno sobre negro, contraste total, formas llenas y grandes, League Spartan para todo, títulos en minúscula). De Apple quedan las zonas seguras, las hojas, la barra de pestañas abajo y lo de «se siente app».
+- Un ícono por tarea, como en hábitos (`habitos-iconos.png`: la hoja «seleccionar icono», con grilla de 4, íconos rellenos con su nombre y el elegido con borde). Se ve en la tarea en curso y en la hoja, no en las listas.
