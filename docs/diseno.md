@@ -170,6 +170,10 @@ En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **e
 
 **Fijo, siempre visible, arriba de la barra de pestañas**, con una línea fina arriba; la lista se desplaza por encima. Una línea gris chica («tengo» a la izquierda, «minutos» a la derecha), los 5 círculos de opciones y «Empezar».
 
+### Ajustes › copia de seguridad
+
+2 filas que son botones, con el ícono a la derecha (`download-simple`, `upload-simple`): «Bajar copia» abre el menú de compartir del iPhone (desde ahí, «Guardar en Archivos»; si el navegador no puede compartir archivos, baja el `.json`). «Cargar copia» abre Archivos; antes de reemplazar, una hoja chica dice de qué día es la copia y cuántas tareas tiene, con «Reemplazar mis datos». Si el archivo no sirve, la hoja lo dice y no ofrece reemplazar.
+
 ### Transiciones
 
 | Qué | Cómo | Duración |
