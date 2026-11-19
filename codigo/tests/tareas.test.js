@@ -116,3 +116,42 @@ test('desmarcarHecha: deshace solo la marca de hoy; lo de otros días queda', ()
   assert.deepEqual(e.historial, [hecha('barrer', '2026-11-13')]);
   assert.equal(T.ultimaVez(e.historial, 'barrer'), '2026-11-13');
 });
+
+const ajuste = (id, dia) => ({ tarea: id, dia, que: 'ajuste' });
+
+test('ultimaVez: la fecha cargada a mano reemplaza lo anterior, aunque sea más vieja; las hechas después la suben', () => {
+  assert.equal(T.ultimaVez([hecha('barrer', '2026-11-17'), ajuste('barrer', '2026-11-10')], 'barrer'), '2026-11-10');
+  assert.equal(T.ultimaVez([ajuste('barrer', '2026-11-10'), hecha('barrer', HOY)], 'barrer'), HOY);
+  assert.equal(T.ultimaVez([hecha('barrer', '2026-11-17'), ajuste('barrer', null)], 'barrer'), null);
+  assert.equal(T.ultimaVez([ajuste('platos', '2026-11-10')], 'barrer'), null);
+});
+
+test('cargarUltimaVez: hoy, ayer, hace N días o nunca; queda en el historial', () => {
+  let e = estadoNuevo();
+  e = T.cargarUltimaVez(e, 'barrer', 2, HOY);
+  assert.deepEqual(e.historial, [ajuste('barrer', '2026-11-16')]);
+  assert.equal(T.toca(e.tareas.find(t => t.id === 'barrer'), T.ultimaVez(e.historial, 'barrer'), HOY), false); // 2 días: todavía no
+  e = T.cargarUltimaVez(e, 'barrer', 5, HOY);
+  assert.equal(T.ultimaVez(e.historial, 'barrer'), '2026-11-13');
+  e = T.cargarUltimaVez(e, 'barrer', null, HOY);
+  assert.equal(T.ultimaVez(e.historial, 'barrer'), null);
+  assert.equal(e.historial.length, 3, 'aditivo: no se borra lo anterior');
+  const igual = T.cargarUltimaVez(e, 'barrer', null, HOY);
+  assert.equal(igual, e, 'si no cambia, no suma nada');
+  e = T.cargarUltimaVez(e, 'platos', 0, HOY);
+  assert.equal(T.ultimaVez(e.historial, 'platos'), HOY);
+});
+
+test('desmarcarHecha: también deshace un «hoy» cargado a mano', () => {
+  let e = { ...estadoNuevo(), historial: [ajuste('barrer', '2026-11-13')] };
+  e = T.cargarUltimaVez(e, 'barrer', 0, HOY);
+  e = T.desmarcarHecha(e, 'barrer', HOY);
+  assert.equal(T.ultimaVez(e.historial, 'barrer'), '2026-11-13');
+});
+
+test('ultimaVezTexto: hoy, ayer, hace N días, nunca', () => {
+  assert.equal(T.ultimaVezTexto(HOY, HOY), 'hoy');
+  assert.equal(T.ultimaVezTexto('2026-11-17', HOY), 'ayer');
+  assert.equal(T.ultimaVezTexto('2026-11-13', HOY), 'hace 5 días');
+  assert.equal(T.ultimaVezTexto(null, HOY), 'nunca');
+});

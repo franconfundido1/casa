@@ -142,6 +142,26 @@ function chequear(nombre, ok, detalle = '') {
   chequear('hoja: guardar cambia la tarea', (await p.textContent('#lista-tareas [data-id="verduleria"] .linea')) === 'cada 3 a 4 días · 25 min' &&
     (await guardadas()).tareas.find(t => t.id === 'verduleria').icono === 'plant');
 
+  // última vez, cargada a mano
+  await p.tap('#lista-tareas [data-id="barrer"] .nombre');
+  await p.waitForTimeout(400);
+  chequear('última vez: en las de arranque arranca en «nunca»', (await p.textContent('#c-ultima b')) === 'nunca' && await p.isDisabled('#c-ultima [data-menos]'));
+  for (let i = 0; i < 3; i++) await p.tap('#c-ultima [data-mas]');
+  chequear('última vez: con el + pasa por hoy y ayer hasta «2 días atrás»', (await p.textContent('#c-ultima b')) === '2' && (await p.textContent('#c-ultima span')) === 'días atrás');
+  chequear('última vez: cambiarla prende «Guardar»', !(await p.isDisabled('#guardar-tarea')));
+  await p.tap('#guardar-tarea');
+  await p.waitForTimeout(400);
+  g = await filas();
+  const adelante = g.find(x => x[0] === 'más adelante');
+  chequear('última vez: hace 2 días, Barrer (cada 3) pasa a «más adelante»', !!adelante && adelante[1].includes('Barrer'), JSON.stringify(g));
+  const ajustes = (await guardadas()).historial.filter(h => h.que === 'ajuste');
+  chequear('última vez: queda en el historial con esa fecha', ajustes.length === 1 && ajustes[0].tarea === 'barrer' && /^\d{4}-\d{2}-\d{2}$/.test(ajustes[0].dia), JSON.stringify(ajustes));
+  await p.tap('#lista-tareas [data-id="barrer"] .nombre');
+  await p.waitForTimeout(400);
+  chequear('última vez: al volver a abrir, dice 2', (await p.textContent('#c-ultima b')) === '2' && await p.isDisabled('#guardar-tarea'));
+  await p.tap('#cerrar-tarea');
+  await p.waitForTimeout(400);
+
   // nueva y borrar
   await p.tap('#nueva-tarea');
   await p.waitForTimeout(400);

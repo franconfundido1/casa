@@ -233,7 +233,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .contador button[disabled] { background: none; border-color: var(--linea); color: var(--texto-3); pointer-events: none; }
 .contador .cifra { min-width: 64px; text-align: center; }
 .contador .cifra b { display: block; font: var(--letra-numero); }
-.contador .cifra span { display: block; font: var(--letra-nota); color: var(--texto-2); margin-top: var(--esp-1); }
+.contador .cifra span { display: block; font: var(--letra-nota); color: var(--texto-2); margin-top: var(--esp-1); min-height: 18px; }
 .cambia { animation: fundido 150ms ease-out; }
 
 /* Botones */
@@ -278,29 +278,29 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .hoja-cuerpo { flex: 1; overflow-y: auto; overscroll-behavior: none; padding: 0 var(--margen); }
 /* Hoja de tarea, como «nuevo hábito» */
 /* El círculo de la tarea con su ícono; el lápiz avisa que se toca para cambiarlo */
-.firma { position: relative; width: 88px; height: 88px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
+.firma { position: relative; width: 76px; height: 76px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
   background: var(--texto); color: var(--fondo); transition: transform 100ms; }
 .firma:active { transform: scale(.95); }
-.firma > svg { width: 44px; height: 44px; }
+.firma > svg { width: 38px; height: 38px; }
 .firma .lapiz { position: absolute; right: -2px; bottom: -2px; width: 30px; height: 30px; border-radius: 50%;
   background: var(--texto); border: 2px solid var(--fondo); display: grid; place-items: center; }
 .firma .lapiz svg { width: 15px; height: 15px; }
 
 .nombre-tarea {
   display: block; width: 100%; background: none; border: 0; outline: 0; text-align: center;
-  font: var(--letra-titulo); padding: var(--esp-5) 0 var(--esp-2); caret-color: var(--texto);
+  font: var(--letra-titulo); padding: var(--esp-4) 0 var(--esp-2); caret-color: var(--texto);
 }
 .nombre-tarea::placeholder { color: var(--texto-3); }
-.rayita { width: 56px; height: 2px; border-radius: 1px; background: var(--linea); margin: 0 auto var(--esp-7); }
-.bloque-hoja { margin-bottom: var(--esp-7); }
+.rayita { width: 56px; height: 2px; border-radius: 1px; background: var(--linea); margin: 0 auto var(--esp-6); }
+.bloque-hoja { margin-bottom: var(--esp-6); }
 .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
 .cabeza svg { width: 20px; height: 20px; }
-.bloque-hoja .pastillas { margin-bottom: var(--esp-5); }
+.bloque-hoja .pastillas { margin-bottom: var(--esp-4); }
 .contadores { display: flex; justify-content: center; gap: var(--esp-6); }
 .contadores .contador { gap: var(--esp-2); }
 .contadores .contador button { width: var(--toque); height: var(--toque); }
 .contadores .contador .cifra { min-width: 52px; }
-.nota-frec { font: var(--letra-nota); color: var(--texto-2); text-align: center; margin-top: var(--esp-4); }
+.nota-frec { font: var(--letra-nota); color: var(--texto-2); text-align: center; margin-top: var(--esp-3); }
 .pie { padding: var(--esp-3) var(--margen) 0; display: flex; flex-direction: column; align-items: center; gap: var(--esp-1); }
 
 /* Hoja para elegir el ícono, encima de la de la tarea */
@@ -405,6 +405,11 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
       <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg>lleva</div>
       <div class="contador" id="c-minutos"></div>
     </div>
+
+    <div class="bloque-hoja">
+      <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#clock"/></svg>última vez</div>
+      <div class="contador" id="c-ultima"></div>
+    </div>
   </div>
   <div class="pie">
     <button class="boton" id="guardar-tarea" disabled>Guardar</button>
@@ -444,6 +449,13 @@ function diasEntre(desde, hasta) {
   return numeroDeDia(hasta) - numeroDeDia(desde);
 }
 
+// El día que queda n días después (o antes, con n negativo).
+function sumarDias(dia, n) {
+  const f = new Date((numeroDeDia(dia) + n) * 86400000);
+  const dos = x => String(x).padStart(2, '0');
+  return `${f.getUTCFullYear()}-${dos(f.getUTCMonth() + 1)}-${dos(f.getUTCDate())}`;
+}
+
 // El día local de un momento (un Date), según la zona horaria del dispositivo.
 function diaLocal(momento) {
   const dos = n => String(n).padStart(2, '0');
@@ -460,7 +472,7 @@ function fechaLarga(dia) {
   return `${DIAS_SEMANA[f.getUTCDay()]} ${f.getUTCDate()} de ${MESES[f.getUTCMonth()]}`;
 }
 
-if (typeof module === 'object') module.exports = { diasEntre, diaLocal, fechaLarga };
+if (typeof module === 'object') module.exports = { diasEntre, sumarDias, diaLocal, fechaLarga };
 // El estado guardado (localStorage, clave 'casa-v1'). Puro: recibe el texto guardado y devuelve el estado listo para usar.
 // Cada cambio en la forma de guardar sube VERSION y suma en MIGRACIONES cómo pasar de la versión anterior a la nueva.
 // Las migraciones no se cambian nunca después de publicadas: llevan sus datos adentro.
@@ -518,12 +530,17 @@ function cargar(texto, version = VERSION, migraciones = MIGRACIONES) {
 if (typeof module === 'object') module.exports = { VERSION, MIGRACIONES, estadoNuevo, migrar, cargar };
 // Las tareas: cuándo tocan, qué tan vencidas están y los cambios que hace el usuario. Funciones puras:
 // reciben «hoy» ('AAAA-MM-DD') como parámetro y devuelven datos nuevos, sin tocar los que reciben.
-const fechasT = typeof module === 'object' ? require('./fechas.js') : { diasEntre };
+const fechasT = typeof module === 'object' ? require('./fechas.js') : { diasEntre, sumarDias };
 
-// La última vez que se hizo (el día más reciente en el historial), o null si nunca.
+// La última vez que se hizo, o null si nunca. Se lee el historial en orden: una fecha cargada a mano («ajuste»,
+// que puede ser null = nunca) reemplaza lo anterior; cada «hecha» la sube si es más reciente.
 function ultimaVez(historial, id) {
   let ultima = null;
-  for (const h of historial) if (h.tarea === id && h.que === 'hecha' && (ultima === null || h.dia > ultima)) ultima = h.dia;
+  for (const h of historial) {
+    if (h.tarea !== id) continue;
+    if (h.que === 'ajuste') ultima = h.dia;
+    else if (h.que === 'hecha' && (ultima === null || h.dia > ultima)) ultima = h.dia;
+  }
   return ultima;
 }
 
@@ -612,14 +629,31 @@ function marcarHecha(estado, id, hoy) {
   return { ...estado, historial: estado.historial.concat({ tarea: id, dia: hoy, que: 'hecha' }) };
 }
 
-// Deshacer una marca de hoy (si la tocaste sin querer). Solo la de hoy.
+// Deshacer lo de hoy (si tocaste el círculo sin querer, o cargaste «hoy» a mano). Solo lo de hoy.
 function desmarcarHecha(estado, id, hoy) {
-  return { ...estado, historial: estado.historial.filter(h => !(h.tarea === id && h.que === 'hecha' && h.dia === hoy)) };
+  return { ...estado, historial: estado.historial.filter(h => !(h.tarea === id && (h.que === 'hecha' || h.que === 'ajuste') && h.dia === hoy)) };
+}
+
+// Cargar la última vez a mano: «hace» días atrás (0 = hoy, 1 = ayer) o null = nunca. Se suma al historial.
+function cargarUltimaVez(estado, id, hace, hoy) {
+  const dia = hace === null ? null : fechasT.sumarDias(hoy, -hace);
+  if (ultimaVez(estado.historial, id) === dia) return estado;
+  return { ...estado, historial: estado.historial.concat({ tarea: id, dia, que: 'ajuste' }) };
+}
+
+// La última vez, dicha corta: «hoy», «ayer», «hace 5 días» o «nunca».
+function ultimaVezTexto(ultima, hoy) {
+  const d = diasDesde(ultima, hoy);
+  if (d === null) return 'nunca';
+  if (d === 0) return 'hoy';
+  if (d === 1) return 'ayer';
+  return `hace ${d} días`;
 }
 
 if (typeof module === 'object') module.exports = {
   ultimaVez, diasDesde, toca, atrasada, vencimiento, ordenarPorVencimiento, agrupar,
   frecuenciaTexto, lineaTarea, tareaValida, guardarTarea, borrarTarea, marcarHecha, desmarcarHecha,
+  cargarUltimaVez, ultimaVezTexto,
 };
 // Los datos del usuario: localStorage, clave 'casa-v1' (no se renombra nunca). La lectura y las migraciones son de reglas/estado.js.
 const CLAVE = 'casa-v1';
@@ -728,14 +762,14 @@ listaTareas.addEventListener('click', e => {
 // ---- Controles de la hoja
 
 // Contador − y +, con la lista de valores posibles. Devuelve get, set y la forma de cambiar los límites.
-function contador(el, { valores, unidad, alCambiar }) {
+function contador(el, { valores, unidad, mostrar, alCambiar }) {
   el.innerHTML = `<button data-menos aria-label="Menos">${ic('minus-bold')}</button>` +
     `<div class="cifra"><b class="num"></b><span></span></div>` +
     `<button data-mas aria-label="Más">${ic('plus-bold')}</button>`;
   const menos = el.querySelector('[data-menos]'), mas = el.querySelector('[data-mas]'), cifra = el.querySelector('.cifra');
   let lista = valores, valor = valores[0];
   const pintar = (avisar = true) => {
-    cifra.querySelector('b').textContent = valor;
+    cifra.querySelector('b').textContent = mostrar ? mostrar(valor) : valor;
     cifra.querySelector('span').textContent = typeof unidad === 'function' ? unidad(valor) : unidad;
     cifra.classList.remove('cambia'); void cifra.offsetWidth; cifra.classList.add('cambia');
     menos.disabled = valor <= lista[0];
@@ -755,6 +789,9 @@ const desdeHasta = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 // Minutos: de a 1 hasta 10, de a 5 hasta 60 y después de a 15 o 30.
 const VALORES_MINUTOS = [...desdeHasta(1, 10), 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 75, 90, 120, 150, 180];
 const VALORES_DIAS = desdeHasta(1, 60);
+// Última vez: nunca (-1), hoy (0), ayer (1), y hasta 60 días atrás. Arranca en «nunca»: con el + se llega rápido a «hace 2 días».
+const NUNCA = -1;
+const VALORES_ULTIMA = [NUNCA, ...desdeHasta(0, 60)];
 
 // ---- La hoja de tarea, como «nuevo hábito»
 
@@ -767,7 +804,7 @@ const firma = document.getElementById('firma');
 const grilla = document.getElementById('grilla-iconos');
 const modoEl = document.getElementById('modo');
 const notaFrec = document.getElementById('nota-frec');
-let enEdicion = null, icono = 'check-circle', modo = 'cada', original = '', armando = false;
+let enEdicion = null, icono = 'check-circle', modo = 'cada', original = '', ultimaOriginal = NUNCA, armando = false;
 
 const cMinutos = contador(document.getElementById('c-minutos'), { valores: VALORES_MINUTOS, unidad: 'minutos', alCambiar: revisar });
 const cDesde = contador(document.getElementById('c-desde'), {
@@ -775,6 +812,11 @@ const cDesde = contador(document.getElementById('c-desde'), {
   alCambiar: () => { ajustarHasta(); pintarNota(); revisar(); },
 });
 const cHasta = contador(document.getElementById('c-hasta'), { valores: VALORES_DIAS, unidad: 'hasta', alCambiar: () => { pintarNota(); revisar(); } });
+const cUltima = contador(document.getElementById('c-ultima'), {
+  valores: VALORES_ULTIMA, alCambiar: revisar,
+  mostrar: v => (v === NUNCA ? 'nunca' : v === 0 ? 'hoy' : v === 1 ? 'ayer' : v),
+  unidad: v => (v >= 2 ? 'días atrás' : ''),
+});
 
 // Con «Entre», el máximo es siempre mayor que el mínimo.
 function ajustarHasta() {
@@ -792,7 +834,7 @@ const firmaDe = t => JSON.stringify([t.nombre.trim(), t.icono, t.minutos, t.min,
 function revisar() {
   if (armando) return;
   const t = tareaDeLaHoja();
-  guardarBtn.disabled = !tareaValida(t) || firmaDe(t) === original;
+  guardarBtn.disabled = !tareaValida(t) || (firmaDe(t) === original && cUltima.get() === ultimaOriginal);
 }
 
 // La nota de la frecuencia, solo con «Entre».
@@ -847,6 +889,9 @@ function abrirHojaTarea(t) {
   cHasta.set(base.max > base.min ? base.max : base.min + 1);
   pintarModo();
   pintarIcono();
+  const d = t ? diasDesde(ultimaVez(estado.historial, t.id), hoyLocal()) : null;
+  ultimaOriginal = d === null || d < 0 ? NUNCA : d;
+  cUltima.set(ultimaOriginal);
   borrarBtn.hidden = !t;
   reiniciarBorrar();
   armando = false;
@@ -866,6 +911,8 @@ guardarBtn.onclick = () => {
   const t = tareaDeLaHoja();
   if (!tareaValida(t)) return;
   estado = guardarTarea(estado, t);
+  // la última vez cargada a mano se suma al historial con esa fecha
+  if (cUltima.get() !== ultimaOriginal) estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
   guardarDatos();
   cerrarHojaTarea();
   pintarTareas();

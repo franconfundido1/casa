@@ -52,14 +52,14 @@ listaTareas.addEventListener('click', e => {
 // ---- Controles de la hoja
 
 // Contador − y +, con la lista de valores posibles. Devuelve get, set y la forma de cambiar los límites.
-function contador(el, { valores, unidad, alCambiar }) {
+function contador(el, { valores, unidad, mostrar, alCambiar }) {
   el.innerHTML = `<button data-menos aria-label="Menos">${ic('minus-bold')}</button>` +
     `<div class="cifra"><b class="num"></b><span></span></div>` +
     `<button data-mas aria-label="Más">${ic('plus-bold')}</button>`;
   const menos = el.querySelector('[data-menos]'), mas = el.querySelector('[data-mas]'), cifra = el.querySelector('.cifra');
   let lista = valores, valor = valores[0];
   const pintar = (avisar = true) => {
-    cifra.querySelector('b').textContent = valor;
+    cifra.querySelector('b').textContent = mostrar ? mostrar(valor) : valor;
     cifra.querySelector('span').textContent = typeof unidad === 'function' ? unidad(valor) : unidad;
     cifra.classList.remove('cambia'); void cifra.offsetWidth; cifra.classList.add('cambia');
     menos.disabled = valor <= lista[0];
@@ -79,6 +79,9 @@ const desdeHasta = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 // Minutos: de a 1 hasta 10, de a 5 hasta 60 y después de a 15 o 30.
 const VALORES_MINUTOS = [...desdeHasta(1, 10), 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 75, 90, 120, 150, 180];
 const VALORES_DIAS = desdeHasta(1, 60);
+// Última vez: nunca (-1), hoy (0), ayer (1), y hasta 60 días atrás. Arranca en «nunca»: con el + se llega rápido a «hace 2 días».
+const NUNCA = -1;
+const VALORES_ULTIMA = [NUNCA, ...desdeHasta(0, 60)];
 
 // ---- La hoja de tarea, como «nuevo hábito»
 
@@ -91,7 +94,7 @@ const firma = document.getElementById('firma');
 const grilla = document.getElementById('grilla-iconos');
 const modoEl = document.getElementById('modo');
 const notaFrec = document.getElementById('nota-frec');
-let enEdicion = null, icono = 'check-circle', modo = 'cada', original = '', armando = false;
+let enEdicion = null, icono = 'check-circle', modo = 'cada', original = '', ultimaOriginal = NUNCA, armando = false;
 
 const cMinutos = contador(document.getElementById('c-minutos'), { valores: VALORES_MINUTOS, unidad: 'minutos', alCambiar: revisar });
 const cDesde = contador(document.getElementById('c-desde'), {
@@ -99,6 +102,11 @@ const cDesde = contador(document.getElementById('c-desde'), {
   alCambiar: () => { ajustarHasta(); pintarNota(); revisar(); },
 });
 const cHasta = contador(document.getElementById('c-hasta'), { valores: VALORES_DIAS, unidad: 'hasta', alCambiar: () => { pintarNota(); revisar(); } });
+const cUltima = contador(document.getElementById('c-ultima'), {
+  valores: VALORES_ULTIMA, alCambiar: revisar,
+  mostrar: v => (v === NUNCA ? 'nunca' : v === 0 ? 'hoy' : v === 1 ? 'ayer' : v),
+  unidad: v => (v >= 2 ? 'días atrás' : ''),
+});
 
 // Con «Entre», el máximo es siempre mayor que el mínimo.
 function ajustarHasta() {
@@ -116,7 +124,7 @@ const firmaDe = t => JSON.stringify([t.nombre.trim(), t.icono, t.minutos, t.min,
 function revisar() {
   if (armando) return;
   const t = tareaDeLaHoja();
-  guardarBtn.disabled = !tareaValida(t) || firmaDe(t) === original;
+  guardarBtn.disabled = !tareaValida(t) || (firmaDe(t) === original && cUltima.get() === ultimaOriginal);
 }
 
 // La nota de la frecuencia, solo con «Entre».
@@ -171,6 +179,9 @@ function abrirHojaTarea(t) {
   cHasta.set(base.max > base.min ? base.max : base.min + 1);
   pintarModo();
   pintarIcono();
+  const d = t ? diasDesde(ultimaVez(estado.historial, t.id), hoyLocal()) : null;
+  ultimaOriginal = d === null || d < 0 ? NUNCA : d;
+  cUltima.set(ultimaOriginal);
   borrarBtn.hidden = !t;
   reiniciarBorrar();
   armando = false;
@@ -190,6 +201,8 @@ guardarBtn.onclick = () => {
   const t = tareaDeLaHoja();
   if (!tareaValida(t)) return;
   estado = guardarTarea(estado, t);
+  // la última vez cargada a mano se suma al historial con esa fecha
+  if (cUltima.get() !== ultimaOriginal) estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
   guardarDatos();
   cerrarHojaTarea();
   pintarTareas();

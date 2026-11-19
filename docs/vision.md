@@ -43,6 +43,7 @@ Provisorias: se revisan con el uso.
 - **Toca:** cuando pasaron al menos el mínimo de días. **Atrasada:** cuando pasaron más que el máximo.
 - **Qué tan vencida está:** días desde la última vez dividido el máximo. Así 1 día de atraso en algo diario pesa más que 1 día de atraso en algo semanal. Primero lo más vencido; si empatan, la más corta.
 - **«Tengo X minutos»:** recorre las tareas que tocan, de la más vencida a la menos, y se queda con las que entran en el tiempo. Me las da de a 1. Si no entra ninguna, me dice cuál es la más corta que toca y cuánto lleva.
+- **La última vez a mano:** en la hoja de cada tarea se puede cargar cuándo se hizo por última vez (hoy, ayer, hace N días o nunca). Queda en el historial; cuenta esa fecha y lo que se haga después.
 - **Al terminar cada tarea:**
   - **Hecha:** la última vez pasa a ser hoy.
   - **Salteada:** no me la vuelve a ofrecer hoy; mañana sigue igual de vencida (o más).

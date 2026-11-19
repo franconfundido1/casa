@@ -1,28 +1,28 @@
 /* Hoja de tarea, como «nuevo hábito» */
 /* El círculo de la tarea con su ícono; el lápiz avisa que se toca para cambiarlo */
-.firma { position: relative; width: 88px; height: 88px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
+.firma { position: relative; width: 76px; height: 76px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
   background: var(--texto); color: var(--fondo); transition: transform 100ms; }
 .firma:active { transform: scale(.95); }
-.firma > svg { width: 44px; height: 44px; }
+.firma > svg { width: 38px; height: 38px; }
 .firma .lapiz { position: absolute; right: -2px; bottom: -2px; width: 30px; height: 30px; border-radius: 50%;
   background: var(--texto); border: 2px solid var(--fondo); display: grid; place-items: center; }
 .firma .lapiz svg { width: 15px; height: 15px; }
 
 .nombre-tarea {
   display: block; width: 100%; background: none; border: 0; outline: 0; text-align: center;
-  font: var(--letra-titulo); padding: var(--esp-5) 0 var(--esp-2); caret-color: var(--texto);
+  font: var(--letra-titulo); padding: var(--esp-4) 0 var(--esp-2); caret-color: var(--texto);
 }
 .nombre-tarea::placeholder { color: var(--texto-3); }
-.rayita { width: 56px; height: 2px; border-radius: 1px; background: var(--linea); margin: 0 auto var(--esp-7); }
-.bloque-hoja { margin-bottom: var(--esp-7); }
+.rayita { width: 56px; height: 2px; border-radius: 1px; background: var(--linea); margin: 0 auto var(--esp-6); }
+.bloque-hoja { margin-bottom: var(--esp-6); }
 .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
 .cabeza svg { width: 20px; height: 20px; }
-.bloque-hoja .pastillas { margin-bottom: var(--esp-5); }
+.bloque-hoja .pastillas { margin-bottom: var(--esp-4); }
 .contadores { display: flex; justify-content: center; gap: var(--esp-6); }
 .contadores .contador { gap: var(--esp-2); }
 .contadores .contador button { width: var(--toque); height: var(--toque); }
 .contadores .contador .cifra { min-width: 52px; }
-.nota-frec { font: var(--letra-nota); color: var(--texto-2); text-align: center; margin-top: var(--esp-4); }
+.nota-frec { font: var(--letra-nota); color: var(--texto-2); text-align: center; margin-top: var(--esp-3); }
 .pie { padding: var(--esp-3) var(--margen) 0; display: flex; flex-direction: column; align-items: center; gap: var(--esp-1); }
 
 /* Hoja para elegir el ícono, encima de la de la tarea */

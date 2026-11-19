@@ -57,3 +57,13 @@ test('fechaLarga: día de la semana, número y mes', () => {
   assert.equal(fechaLarga('2026-11-19'), 'jueves 19 de noviembre');
   assert.equal(fechaLarga('2027-01-01'), 'viernes 1 de enero');
 });
+
+test('sumarDias: hacia adelante y hacia atrás, cruzando meses y años', () => {
+  const { sumarDias } = require('../reglas/fechas.js');
+  assert.equal(sumarDias('2026-11-18', 0), '2026-11-18');
+  assert.equal(sumarDias('2026-11-18', -1), '2026-11-17');
+  assert.equal(sumarDias('2026-11-01', -1), '2026-10-31');
+  assert.equal(sumarDias('2027-01-01', -1), '2026-12-31');
+  assert.equal(sumarDias('2028-02-28', 1), '2028-02-29');
+  assert.equal(sumarDias('2026-11-18', 7), '2026-11-25');
+});

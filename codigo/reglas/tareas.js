@@ -1,11 +1,16 @@
 // Las tareas: cuándo tocan, qué tan vencidas están y los cambios que hace el usuario. Funciones puras:
 // reciben «hoy» ('AAAA-MM-DD') como parámetro y devuelven datos nuevos, sin tocar los que reciben.
-const fechasT = typeof module === 'object' ? require('./fechas.js') : { diasEntre };
+const fechasT = typeof module === 'object' ? require('./fechas.js') : { diasEntre, sumarDias };
 
-// La última vez que se hizo (el día más reciente en el historial), o null si nunca.
+// La última vez que se hizo, o null si nunca. Se lee el historial en orden: una fecha cargada a mano («ajuste»,
+// que puede ser null = nunca) reemplaza lo anterior; cada «hecha» la sube si es más reciente.
 function ultimaVez(historial, id) {
   let ultima = null;
-  for (const h of historial) if (h.tarea === id && h.que === 'hecha' && (ultima === null || h.dia > ultima)) ultima = h.dia;
+  for (const h of historial) {
+    if (h.tarea !== id) continue;
+    if (h.que === 'ajuste') ultima = h.dia;
+    else if (h.que === 'hecha' && (ultima === null || h.dia > ultima)) ultima = h.dia;
+  }
   return ultima;
 }
 
@@ -94,12 +99,29 @@ function marcarHecha(estado, id, hoy) {
   return { ...estado, historial: estado.historial.concat({ tarea: id, dia: hoy, que: 'hecha' }) };
 }
 
-// Deshacer una marca de hoy (si la tocaste sin querer). Solo la de hoy.
+// Deshacer lo de hoy (si tocaste el círculo sin querer, o cargaste «hoy» a mano). Solo lo de hoy.
 function desmarcarHecha(estado, id, hoy) {
-  return { ...estado, historial: estado.historial.filter(h => !(h.tarea === id && h.que === 'hecha' && h.dia === hoy)) };
+  return { ...estado, historial: estado.historial.filter(h => !(h.tarea === id && (h.que === 'hecha' || h.que === 'ajuste') && h.dia === hoy)) };
+}
+
+// Cargar la última vez a mano: «hace» días atrás (0 = hoy, 1 = ayer) o null = nunca. Se suma al historial.
+function cargarUltimaVez(estado, id, hace, hoy) {
+  const dia = hace === null ? null : fechasT.sumarDias(hoy, -hace);
+  if (ultimaVez(estado.historial, id) === dia) return estado;
+  return { ...estado, historial: estado.historial.concat({ tarea: id, dia, que: 'ajuste' }) };
+}
+
+// La última vez, dicha corta: «hoy», «ayer», «hace 5 días» o «nunca».
+function ultimaVezTexto(ultima, hoy) {
+  const d = diasDesde(ultima, hoy);
+  if (d === null) return 'nunca';
+  if (d === 0) return 'hoy';
+  if (d === 1) return 'ayer';
+  return `hace ${d} días`;
 }
 
 if (typeof module === 'object') module.exports = {
   ultimaVez, diasDesde, toca, atrasada, vencimiento, ordenarPorVencimiento, agrupar,
   frecuenciaTexto, lineaTarea, tareaValida, guardarTarea, borrarTarea, marcarHecha, desmarcarHecha,
+  cargarUltimaVez, ultimaVezTexto,
 };
