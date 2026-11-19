@@ -54,6 +54,12 @@
   --arriba: env(safe-area-inset-top, 0px);
   --abajo: env(safe-area-inset-bottom, 0px);
 }
+/* Instalada (iOS 26): el iPhone ya termina la pantalla de la app arriba de la barra de inicio.
+   Si además se suma la zona segura de abajo, se cuenta 2 veces y queda una franja negra.
+   Así que instalada, lo fijo abajo (la barra de pestañas, las hojas, «Empezar») no suma la zona segura; en Safari, sí. */
+@media (display-mode: standalone) {
+  :root { --abajo: 0px; }
+}
 
 /* Que se sienta app: sin selección, sin resaltado al tocar, sin menú al mantener apretado, sin rebote ni barra de desplazamiento */
 * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: none; }
@@ -73,8 +79,6 @@ html, body {
 }
 /* La cabecera, la pantalla y la barra de pestañas se reparten el alto: nada queda debajo de otra cosa. */
 body { position: fixed; inset: 0; display: flex; flex-direction: column; }
-/* instalada, si el iPhone da un alto menor que la pantalla: el alto de la pantalla (logica/pantalla.js) */
-.alto-pantalla body { bottom: auto; height: var(--alto-app); }
 input, textarea { -webkit-user-select: text; user-select: text; font: inherit; color: inherit; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; touch-action: manipulation; }
 a { color: inherit; text-decoration: none; }
