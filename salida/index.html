@@ -206,7 +206,13 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 [data-estado="toca"] .estado i { border-color: var(--texto); }
 [data-estado="hecha"] .estado i { background: var(--texto); border-color: var(--texto); animation: rebote var(--t-tarea); }
 [data-estado="hecha"] .estado i .i-check { opacity: 1; }
-[data-estado="hecha"] .nombre, [data-estado="no"] .nombre { color: var(--texto-2); }
+/* A medias: aro blanco y la mitad llena; salteada: gris oscuro con la flecha gris (lo único que brilla es el blanco) */
+.estado i::after { content: ""; position: absolute; inset: 0 50% 0 0; background: var(--texto); transform: scaleX(0); transform-origin: left; transition: transform var(--t-corta); }
+[data-estado="a-medias"] .estado i { border-color: var(--texto); animation: rebote var(--t-tarea); }
+[data-estado="a-medias"] .estado i::after { transform: scaleX(1); }
+[data-estado="salteada"] .estado i { color: var(--texto-2); animation: rebote var(--t-tarea); }
+[data-estado="salteada"] .estado i .i-salteada { opacity: 1; }
+[data-estado="hecha"] .nombre, [data-estado="salteada"] .nombre, [data-estado="no"] .nombre { color: var(--texto-2); }
 @keyframes rebote { 50% { transform: scale(1.15); } }
 
 /* Pastillas para elegir: lo elegido, blanco lleno con letra negra; lo demás, contorno fino gris */
@@ -316,6 +322,55 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .grilla-iconos button svg { width: 34px; height: 34px; color: var(--texto); }
 .grilla-iconos button:active { transform: scale(.95); }
 .grilla-iconos button[aria-pressed="true"] { border-color: var(--texto); color: var(--texto); font-weight: 600; }
+/* Hoy (bocetos/hoy.html): las 3 de hoy arriba; «tengo» fijo abajo, arriba de la barra de pestañas */
+.pantalla-hoy { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+.lista-hoy { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: none; padding: var(--esp-5) 0 var(--esp-4); }
+.lista-hoy .nada { font: var(--letra-secundaria); color: var(--texto-2); padding: var(--esp-2) var(--margen); }
+
+.tengo { flex: none; padding: var(--esp-5) var(--margen) var(--esp-4); border-top: var(--trazo) solid var(--linea); }
+.tengo .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
+.tengo .cabeza svg { width: 20px; height: 20px; }
+.tengo .cabeza span:last-child { margin-left: auto; }
+.tengo .nota { font: var(--letra-nota); color: var(--texto-2); text-align: center; padding: var(--esp-3) 0; min-height: var(--esp-4); }
+.tengo .nota:empty { padding: 0; }
+.tengo .nota:not(:empty) { animation: fundido var(--t-corta); }
+
+/* Círculos para elegir (los minutos): el elegido, blanco lleno con letra negra; los demás, contorno fino gris */
+.opciones { display: flex; justify-content: space-between; }
+.opciones button {
+  width: var(--circulo-opcion); height: var(--circulo-opcion); border-radius: 50%;
+  border: var(--trazo) solid var(--linea); color: var(--texto); font: var(--letra-encabezado);
+  transition: background var(--t-corta), color var(--t-corta), border-color var(--t-corta), transform 100ms;
+}
+.opciones button[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
+.opciones button:active { transform: scale(.95); }
+
+/* Tarea en curso */
+.cuenta { font: var(--letra-secundaria); color: var(--texto-2); }
+.curso { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 var(--margen); overflow: hidden; text-align: center; }
+.tarea { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;
+  transition: transform var(--t-tarea) var(--curva-ios), opacity var(--t-tarea); }
+.tarea.sale { transform: translateX(-40%); opacity: 0; }
+.tarea.entra { transform: translateX(40%); opacity: 0; transition: none; }
+.tarea h3 { font: var(--letra-enorme); }
+.tarea p { font: var(--letra-secundaria); font-size: 20px; color: var(--texto-2); margin-top: var(--esp-2); }
+.tarea .estado { width: auto; height: auto; margin-top: var(--esp-8); }
+.tarea .estado i { --circulo: var(--circulo-grande); border-width: 3px; transition: background var(--t-corta), border-color var(--t-corta), transform 100ms; }
+.tarea .estado i svg { width: 50%; height: 50%; }
+/* El ícono de la tarea, grande y blanco, adentro del círculo; al marcarla, deja lugar al ✓, la flecha o la mitad */
+.tarea .estado i .i-tarea { width: 46%; height: 46%; color: var(--texto); opacity: 0; z-index: 1; }
+.tarea[data-estado="toca"] .estado i .i-tarea { opacity: 1; }
+.tarea[data-estado="toca"] .estado:active i { transform: scale(.94); }
+.tarea .etiqueta { font: var(--letra-seccion); color: var(--texto-2); margin-top: var(--esp-3); }
+.otras { display: flex; justify-content: center; gap: var(--esp-6); }
+.otras button[disabled], .tarea .estado[disabled] { pointer-events: none; }
+
+.fin { flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: center; text-align: left; animation: fundido var(--t-corta); }
+.fin h3 { font: var(--letra-titulo); padding: 0 0 var(--esp-5); text-align: center; }
+.fin .fila { padding-left: 0; }
+.fin .fila:active { opacity: 1; }
+.fin .fila + .fila::before { left: calc(var(--circulo) + var(--esp-5)); right: 0; }
+.fin + .boton { margin-bottom: var(--esp-2); }
 </style>
 </head>
 <body>
@@ -361,7 +416,21 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
   <button class="boton-icono" id="nueva-tarea" aria-label="Nueva tarea" hidden><svg class="ic" aria-hidden="true"><use href="#plus-circle"/></svg></button>
 </header>
 <main class="pantallas">
-<section class="pantalla" id="pantalla-hoy" data-titulo="hoy">
+<section class="pantalla pantalla-hoy" id="pantalla-hoy" data-titulo="hoy">
+  <div class="lista-hoy" id="lista-hoy"></div>
+  <!-- «Tengo X minutos»: fijo arriba de la barra de pestañas; la lista se mueve por encima -->
+  <div class="tengo">
+    <div class="cabeza"><svg class="ic" aria-hidden="true"><use href="#timer"/></svg><span>tengo</span><span>minutos</span></div>
+    <div class="opciones num" id="minutos">
+      <button data-op="5">5</button>
+      <button data-op="10">10</button>
+      <button data-op="20" aria-pressed="true">20</button>
+      <button data-op="30">30</button>
+      <button data-op="60">60</button>
+    </div>
+    <p class="nota" id="nota-tengo"></p>
+    <button class="boton" id="empezar">Empezar</button>
+  </div>
 </section>
 <section class="pantalla" id="pantalla-tareas" data-titulo="tareas" hidden>
   <div id="lista-tareas"></div>
@@ -426,6 +495,14 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
   <div class="hoja-cuerpo"><div class="grilla-iconos" id="grilla-iconos"></div></div>
 </section>
 <div class="velo" id="velo-iconos"></div>
+<section class="hoja" id="hoja-curso" aria-label="Tarea en curso">
+  <div class="hoja-arriba">
+    <h2 class="cuenta num" id="cuenta"></h2>
+    <button class="boton-circulo" id="cerrar-curso" aria-label="Cerrar"><svg class="ic" aria-hidden="true"><use href="#x-bold"/></svg></button>
+  </div>
+  <div class="curso" id="curso"></div>
+</section>
+<div class="velo" id="velo-curso"></div>
 <script>
 'use strict';
 // Fechas en días locales (Argentina, UTC−3). Funciones puras: reciben las fechas como parámetro.
@@ -477,7 +554,7 @@ if (typeof module === 'object') module.exports = { diasEntre, sumarDias, diaLoca
 // Cada cambio en la forma de guardar sube VERSION y suma en MIGRACIONES cómo pasar de la versión anterior a la nueva.
 // Las migraciones no se cambian nunca después de publicadas: llevan sus datos adentro.
 
-const VERSION = 2;
+const VERSION = 3;
 
 // MIGRACIONES[n]: datos de la versión n → datos de la versión n + 1.
 const MIGRACIONES = {
@@ -498,6 +575,8 @@ const MIGRACIONES = {
     ],
     historial: [],
   }),
+  // 2 → 3: las 3 de hoy (se eligen la 1.ª vez que se abre la app en el día). El historial suma «a-medias» y «salteada».
+  2: d => ({ ...d, las3: null }),
 };
 
 function estadoNuevo(version = VERSION, migraciones = MIGRACIONES) {
@@ -655,6 +734,100 @@ if (typeof module === 'object') module.exports = {
   frecuenciaTexto, lineaTarea, tareaValida, guardarTarea, borrarTarea, marcarHecha, desmarcarHecha,
   cargarUltimaVez, ultimaVezTexto,
 };
+// «Hoy»: las 3 de hoy, el orden en que se ofrecen las tareas y qué entra en «Tengo X minutos».
+// Funciones puras: reciben «hoy» ('AAAA-MM-DD') y devuelven datos nuevos, sin tocar los que reciben.
+const tareasH = typeof module === 'object' ? require('./tareas.js') : { ultimaVez, toca, ordenarPorVencimiento };
+
+// Lo que pasó hoy con una tarea: 'hecha', 'a-medias', 'salteada' o null (nada todavía).
+function estadoDelDia(historial, id, hoy) {
+  if (tareasH.ultimaVez(historial, id) === hoy) return 'hecha';
+  const deHoy = historial.filter(h => h.tarea === id && h.dia === hoy);
+  if (deHoy.some(h => h.que === 'a-medias')) return 'a-medias';
+  if (deHoy.some(h => h.que === 'salteada')) return 'salteada';
+  return null;
+}
+
+// A medias de un día anterior y todavía sin terminar: va primero (no reinicia la cuenta de días).
+function aMediasPendiente(historial, id, hoy) {
+  const ultima = tareasH.ultimaVez(historial, id);
+  return historial.some(h => h.tarea === id && h.que === 'a-medias' && h.dia < hoy && (ultima === null || h.dia > ultima));
+}
+
+// El orden en que se ofrecen: primero las que quedaron a medias, después de la más vencida a la menos.
+function ordenParaHoy(tareas, historial, hoy) {
+  const ordenadas = tareasH.ordenarPorVencimiento(tareas, historial, hoy);
+  const primero = ordenadas.filter(t => aMediasPendiente(historial, t.id, hoy));
+  return primero.concat(ordenadas.filter(t => !primero.includes(t)));
+}
+
+// Las 3 de hoy: las 3 primeras que tocan, en el orden de arriba.
+function elegirLasTres(tareas, historial, hoy) {
+  const tocan = tareas.filter(t => tareasH.toca(t, tareasH.ultimaVez(historial, t.id), hoy));
+  return ordenParaHoy(tocan, historial, hoy).slice(0, 3).map(t => t.id);
+}
+
+// La 1.ª vez que se abre la app en el día, elige las 3 de hoy; después quedan fijas hasta mañana.
+function asegurarLasTres(estado, hoy) {
+  if (estado.las3 && estado.las3.dia === hoy) return estado;
+  return { ...estado, las3: { dia: hoy, ids: elegirLasTres(estado.tareas, estado.historial, hoy) } };
+}
+
+// Si cambia «última vez» de una tarea y todavía no se hizo nada con las 3 de hoy (ni hecha, ni a medias, ni salteada),
+// se vuelven a elegir: así, al poner las tareas al día, salen las que de verdad tocan.
+function reelegirSiNoEmpezo(estado, hoy) {
+  if (!estado.las3 || estado.las3.dia !== hoy) return asegurarLasTres(estado, hoy);
+  const empezo = estado.las3.ids.some(id => estadoDelDia(estado.historial, id, hoy) !== null);
+  if (empezo) return estado;
+  return { ...estado, las3: { dia: hoy, ids: elegirLasTres(estado.tareas, estado.historial, hoy) } };
+}
+
+// Las 3 de hoy, como tareas (sin las que se borraron).
+function lasTres(estado) {
+  if (!estado.las3) return [];
+  return estado.las3.ids.map(id => estado.tareas.find(t => t.id === id)).filter(Boolean);
+}
+
+// El día está cumplido cuando las 3 de hoy están hechas.
+function diaCumplido(estado, hoy) {
+  const tres = lasTres(estado);
+  return tres.length > 0 && tres.every(t => estadoDelDia(estado.historial, t.id, hoy) === 'hecha');
+}
+
+// Lo que se puede ofrecer ahora: las que tocan y hoy no se hicieron, no se saltearon ni quedaron a medias.
+// Primero las 3 de hoy (en su orden) y después las demás, en el orden de ordenParaHoy.
+function paraOfrecer(estado, hoy) {
+  const libres = estado.tareas.filter(t =>
+    tareasH.toca(t, tareasH.ultimaVez(estado.historial, t.id), hoy) && estadoDelDia(estado.historial, t.id, hoy) === null);
+  const tresIds = estado.las3 && estado.las3.dia === hoy ? estado.las3.ids : [];
+  const deLasTres = tresIds.map(id => libres.find(t => t.id === id)).filter(Boolean);
+  const resto = ordenParaHoy(libres.filter(t => !deLasTres.includes(t)), estado.historial, hoy);
+  return deLasTres.concat(resto);
+}
+
+// «Tengo X minutos»: recorre la lista en orden y se queda con las que entran en el tiempo.
+// Si no entra ninguna, dice cuál es la más corta (null si no hay nada para ofrecer).
+function queEntra(lista, minutos) {
+  let queda = minutos;
+  const entran = [];
+  for (const t of lista) if (t.minutos <= queda) { entran.push(t); queda -= t.minutos; }
+  let masCorta = null;
+  if (!entran.length) for (const t of lista) if (masCorta === null || t.minutos < masCorta.minutos) masCorta = t;
+  return { entran, masCorta };
+}
+
+function anotar(estado, id, hoy, que) {
+  if (estado.historial.some(h => h.tarea === id && h.dia === hoy && h.que === que)) return estado;
+  return { ...estado, historial: estado.historial.concat({ tarea: id, dia: hoy, que }) };
+}
+// Salteada: hoy no se ofrece más; mañana sigue igual de vencida (o más).
+function marcarSalteada(estado, id, hoy) { return anotar(estado, id, hoy, 'salteada'); }
+// A medias: queda anotada, no reinicia la cuenta y mañana va primero.
+function marcarAMedias(estado, id, hoy) { return anotar(estado, id, hoy, 'a-medias'); }
+
+if (typeof module === 'object') module.exports = {
+  estadoDelDia, aMediasPendiente, ordenParaHoy, elegirLasTres, asegurarLasTres, reelegirSiNoEmpezo, lasTres, diaCumplido,
+  paraOfrecer, queEntra, marcarSalteada, marcarAMedias,
+};
 // Los datos del usuario: localStorage, clave 'casa-v1' (no se renombra nunca). La lectura y las migraciones son de reglas/estado.js.
 const CLAVE = 'casa-v1';
 let estado = null;
@@ -727,17 +900,33 @@ const ICONOS_TAREA = [
 
 const listaTareas = document.getElementById('lista-tareas');
 
-function filaTarea(t, estadoFila) {
+// El círculo de estado: ✓ (hecha), flecha (salteada) y la mitad (a medias, con CSS).
+const iconosEstado = () => ic('check-bold', 'i-check') + ic('arrow-right-bold', 'i-salteada');
+
+function filaTarea(t, estadoFila, linea = lineaTarea(t)) {
   return `<button class="fila" data-id="${t.id}" data-estado="${estadoFila}">` +
-    `<span class="estado" data-circulo><i>${ic('check-bold', 'i-check')}</i></span>` +
-    `<span class="texto"><span class="nombre">${escapar(t.nombre)}</span><span class="linea">${lineaTarea(t)}</span></span></button>`;
+    `<span class="estado" data-circulo><i>${iconosEstado()}</i></span>` +
+    `<span class="texto"><span class="nombre">${escapar(t.nombre)}</span><span class="linea">${linea}</span></span></button>`;
+}
+
+// Tocar el círculo marca hecha (la última vez pasa a ser hoy) o deshace lo de hoy. Sirve en Hoy y en Tareas.
+function tocarCirculo(fila, tarea) {
+  const hoy = hoyLocal();
+  const yaHecha = ultimaVez(estado.historial, tarea.id) === hoy;
+  estado = yaHecha ? desmarcarHecha(estado, tarea.id, hoy) : marcarHecha(estado, tarea.id, hoy);
+  guardarDatos();
+  // el círculo cambia ahí mismo; después se acomodan las listas
+  fila.dataset.estado = yaHecha ? 'toca' : 'hecha';
+  setTimeout(pintarTodo, 450);
 }
 
 function pintarTareas() {
   const g = agrupar(estado.tareas, estado.historial, hoyLocal());
   const seccion = (titulo, lista, estadoFila) => lista.length
     ? `<section class="seccion"><h2>${titulo}</h2><div>${lista.map(t => filaTarea(t, estadoFila)).join('')}</div></section>` : '';
-  listaTareas.innerHTML = `<div class="lista">${seccion('tocan', g.tocan, 'toca')}${seccion('más adelante', g.adelante, 'no')}${seccion('hechas hoy', g.hechas, 'hecha')}</div>`;
+  const hoy = hoyLocal();
+  const tocan = g.tocan.map(t => filaTarea(t, estadoDelDia(estado.historial, t.id, hoy) || 'toca')).join('');
+  listaTareas.innerHTML = `<div class="lista">${g.tocan.length ? `<section class="seccion"><h2>tocan</h2><div>${tocan}</div></section>` : ''}${seccion('más adelante', g.adelante, 'no')}${seccion('hechas hoy', g.hechas, 'hecha')}</div>`;
 }
 
 // Tocar el círculo marca hecha (o deshace la de hoy); tocar la fila abre la hoja.
@@ -746,16 +935,7 @@ listaTareas.addEventListener('click', e => {
   if (!fila) return;
   const tarea = estado.tareas.find(t => t.id === fila.dataset.id);
   if (!tarea) return;
-  if (e.target.closest('[data-circulo]')) {
-    const hoy = hoyLocal();
-    const yaHecha = ultimaVez(estado.historial, tarea.id) === hoy;
-    estado = yaHecha ? desmarcarHecha(estado, tarea.id, hoy) : marcarHecha(estado, tarea.id, hoy);
-    guardarDatos();
-    // el círculo cambia ahí mismo; después la fila pasa a su grupo
-    fila.dataset.estado = yaHecha ? 'toca' : 'hecha';
-    setTimeout(pintarTareas, 450);
-    return;
-  }
+  if (e.target.closest('[data-circulo]')) { tocarCirculo(fila, tarea); return; }
   abrirHojaTarea(tarea);
 });
 
@@ -912,10 +1092,14 @@ guardarBtn.onclick = () => {
   if (!tareaValida(t)) return;
   estado = guardarTarea(estado, t);
   // la última vez cargada a mano se suma al historial con esa fecha
-  if (cUltima.get() !== ultimaOriginal) estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
+  if (cUltima.get() !== ultimaOriginal) {
+    estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
+    // si todavía no empezaste con las 3 de hoy, se vuelven a elegir con la fecha nueva
+    estado = reelegirSiNoEmpezo(estado, hoyLocal());
+  }
   guardarDatos();
   cerrarHojaTarea();
-  pintarTareas();
+  pintarTodo();
 };
 
 // Borrar pide 2 toques: el 1.º avisa, el 2.º borra (si no, se vuelve a «Borrar tarea» a los 3 segundos).
@@ -936,7 +1120,7 @@ borrarBtn.onclick = () => {
   estado = borrarTarea(estado, enEdicion.id);
   guardarDatos();
   cerrarHojaTarea();
-  pintarTareas();
+  pintarTodo();
 };
 
 document.getElementById('cerrar-tarea').onclick = cerrarHojaTarea;
@@ -944,12 +1128,135 @@ document.getElementById('velo-tarea').onclick = cerrarHojaTarea;
 document.getElementById('cerrar-iconos').onclick = () => cerrarHoja(hojaIconos);
 document.getElementById('velo-iconos').onclick = () => cerrarHoja(hojaIconos);
 document.getElementById('nueva-tarea').onclick = () => abrirHojaTarea(null);
+// Hoy: las 3 de hoy, «Tengo X minutos» y la tarea en curso, de a 1.
+// Las reglas (cuáles son las 3, qué entra, el orden) son de reglas/hoy.js; acá solo se dibuja y se guarda.
+
+const listaHoy = document.getElementById('lista-hoy');
+const notaTengo = document.getElementById('nota-tengo');
+const empezarBtn = document.getElementById('empezar');
+const minutosEl = document.getElementById('minutos');
+let minutos = 20;
+
+// La 1.ª vez del día elige las 3 de hoy (después quedan fijas hasta mañana).
+function prepararDia() {
+  const antes = estado;
+  estado = asegurarLasTres(estado, hoyLocal());
+  if (estado !== antes) guardarDatos();
+}
+
+function pintarHoy() {
+  const hoy = hoyLocal();
+  const tres = lasTres(estado);
+  const titulo = diaCumplido(estado, hoy) ? 'las 3 de hoy · cumplido' : 'las 3 de hoy';
+  listaHoy.innerHTML = tres.length
+    ? `<div class="lista"><section class="seccion"><h2>${titulo}</h2><div>${tres.map(t =>
+      filaTarea(t, estadoDelDia(estado.historial, t.id, hoy) || 'toca', `${t.minutos} min`)).join('')}</div></section></div>`
+    : '<p class="nada lista">Hoy no toca nada.</p>';
+  pintarTengo();
+}
+
+// «Tengo X minutos»: qué entra; si no entra ninguna, la más corta y «Empezar» apagado.
+function pintarTengo() {
+  const { entran, masCorta } = queEntra(paraOfrecer(estado, hoyLocal()), minutos);
+  empezarBtn.disabled = !entran.length;
+  if (entran.length) notaTengo.textContent = '';
+  else if (masCorta) notaTengo.textContent = `No entra ninguna. La más corta: ${masCorta.nombre}, ${masCorta.minutos} min.`;
+  else notaTengo.textContent = 'No queda nada que toque hoy.';
+}
+
+function pintarTodo() { pintarHoy(); pintarTareas(); }
+
+minutosEl.addEventListener('click', e => {
+  const b = e.target.closest('button[data-op]');
+  if (!b) return;
+  minutos = +b.dataset.op;
+  minutosEl.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  pintarTengo();
+});
+
+listaHoy.addEventListener('click', e => {
+  const fila = e.target.closest('.fila');
+  if (!fila || !e.target.closest('[data-circulo]')) return;
+  const tarea = estado.tareas.find(t => t.id === fila.dataset.id);
+  if (tarea) tocarCirculo(fila, tarea);
+});
+
+// ---- La tarea en curso, de a 1
+
+const hojaCurso = document.getElementById('hoja-curso');
+const curso = document.getElementById('curso');
+const cuenta = document.getElementById('cuenta');
+let elegidas = [], paso = 0, resultados = [];
+
+function pintarTareaEnCurso(entrando) {
+  const t = elegidas[paso];
+  cuenta.textContent = `${paso + 1} de ${elegidas.length}`;
+  curso.innerHTML = `
+    <div class="tarea ${entrando ? 'entra' : ''}" data-estado="toca">
+      <h3>${escapar(t.nombre)}</h3>
+      <p class="num">${t.minutos} min</p>
+      <button class="estado" data-r="hecha" aria-label="Hecha"><i>${ic(t.icono + '-fill', 'i-tarea')}${iconosEstado()}</i></button>
+      <div class="etiqueta">hecha</div>
+    </div>
+    <div class="otras">
+      <button class="boton-texto" data-r="a-medias">A medias</button>
+      <button class="boton-texto" data-r="salteada">Saltear</button>
+    </div>`;
+  const tarea = curso.querySelector('.tarea');
+  if (entrando) requestAnimationFrame(() => requestAnimationFrame(() => tarea.classList.remove('entra')));
+  curso.querySelectorAll('[data-r]').forEach(b => { b.onclick = () => marcarEnCurso(t, b.dataset.r, tarea); });
+}
+
+const ETIQUETAS = { 'hecha': 'hecha', 'a-medias': 'a medias', 'salteada': 'salteada' };
+function marcarEnCurso(t, r, tarea) {
+  curso.querySelectorAll('[data-r]').forEach(b => { b.disabled = true; });
+  const hoy = hoyLocal();
+  estado = r === 'hecha' ? marcarHecha(estado, t.id, hoy) : r === 'a-medias' ? marcarAMedias(estado, t.id, hoy) : marcarSalteada(estado, t.id, hoy);
+  guardarDatos();
+  tarea.dataset.estado = r;
+  tarea.querySelector('.etiqueta').textContent = ETIQUETAS[r];
+  resultados.push([t, r]);
+  setTimeout(() => {
+    tarea.classList.add('sale');
+    setTimeout(() => {
+      paso++;
+      if (paso < elegidas.length) pintarTareaEnCurso(true); else pintarFin();
+    }, 250);
+  }, 700);
+}
+
+function pintarFin() {
+  cuenta.textContent = '';
+  curso.innerHTML = `
+    <div class="fin">
+      <h3>listo por ahora</h3>
+      <div>${resultados.map(([t, r]) => filaTarea(t, r, `${t.minutos} min`)).join('')}</div>
+    </div>
+    <button class="boton" id="listo">Cerrar</button>`;
+  document.getElementById('listo').onclick = cerrarCurso;
+}
+
+function empezar() {
+  const { entran } = queEntra(paraOfrecer(estado, hoyLocal()), minutos);
+  if (!entran.length) return;
+  elegidas = entran; paso = 0; resultados = [];
+  pintarTareaEnCurso(false);
+  hojaCurso.classList.add('abierta');
+}
+function cerrarCurso() {
+  hojaCurso.classList.remove('abierta');
+  pintarTodo();
+}
+empezarBtn.onclick = empezar;
+document.getElementById('cerrar-curso').onclick = cerrarCurso;
+document.getElementById('velo-curso').onclick = cerrarCurso;
 // Al abrir: leer los datos, pedir que no se borren, poner la fecha y dejar la app lista para usarse sin internet.
 leerDatos();
+prepararDia();
 pintarSubtitulo();
-pintarTareas();
-// si la app queda abierta y cambia el día, la fecha y lo que toca se actualizan al volver
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { pintarSubtitulo(); pintarTareas(); } });
+pintarTodo();
+// si la app queda abierta y cambia el día, al volver se eligen las 3 del día nuevo y se actualiza todo
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { prepararDia(); pintarSubtitulo(); pintarTodo(); } });
 
 pedirQueNoSeBorren().then(si => {
   document.getElementById('persistente').textContent = si ? 'para siempre' : 'mientras haya lugar';

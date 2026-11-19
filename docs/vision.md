@@ -47,8 +47,8 @@ Provisorias: se revisan con el uso.
 - **Al terminar cada tarea:**
   - **Hecha:** la última vez pasa a ser hoy.
   - **Salteada:** no me la vuelve a ofrecer hoy; mañana sigue igual de vencida (o más).
-  - **A medias:** queda anotada, no reinicia la cuenta y mañana es lo primero que me ofrece.
-- **La mañana:** la 1.ª vez que abro la app en el día, elige las 3 más vencidas que tocan. Son «las 3 de hoy»: «Tengo X minutos» las ofrece antes que el resto. El día está cumplido con esas 3, aunque haga más.
+  - **A medias:** queda anotada, no reinicia la cuenta y mañana es lo primero que me ofrece (ese día no me la vuelve a ofrecer).
+- **La mañana:** la 1.ª vez que abro la app en el día, elige las 3 más vencidas que tocan. Si después cambio «última vez» de una tarea y todavía no hice nada con esas 3 (ni hecha, ni a medias, ni salteada), se vuelven a elegir. Son «las 3 de hoy»: «Tengo X minutos» las ofrece antes que el resto. El día está cumplido con esas 3, aunque haga más.
 - **La ropa como cadena:** lavar la ropa son 3 pasos.
   1. **Meter** (5 min): cuando toca, como cualquier tarea.
   2. **Colgar:** desde 1 hora y media después de meterla. Cuando está lista, va antes que todo (la ropa mojada no espera).
@@ -62,18 +62,32 @@ Provisorias: se revisan con el uso.
 3. La mañana: 3 cosas para el día.
 4. La ropa como cadena.
 5. Copia de seguridad: bajar y volver a cargar mis datos.
+6. **Tareas de 1 sola vez** (después de «hoy»). La idea: abrir la app y ver todo lo del día en 1 solo lugar, no solo lo de la casa.
+   - En la hoja, la opción «1 vez» con fecha (hoy, mañana o elegir día) y minutos.
+   - Ese día aparece en «hoy», antes que las repetitivas, y entra en «Tengo X minutos».
+   - Si no se hace, pasa al día siguiente marcada como atrasada, bien visible.
+   - Hecha, desaparece de las listas y queda en el historial.
 
 Avisos: en la versión 1 la app **no avisa sola** (en el iPhone, una app web sin servidor no puede mandar notificaciones con la app cerrada). Cuando la abro, me muestra lo que está esperando («Colgar la ropa: desde las 19:30»).
 
 ## Versión 2
 
 - Comidas de la semana → lista del súper.
-- Avisos delegados en Google Calendar (por ejemplo, «colgar la ropa» 1 hora y media después de meterla).
+- Avisos con Recordatorios del iPhone, usando un Atajo: un botón «avisarme» solo en lo que lo necesita (colgar la ropa, tareas de 1 vez con hora). Abre el atajo con el texto y la hora, y el atajo crea el recordatorio con alarma. Las repetitivas no se pasan.
+
+## Después de usarla 1 o 2 semanas
+
+Un estímulo visual que **recompensa y nunca reta** (no hacerlo todavía):
+
+- El círculo se llena con una animación al marcar hecha.
+- Un momento de «día cumplido» al terminar las 3 de hoy.
+- Una racha de «la casa al día»: días seguidos sin tareas atrasadas. No se corta por saltear y se muestra solo en positivo.
+- El calendario de círculos en la hoja de cada tarea (como los días de la app de hábitos).
+- Nunca caritas tristes ni «perdiste la racha». Sin puntos ni niveles.
 
 ## Fuera de la app (decidido)
 
 - IA dentro de la app y servidor propio.
-- Rachas, puntos o premios: no es un juego.
 - Compartir la casa con otra persona (por ahora es solo para mí).
 - Reescribirla en React u otro framework.
 

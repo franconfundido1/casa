@@ -1,9 +1,10 @@
 // Al abrir: leer los datos, pedir que no se borren, poner la fecha y dejar la app lista para usarse sin internet.
 leerDatos();
+prepararDia();
 pintarSubtitulo();
-pintarTareas();
-// si la app queda abierta y cambia el día, la fecha y lo que toca se actualizan al volver
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { pintarSubtitulo(); pintarTareas(); } });
+pintarTodo();
+// si la app queda abierta y cambia el día, al volver se eligen las 3 del día nuevo y se actualiza todo
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { prepararDia(); pintarSubtitulo(); pintarTodo(); } });
 
 pedirQueNoSeBorren().then(si => {
   document.getElementById('persistente').textContent = si ? 'para siempre' : 'mientras haya lugar';

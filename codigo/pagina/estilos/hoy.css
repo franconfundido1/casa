@@ -1,0 +1,49 @@
+/* Hoy (bocetos/hoy.html): las 3 de hoy arriba; «tengo» fijo abajo, arriba de la barra de pestañas */
+.pantalla-hoy { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+.lista-hoy { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: none; padding: var(--esp-5) 0 var(--esp-4); }
+.lista-hoy .nada { font: var(--letra-secundaria); color: var(--texto-2); padding: var(--esp-2) var(--margen); }
+
+.tengo { flex: none; padding: var(--esp-5) var(--margen) var(--esp-4); border-top: var(--trazo) solid var(--linea); }
+.tengo .cabeza { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-seccion); color: var(--texto-2); margin-bottom: var(--esp-3); }
+.tengo .cabeza svg { width: 20px; height: 20px; }
+.tengo .cabeza span:last-child { margin-left: auto; }
+.tengo .nota { font: var(--letra-nota); color: var(--texto-2); text-align: center; padding: var(--esp-3) 0; min-height: var(--esp-4); }
+.tengo .nota:empty { padding: 0; }
+.tengo .nota:not(:empty) { animation: fundido var(--t-corta); }
+
+/* Círculos para elegir (los minutos): el elegido, blanco lleno con letra negra; los demás, contorno fino gris */
+.opciones { display: flex; justify-content: space-between; }
+.opciones button {
+  width: var(--circulo-opcion); height: var(--circulo-opcion); border-radius: 50%;
+  border: var(--trazo) solid var(--linea); color: var(--texto); font: var(--letra-encabezado);
+  transition: background var(--t-corta), color var(--t-corta), border-color var(--t-corta), transform 100ms;
+}
+.opciones button[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
+.opciones button:active { transform: scale(.95); }
+
+/* Tarea en curso */
+.cuenta { font: var(--letra-secundaria); color: var(--texto-2); }
+.curso { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 var(--margen); overflow: hidden; text-align: center; }
+.tarea { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;
+  transition: transform var(--t-tarea) var(--curva-ios), opacity var(--t-tarea); }
+.tarea.sale { transform: translateX(-40%); opacity: 0; }
+.tarea.entra { transform: translateX(40%); opacity: 0; transition: none; }
+.tarea h3 { font: var(--letra-enorme); }
+.tarea p { font: var(--letra-secundaria); font-size: 20px; color: var(--texto-2); margin-top: var(--esp-2); }
+.tarea .estado { width: auto; height: auto; margin-top: var(--esp-8); }
+.tarea .estado i { --circulo: var(--circulo-grande); border-width: 3px; transition: background var(--t-corta), border-color var(--t-corta), transform 100ms; }
+.tarea .estado i svg { width: 50%; height: 50%; }
+/* El ícono de la tarea, grande y blanco, adentro del círculo; al marcarla, deja lugar al ✓, la flecha o la mitad */
+.tarea .estado i .i-tarea { width: 46%; height: 46%; color: var(--texto); opacity: 0; z-index: 1; }
+.tarea[data-estado="toca"] .estado i .i-tarea { opacity: 1; }
+.tarea[data-estado="toca"] .estado:active i { transform: scale(.94); }
+.tarea .etiqueta { font: var(--letra-seccion); color: var(--texto-2); margin-top: var(--esp-3); }
+.otras { display: flex; justify-content: center; gap: var(--esp-6); }
+.otras button[disabled], .tarea .estado[disabled] { pointer-events: none; }
+
+.fin { flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: center; text-align: left; animation: fundido var(--t-corta); }
+.fin h3 { font: var(--letra-titulo); padding: 0 0 var(--esp-5); text-align: center; }
+.fin .fila { padding-left: 0; }
+.fin .fila:active { opacity: 1; }
+.fin .fila + .fila::before { left: calc(var(--circulo) + var(--esp-5)); right: 0; }
+.fin + .boton { margin-bottom: var(--esp-2); }

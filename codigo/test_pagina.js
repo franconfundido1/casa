@@ -75,15 +75,15 @@ function chequear(nombre, ok, detalle = '') {
 
   // datos
   const guardado = await p.evaluate(() => JSON.parse(localStorage.getItem('casa-v1')));
-  chequear('datos: guarda en casa-v1 con la versión 2 y las 9 tareas', guardado.app === 'casa' && guardado.version === 2 && guardado.tareas.length === 9 && guardado.historial.length === 0, JSON.stringify(guardado).slice(0, 80));
+  chequear('datos: guarda en casa-v1 con la versión 3 y las 9 tareas', guardado.app === 'casa' && guardado.version === 3 && guardado.tareas.length === 9 && guardado.historial.length === 0, JSON.stringify(guardado).slice(0, 80));
   await p.evaluate(() => localStorage.setItem('casa-v1', '{roto'));
   await p.reload();
   const tras = await p.evaluate(() => [JSON.parse(localStorage.getItem('casa-v1')), localStorage.getItem('casa-v1-roto')]);
-  chequear('datos: si lo guardado está roto, lo guarda aparte y arranca', tras[0].version === 2 && tras[0].tareas.length === 9 && tras[1] === '{roto', JSON.stringify(tras).slice(0, 80));
+  chequear('datos: si lo guardado está roto, lo guarda aparte y arranca', tras[0].version === 3 &&tras[0].tareas.length === 9 && tras[1] === '{roto', JSON.stringify(tras).slice(0, 80));
   await p.evaluate(() => { localStorage.setItem('casa-v1-roto', ''); localStorage.setItem('casa-v1', JSON.stringify({ app: 'casa', version: 1, otra: 1 })); });
   await p.reload();
   const migrado = await p.evaluate(() => JSON.parse(localStorage.getItem('casa-v1')));
-  chequear('datos: migra de la versión 1 a la 2 con las 9 tareas', migrado.version === 2 && migrado.tareas.length === 9 && migrado.otra === 1);
+  chequear('datos: migra de la versión 1 a la 3 con las 9 tareas', migrado.version === 3 && migrado.tareas.length === 9 && migrado.otra === 1);
 
   // tareas
   const filas = () => p.$$eval('#lista-tareas .seccion', ss => ss.map(s => [s.querySelector('h2').textContent, [...s.querySelectorAll('.fila .nombre')].map(n => n.textContent)]));
@@ -95,7 +95,7 @@ function chequear(nombre, ok, detalle = '') {
   chequear('tareas: las 9 tocan (nunca hechas), de la más corta a la más larga', JSON.stringify(g) === JSON.stringify([['tocan',
     ['Hacer la cama', 'Lavar la ropa', 'Barrer', 'Lavar los platos', 'Ordenar la ropa', 'Limpiar el baño', 'Pasar el trapo', 'Verdulería', 'Súper']]]), JSON.stringify(g));
   chequear('tareas: 1 línea gris corta', (await p.textContent('#lista-tareas [data-id="verduleria"] .linea')) === 'cada 3 a 4 días · 20 min');
-  chequear('tareas: las filas no tienen ícono de tarea, solo el círculo', (await p.$$('#lista-tareas .fila svg')).length === 9);
+  chequear('tareas: las filas no tienen ícono de tarea, solo el círculo', (await p.$$('#lista-tareas .i-tarea')).length === 0);
   await p.tap('#lista-tareas [data-id="barrer"] [data-circulo]');
   chequear('tareas: tocar el círculo lo llena al toque', (await p.getAttribute('#lista-tareas [data-id="barrer"]', 'data-estado')) === 'hecha');
   await p.waitForTimeout(700);
@@ -178,6 +178,75 @@ function chequear(nombre, ok, detalle = '') {
   await p.tap('#borrar-tarea');
   await p.waitForTimeout(400);
   chequear('borrar: el 2.º toque la borra', (await guardadas()).tareas.length === 9 && !(await p.textContent('#lista-tareas')).includes('Regar'));
+  await p.tap('.pestanas [data-pantalla="hoy"]');
+
+  // hoy: las 3 de hoy, «Tengo X minutos» y la tarea en curso
+  await p.evaluate(() => localStorage.clear());
+  await p.reload();
+  const filasHoy = () => p.$$eval('#lista-hoy .fila', fs => fs.map(f => [f.querySelector('.nombre').textContent, f.dataset.estado]));
+  let hoyFilas = await filasHoy();
+  chequear('hoy: las 3 de hoy (nunca hechas: las más cortas)', JSON.stringify(hoyFilas) === JSON.stringify([['Hacer la cama', 'toca'], ['Lavar la ropa', 'toca'], ['Barrer', 'toca']]), JSON.stringify(hoyFilas));
+  chequear('hoy: 1 línea gris, solo los minutos', (await p.textContent('#lista-hoy [data-id="barrer"] .linea')) === '10 min');
+  const las3 = (await guardadas()).las3;
+  chequear('hoy: las 3 quedan guardadas con el día', las3 && /^\d{4}-\d{2}-\d{2}$/.test(las3.dia) && las3.ids.join() === 'cama,lavar-ropa,barrer', JSON.stringify(las3));
+  // poner «última vez» antes de empezar el día vuelve a elegir las 3 de hoy
+  await p.tap('.pestanas [data-pantalla="tareas"]');
+  await p.tap('#lista-tareas [data-id="barrer"] .nombre');
+  await p.waitForTimeout(400);
+  await p.tap('#c-ultima [data-mas]');
+  await p.tap('#c-ultima [data-mas]');
+  await p.tap('#guardar-tarea');
+  await p.waitForTimeout(400);
+  await p.tap('.pestanas [data-pantalla="hoy"]');
+  const reelegidas = (await guardadas()).las3.ids;
+  chequear('hoy: si cambiás «última vez» antes de empezar, se vuelven a elegir las 3', !reelegidas.includes('barrer') && reelegidas.length === 3 &&
+    !(await filasHoy()).some(f => f[0] === 'Barrer'), JSON.stringify(reelegidas));
+  // para seguir con las mismas pruebas de antes: Barrer otra vez en «nunca»
+  await p.evaluate(() => { localStorage.clear(); });
+  await p.reload();
+  const panel = await p.evaluate(() => { const e = document.getElementById('empezar').getBoundingClientRect(), n = document.querySelector('.pestanas').getBoundingClientRect(); return [e.bottom, n.top]; });
+  chequear('hoy: «Empezar» fijo, arriba de la barra de pestañas', panel[0] <= panel[1], JSON.stringify(panel));
+  chequear('hoy: 20 minutos elegidos de entrada, «Empezar» prendido', (await p.getAttribute('#minutos [data-op="20"]', 'aria-pressed')) === 'true' && !(await p.isDisabled('#empezar')));
+  // marcar a mano la cama y la ropa para que con 5 minutos no entre ninguna
+  await p.tap('#lista-hoy [data-id="cama"] [data-circulo]');
+  await p.tap('#lista-hoy [data-id="lavar-ropa"] [data-circulo]');
+  await p.waitForTimeout(600);
+  await p.tap('#minutos [data-op="5"]');
+  chequear('hoy: si no entra ninguna, dice la más corta y apaga «Empezar»', (await p.textContent('#nota-tengo')) === 'No entra ninguna. La más corta: Barrer, 10 min.' && await p.isDisabled('#empezar'), await p.textContent('#nota-tengo'));
+  await p.tap('#minutos [data-op="30"]');
+  chequear('hoy: con 30 entra y se prende «Empezar»', (await p.textContent('#nota-tengo')) === '' && !(await p.isDisabled('#empezar')));
+  // con 30: barrer 10 (las 3 de hoy), después platos 10 y ordenar la ropa 10
+  await p.tap('#empezar');
+  await p.waitForTimeout(450);
+  chequear('en curso: de a 1, la 1.ª de las 3 de hoy', (await p.textContent('#cuenta')) === '1 de 3' && (await p.textContent('#curso h3')) === 'Barrer');
+  chequear('en curso: el ícono de la tarea adentro del círculo', (await p.getAttribute('#curso .i-tarea use', 'href')) === '#broom-fill');
+  await p.tap('#curso [data-r="hecha"]');
+  chequear('en curso: tocar el círculo la marca hecha', (await p.getAttribute('#curso .tarea', 'data-estado')) === 'hecha');
+  await p.waitForTimeout(1200);
+  chequear('en curso: pasa a la siguiente', (await p.textContent('#cuenta')) === '2 de 3' && (await p.textContent('#curso h3')) === 'Lavar los platos');
+  await p.tap('#curso [data-r="salteada"]');
+  await p.waitForTimeout(1200);
+  await p.tap('#curso [data-r="a-medias"]');
+  await p.waitForTimeout(1200);
+  const fin = await p.$$eval('#curso .fin .fila', fs => fs.map(f => [f.querySelector('.nombre').textContent, f.dataset.estado]));
+  chequear('en curso: al final, «listo por ahora» con el resumen', (await p.textContent('#curso h3')) === 'listo por ahora' &&
+    JSON.stringify(fin) === JSON.stringify([['Barrer', 'hecha'], ['Lavar los platos', 'salteada'], ['Ordenar la ropa', 'a-medias']]), JSON.stringify(fin));
+  const hist2 = (await guardadas()).historial.map(x => x.tarea + ':' + x.que);
+  chequear('en curso: queda en el historial (hecha, salteada, a medias)', ['barrer:hecha', 'platos:salteada', 'ordenar-ropa:a-medias'].every(x => hist2.includes(x)), JSON.stringify(hist2));
+  await p.tap('#listo');
+  await p.waitForTimeout(500);
+  hoyFilas = await filasHoy();
+  chequear('hoy: las 3 siguen fijas, con su estado; el día está cumplido', JSON.stringify(hoyFilas) === JSON.stringify([['Hacer la cama', 'hecha'], ['Lavar la ropa', 'hecha'], ['Barrer', 'hecha']]) &&
+    (await p.textContent('#lista-hoy h2')) === 'las 3 de hoy · cumplido', JSON.stringify(hoyFilas));
+  await p.tap('#minutos [data-op="60"]');
+  await p.tap('#empezar');
+  await p.waitForTimeout(450);
+  chequear('en curso: lo salteado y lo que quedó a medias no se ofrece de nuevo hoy', !['Lavar los platos', 'Ordenar la ropa'].includes(await p.textContent('#curso h3')), await p.textContent('#curso h3'));
+  await p.tap('#cerrar-curso');
+  await p.waitForTimeout(400);
+  await p.tap('.pestanas [data-pantalla="tareas"]');
+  chequear('tareas: a medias y salteada se ven en «tocan»', (await p.getAttribute('#lista-tareas [data-id="ordenar-ropa"]', 'data-estado')) === 'a-medias' &&
+    (await p.getAttribute('#lista-tareas [data-id="platos"]', 'data-estado')) === 'salteada');
   await p.tap('.pestanas [data-pantalla="hoy"]');
 
   // instalable

@@ -17,17 +17,33 @@ const ICONOS_TAREA = [
 
 const listaTareas = document.getElementById('lista-tareas');
 
-function filaTarea(t, estadoFila) {
+// El círculo de estado: ✓ (hecha), flecha (salteada) y la mitad (a medias, con CSS).
+const iconosEstado = () => ic('check-bold', 'i-check') + ic('arrow-right-bold', 'i-salteada');
+
+function filaTarea(t, estadoFila, linea = lineaTarea(t)) {
   return `<button class="fila" data-id="${t.id}" data-estado="${estadoFila}">` +
-    `<span class="estado" data-circulo><i>${ic('check-bold', 'i-check')}</i></span>` +
-    `<span class="texto"><span class="nombre">${escapar(t.nombre)}</span><span class="linea">${lineaTarea(t)}</span></span></button>`;
+    `<span class="estado" data-circulo><i>${iconosEstado()}</i></span>` +
+    `<span class="texto"><span class="nombre">${escapar(t.nombre)}</span><span class="linea">${linea}</span></span></button>`;
+}
+
+// Tocar el círculo marca hecha (la última vez pasa a ser hoy) o deshace lo de hoy. Sirve en Hoy y en Tareas.
+function tocarCirculo(fila, tarea) {
+  const hoy = hoyLocal();
+  const yaHecha = ultimaVez(estado.historial, tarea.id) === hoy;
+  estado = yaHecha ? desmarcarHecha(estado, tarea.id, hoy) : marcarHecha(estado, tarea.id, hoy);
+  guardarDatos();
+  // el círculo cambia ahí mismo; después se acomodan las listas
+  fila.dataset.estado = yaHecha ? 'toca' : 'hecha';
+  setTimeout(pintarTodo, 450);
 }
 
 function pintarTareas() {
   const g = agrupar(estado.tareas, estado.historial, hoyLocal());
   const seccion = (titulo, lista, estadoFila) => lista.length
     ? `<section class="seccion"><h2>${titulo}</h2><div>${lista.map(t => filaTarea(t, estadoFila)).join('')}</div></section>` : '';
-  listaTareas.innerHTML = `<div class="lista">${seccion('tocan', g.tocan, 'toca')}${seccion('más adelante', g.adelante, 'no')}${seccion('hechas hoy', g.hechas, 'hecha')}</div>`;
+  const hoy = hoyLocal();
+  const tocan = g.tocan.map(t => filaTarea(t, estadoDelDia(estado.historial, t.id, hoy) || 'toca')).join('');
+  listaTareas.innerHTML = `<div class="lista">${g.tocan.length ? `<section class="seccion"><h2>tocan</h2><div>${tocan}</div></section>` : ''}${seccion('más adelante', g.adelante, 'no')}${seccion('hechas hoy', g.hechas, 'hecha')}</div>`;
 }
 
 // Tocar el círculo marca hecha (o deshace la de hoy); tocar la fila abre la hoja.
@@ -36,16 +52,7 @@ listaTareas.addEventListener('click', e => {
   if (!fila) return;
   const tarea = estado.tareas.find(t => t.id === fila.dataset.id);
   if (!tarea) return;
-  if (e.target.closest('[data-circulo]')) {
-    const hoy = hoyLocal();
-    const yaHecha = ultimaVez(estado.historial, tarea.id) === hoy;
-    estado = yaHecha ? desmarcarHecha(estado, tarea.id, hoy) : marcarHecha(estado, tarea.id, hoy);
-    guardarDatos();
-    // el círculo cambia ahí mismo; después la fila pasa a su grupo
-    fila.dataset.estado = yaHecha ? 'toca' : 'hecha';
-    setTimeout(pintarTareas, 450);
-    return;
-  }
+  if (e.target.closest('[data-circulo]')) { tocarCirculo(fila, tarea); return; }
   abrirHojaTarea(tarea);
 });
 
@@ -202,10 +209,14 @@ guardarBtn.onclick = () => {
   if (!tareaValida(t)) return;
   estado = guardarTarea(estado, t);
   // la última vez cargada a mano se suma al historial con esa fecha
-  if (cUltima.get() !== ultimaOriginal) estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
+  if (cUltima.get() !== ultimaOriginal) {
+    estado = cargarUltimaVez(estado, t.id, cUltima.get() === NUNCA ? null : cUltima.get(), hoyLocal());
+    // si todavía no empezaste con las 3 de hoy, se vuelven a elegir con la fecha nueva
+    estado = reelegirSiNoEmpezo(estado, hoyLocal());
+  }
   guardarDatos();
   cerrarHojaTarea();
-  pintarTareas();
+  pintarTodo();
 };
 
 // Borrar pide 2 toques: el 1.º avisa, el 2.º borra (si no, se vuelve a «Borrar tarea» a los 3 segundos).
@@ -226,7 +237,7 @@ borrarBtn.onclick = () => {
   estado = borrarTarea(estado, enEdicion.id);
   guardarDatos();
   cerrarHojaTarea();
-  pintarTareas();
+  pintarTodo();
 };
 
 document.getElementById('cerrar-tarea').onclick = cerrarHojaTarea;
