@@ -20,9 +20,10 @@ const listaTareas = document.getElementById('lista-tareas');
 // El círculo de estado: ✓ (hecha), flecha (salteada) y la mitad (a medias, con CSS).
 const iconosEstado = () => ic('check-bold', 'i-check') + ic('arrow-right-bold', 'i-salteada');
 
+// En las listas, el ícono de la tarea va adentro de su círculo (1 sola cosa por fila).
 function filaTarea(t, estadoFila, linea = lineaTarea(t)) {
   return `<button class="fila" data-id="${t.id}" data-estado="${estadoFila}">` +
-    `<span class="estado" data-circulo><i>${iconosEstado()}</i></span>` +
+    `<span class="estado" data-circulo><i>${ic(t.icono + '-fill', 'i-tarea')}${iconosEstado()}</i></span>` +
     `<span class="texto"><span class="nombre">${escapar(t.nombre)}</span><span class="linea">${linea}</span></span></button>`;
 }
 

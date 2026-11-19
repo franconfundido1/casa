@@ -97,7 +97,8 @@ function chequear(nombre, ok, detalle = '') {
   chequear('tareas: las 9 tocan (nunca hechas), de la más corta a la más larga', JSON.stringify(g) === JSON.stringify([['tocan',
     ['Hacer la cama', 'Lavar la ropa', 'Barrer', 'Lavar los platos', 'Ordenar la ropa', 'Limpiar el baño', 'Pasar el trapo', 'Verdulería', 'Súper']]]), JSON.stringify(g));
   chequear('tareas: 1 línea gris corta', (await p.textContent('#lista-tareas [data-id="verduleria"] .linea')) === 'cada 3 a 4 días · 20 min');
-  chequear('tareas: las filas no tienen ícono de tarea, solo el círculo', (await p.$$('#lista-tareas .i-tarea')).length === 0);
+  chequear('tareas: el ícono de cada tarea, adentro de su círculo', await p.evaluate(() => [...document.querySelectorAll('#lista-tareas .fila')].every(f => f.querySelector('.estado .i-tarea'))) &&
+    (await p.getAttribute('#lista-tareas [data-id="barrer"] .i-tarea use', 'href')) === '#broom-fill');
   await p.tap('#lista-tareas [data-id="barrer"] [data-circulo]');
   chequear('tareas: tocar el círculo lo llena al toque', (await p.getAttribute('#lista-tareas [data-id="barrer"]', 'data-estado')) === 'hecha');
   await p.waitForTimeout(700);

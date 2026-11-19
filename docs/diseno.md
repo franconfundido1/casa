@@ -98,7 +98,7 @@ Números con cifras siempre, y `tabular-nums` en minutos y horas.
 
 ### Ícono de cada tarea
 
-Como en hábitos (`habitos-hoja-nuevo.png`, `habitos-iconos.png`): cada tarea tiene 1 ícono de Phosphor **relleno**, elegido de una lista corta de 16 de la casa. Se ve **solo en la tarea en curso y en la hoja de tarea**; en las listas (Hoy y Tareas) no, para que no haya 2 íconos por fila: ahí está solo el círculo de estado.
+Como en hábitos (`habitos-hoja-nuevo.png`, `habitos-iconos.png`): cada tarea tiene 1 ícono de Phosphor **relleno**, elegido de una lista corta de 16 de la casa. Se ve en la tarea en curso (grande, adentro del círculo), en la hoja de tarea y **en las listas (Hoy y Tareas), adentro del círculo de estado**: chico (55 % del círculo) y del color del aro, blanco si toca y gris si no. Así hay 1 sola cosa por fila. Hecha, salteada y a medias lo cambian por el ✓, la flecha o la mitad (y esperando, cuando llegue la ropa, por el reloj).
 
 | Ícono | Nombre en la lista | Tarea de arranque |
 |---|---|---|
@@ -135,7 +135,7 @@ Como «hábitos»: una **cabecera fija** con el título en minúscula, grande, a
 ### Lista y fila
 
 - Encabezado de sección chico, gris y en minúscula.
-- Fila directo sobre el negro, de 68 px: círculo de estado, nombre y 1 línea gris corta. Separador fino que empieza después del círculo. Sin cajas.
+- Fila directo sobre el negro, de 68 px: círculo de estado (con el ícono de la tarea adentro), nombre y 1 línea gris corta. Separador fino que empieza después del círculo. Sin cajas.
 - En Tareas: tocar el círculo marca hecha; tocar la fila abre la hoja. Al tocar, la fila se aclara 100 ms.
 
 ### Botones de ícono
