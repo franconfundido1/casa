@@ -386,6 +386,22 @@ function chequear(nombre, ok, detalle = '') {
   chequear('copia: una copia de una versión vieja se migra', vieja.version === antesCopia.version && vieja.tareas.length === 9 && vieja.las3 && vieja.las3.ids.length === 3);
   await p.tap('.pestanas [data-pantalla="hoy"]');
 
+  // entrada con el logo y la firma en Ajustes
+  await p.reload();
+  const alAbrir = await p.evaluate(() => !!document.getElementById('entrada') && getComputedStyle(document.getElementById('entrada')).pointerEvents === 'none');
+  await p.waitForTimeout(900);
+  chequear('entrada: al abrir aparece el logo, sin tapar los toques, y a los 700 ms se va', alAbrir && !(await p.$('#entrada')));
+  const ctxQuieto = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const pq = await ctxQuieto.newPage();
+  await pq.goto(U);
+  chequear('entrada: con «reducir movimiento», sin animación', await pq.evaluate(() => getComputedStyle(document.getElementById('entrada')).display === 'none'));
+  await ctxQuieto.close();
+  await p.tap('.pestanas [data-pantalla="ajustes"]');
+  const firmaApp = await p.evaluate(() => { const f = document.querySelector('.firma-app'); const r = f.getBoundingClientRect(), n = document.querySelector('.pestanas').getBoundingClientRect();
+    return [[...f.children].map(c => c.textContent.trim()).filter(Boolean).join(' '), f.querySelector('use').getAttribute('href'), Math.round(n.top - r.bottom)]; });
+  chequear('ajustes: abajo de todo, el logo chico con «str3ak» y la versión', firmaApp[0] === 'str3ak 1.0' && firmaApp[1] === '#logo' && firmaApp[2] < 40, JSON.stringify(firmaApp));
+  await p.tap('.pestanas [data-pantalla="hoy"]');
+
   // instalable
   const man = await (await p.request.get(U + 'manifest.json')).json();
   chequear('instalable: manifest con start_url y scope neutros', man.start_url === './' && man.scope === './' && man.display === 'standalone', JSON.stringify(man));

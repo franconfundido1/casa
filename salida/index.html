@@ -387,6 +387,29 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 .fin .fila:active { opacity: 1; }
 .fin .fila + .fila::before { left: calc(var(--circulo) + var(--esp-5)); right: 0; }
 .fin + .boton { margin-bottom: var(--esp-2); }
+/* La entrada (docs/diseno.md › Transiciones): 700 ms en total, para que no moleste cada vez que se abre.
+   0–380 ms: los 3 círculos crecen de a 1 (220 ms cada uno, 80 ms entre uno y otro, curva iOS).
+   480–700 ms: el logo crece un poco y todo se desvanece, y queda «hoy» debajo. Sin animación si se pide menos movimiento. */
+.entrada {
+  position: fixed; inset: 0; z-index: 50; background: var(--fondo);
+  display: grid; place-items: center; pointer-events: none;
+  animation: entrada-sale 220ms ease-in 480ms forwards;
+}
+.entrada svg { width: 168px; animation: entrada-logo 220ms ease-in 480ms forwards; }
+.entrada .c { transform-box: fill-box; transform-origin: center; transform: scale(0); animation: entrada-circulo 220ms var(--curva-ios) forwards; }
+.entrada .c2 { animation-delay: 80ms; }
+.entrada .c3 { animation-delay: 160ms; }
+@keyframes entrada-circulo { to { transform: scale(1); } }
+@keyframes entrada-logo { to { transform: scale(1.3); } }
+@keyframes entrada-sale { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .entrada { display: none; } }
+
+/* Ajustes, abajo de todo: el logo chico, el nombre y la versión */
+#pantalla-ajustes { display: flex; flex-direction: column; }
+.firma-app { margin-top: auto; padding: var(--esp-8) var(--margen) var(--esp-4); display: flex; flex-direction: column; align-items: center; gap: var(--esp-2); }
+.firma-app svg { width: 72px; height: 23px; color: var(--texto); }
+.firma-app b { font: var(--letra-encabezado); }
+.firma-app span { font: var(--letra-nota); color: var(--texto-2); }
 </style>
 </head>
 <body>
@@ -430,6 +453,16 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
 <symbol id="upload-simple" viewBox="0 0 256 256" fill="currentColor"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0ZM93.66,77.66,120,51.31V144a8,8,0,0,0,16,0V51.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,77.66Z"/></symbol>
 <symbol id="clock-counter-clockwise" viewBox="0 0 256 256" fill="currentColor"><path d="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm-8-48A95.44,95.44,0,0,0,60.08,60.15C52.81,67.51,46.35,74.59,40,82V64a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16H49c7.15-8.42,14.27-16.35,22.39-24.57a80,80,0,1,1,1.66,114.75,8,8,0,1,0-11,11.64A96,96,0,1,0,128,32Z"/></symbol>
 </svg>
+<!-- El logo de str3ak (los 3 estados del círculo: toca, a medias, hecha), para usarlo con <use href="#logo"> -->
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs><clipPath id="logo-mitad"><rect x="20" y="20" width="365" height="200"/></clipPath></defs>
+  <symbol id="logo" viewBox="0 0 770 240" fill="none">
+    <circle cx="120" cy="120" r="94" stroke="currentColor" stroke-width="24"/>
+    <circle cx="385" cy="120" r="94" stroke="currentColor" stroke-width="24"/>
+    <circle cx="385" cy="120" r="94" fill="currentColor" clip-path="url(#logo-mitad)"/>
+    <circle cx="650" cy="120" r="106" fill="currentColor"/>
+  </symbol>
+</svg>
 <header class="titulo">
   <div><h1 id="titulo">hoy</h1><small id="subtitulo"></small></div>
   <button class="boton-icono" id="nueva-tarea" aria-label="Nueva tarea"><svg class="ic" aria-hidden="true"><use href="#plus-circle"/></svg></button>
@@ -462,6 +495,7 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
     <input type="file" id="archivo-copia" accept=".json,application/json" hidden>
     <p class="nota-ajustes" id="nota-copia"></p>
   </div>
+  <div class="firma-app"><svg aria-hidden="true"><use href="#logo"/></svg><b>str3ak</b><span class="num">1.0</span></div>
 </section>
 </main>
 <nav class="pestanas">
@@ -542,6 +576,15 @@ svg.ic { width: var(--icono); height: var(--icono); flex: none; display: block; 
   </div>
 </section>
 <div class="velo" id="velo-copia"></div>
+<!-- Al abrir: los 3 círculos del logo aparecen en orden (toca, a medias, hecha) y el logo se abre hacia «hoy» (700 ms) -->
+<div class="entrada" id="entrada" aria-hidden="true">
+  <svg viewBox="0 0 770 240" fill="none">
+    <defs><clipPath id="entrada-mitad"><rect x="20" y="20" width="365" height="200"/></clipPath></defs>
+    <circle class="c c1" cx="120" cy="120" r="94" stroke="#fff" stroke-width="24"/>
+    <g class="c c2"><circle cx="385" cy="120" r="94" stroke="#fff" stroke-width="24"/><circle cx="385" cy="120" r="94" fill="#fff" clip-path="url(#entrada-mitad)"/></g>
+    <circle class="c c3" cx="650" cy="120" r="106" fill="#fff"/>
+  </svg>
+</div>
 <script>
 'use strict';
 // Fechas en días locales (Argentina, UTC−3). Funciones puras: reciben las fechas como parámetro.
@@ -1524,6 +1567,8 @@ reemplazarBtn.onclick = () => {
   avisarCopia('Copia cargada.');
 };
 // Al abrir: leer los datos, pedir que no se borren, poner la fecha y dejar la app lista para usarse sin internet.
+// La entrada con el logo dura 700 ms; después se saca (no queda nada encima de la app)
+setTimeout(() => { const e = document.getElementById('entrada'); if (e) e.remove(); }, 750);
 leerDatos();
 prepararDia();
 pintarSubtitulo();

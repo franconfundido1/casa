@@ -84,7 +84,7 @@ Además:
 Igual que en Akordia, que funcionó:
 
 - `codigo/reglas/`: reglas puras, sin DOM ni fecha del sistema (`fechas.js`, `estado.js` con las migraciones, `tareas.js` con los vencimientos, `unavez.js` con las tareas de 1 vez, `hoy.js` con las 3 de hoy y «Tengo X minutos», `copia.js` con la copia de seguridad; después la ropa), con pruebas en `codigo/tests/`. Cada archivo termina con `module.exports` para las pruebas y va igual en la página.
-- `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` (ruta desde `codigo/`) se reemplaza por ese archivo, en ese orden. `estilos/` (`base.css`: variables y «se siente app»; `componentes.css`), `pantallas/` (cabecera, hoy, tareas, ajustes, pestañas) y `logica/` (datos, navegación, tareas, hoy, copia, inicio). Un archivo nuevo se suma a la plantilla (`build.py` avisa si sobra alguno).
+- `codigo/pagina/`: la página. `plantilla.html` es el esqueleto: cada línea `<!-- incluir: ruta -->` (ruta desde `codigo/`) se reemplaza por ese archivo, en ese orden. `estilos/` (`base.css`: variables y «se siente app»; `componentes.css`), `pantallas/` (cabecera, hoy, tareas, ajustes, pestañas, el logo y la entrada) y `logica/` (datos, navegación, tareas, hoy, copia, inicio). Un archivo nuevo se suma a la plantilla (`build.py` avisa si sobra alguno).
 - `codigo/recursos/`: la letra (League Spartan, `woff2`, va embebida en base64), los íconos de Phosphor (`iconos.svg`) y el ícono de la app (los 3 estados del círculo: aro, mitad y lleno; 180, 192 y 512 px).
 - `codigo/sw.js`: el service worker (primero la red; sin red, el caché `casa-v1`).
 - `codigo/build.py`: junta todo en 1 solo HTML en `salida/` (solo necesita `python3`).
@@ -94,7 +94,7 @@ Igual que en Akordia, que funcionó:
 
 ## Compilar, probar y publicar
 
-- Compilar: `python3 codigo/build.py` (actualiza `salida/`; commitear `salida/` junto con el código).
+- Compilar: `python3 codigo/build.py` (actualiza `salida/`; commitear `salida/` junto con el código). La versión que se ve en Ajustes es `VERSION_APP` de `build.py`: se sube en cada PR que cambia la app.
 - Reglas: `node --test codigo/tests/*.test.js` (sin dependencias; con Node 22 hay que pasar los archivos, no la carpeta). Las de fechas corren con la zona de Argentina.
 - Página: `python3 codigo/build.py && timeout 120 node codigo/test_pagina.js`. Sirve `salida/` y la abre a 390×844 táctil: carga, «se siente app», cambio de pestaña, datos, instalable y recarga sin red con el service worker. Usa WebKit si está; si no, Chromium, y el reporte avisa que falta probar en el iPhone de verdad (Playwright ya está en el entorno; no correr `playwright install`).
 - Lo que no se puede probar acá (instalar desde Safari, modo avión en el iPhone, el ícono) se lista en el reporte para que lo pruebe el usuario.
@@ -103,7 +103,7 @@ Igual que en Akordia, que funcionó:
   | Suite | Pasan |
   |---|---|
   | reglas (`node --test`) | 72 |
-  | página (`test_pagina.js`) | 97 |
+  | página (`test_pagina.js`) | 100 |
 
 - Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
 

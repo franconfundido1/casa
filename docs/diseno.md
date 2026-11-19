@@ -174,6 +174,10 @@ En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **e
 
 **Fijo, siempre visible, arriba de la barra de pestañas**, con una línea fina arriba; la lista se desplaza por encima. Los 5 círculos de minutos y «Empezar», sin texto arriba. Los minutos en los que no entra ninguna tarea van apagados (gris oscuro, no se pueden elegir): no hace falta ningún mensaje.
 
+### Ajustes › abajo de todo
+
+El logo chico (`#logo`, los 3 círculos), «str3ak» y la versión en gris (`VERSION_APP` de `codigo/build.py`).
+
 ### Ajustes › copia de seguridad
 
 2 filas que son botones, sin título arriba, con el ícono a la derecha (`download-simple`, `upload-simple`): «Bajar copia» abre el menú de compartir del iPhone (desde ahí, «Guardar en Archivos»; si el navegador no puede compartir archivos, baja el `.json`). «Cargar copia» abre Archivos; antes de reemplazar, una hoja chica sin título dice de qué día es la copia y cuántas tareas tiene, con «Reemplazar mis datos». Si el archivo no sirve, la hoja lo dice y no ofrece reemplazar.
@@ -182,6 +186,7 @@ En una hoja, de a 1, todo centrado: el nombre enorme, los minutos en gris, y **e
 
 | Qué | Cómo | Duración |
 |---|---|---|
+| Entrada (al abrir la app) | Los 3 círculos del logo crecen de a 1 (toca, a medias, hecha); después el logo crece un poco y todo se desvanece, y queda «hoy» debajo. No tapa los toques | 700 ms en total: cada círculo 220 ms con `--curva-ios`, 80 ms entre uno y otro; salida 220 ms `ease-in` desde los 480 ms |
 | Hoja | Sube desde abajo; lo de atrás se vela | 300 ms, `--curva-ios` (`cubic-bezier(.32,.72,0,1)`) |
 | Cambio de pestaña | Fundido del contenido | 200 ms |
 | Siguiente tarea | La actual sale a la izquierda, la nueva entra desde la derecha | 250 ms |

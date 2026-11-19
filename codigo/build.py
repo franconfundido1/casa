@@ -35,6 +35,10 @@ pagina = INCLUIR.sub(lambda m: archivo(m.group(1)), plantilla)
 fuente = base64.b64encode((RECURSOS / 'league-spartan-variable.woff2').read_bytes()).decode()
 assert pagina.count('__FUENTE__') == 1
 pagina = pagina.replace('__FUENTE__', fuente)
+# la versión que se ve en Ajustes: se sube a mano en cada PR que cambia la app
+VERSION_APP = '1.0'
+assert pagina.count('__VERSION__') == 1
+pagina = pagina.replace('__VERSION__', VERSION_APP)
 
 SALIDA.mkdir(exist_ok=True)
 (SALIDA / 'index.html').write_text(pagina)
