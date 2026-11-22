@@ -473,8 +473,8 @@ function chequear(nombre, ok, detalle = '') {
   // la app de Android (Capacitor): se simula el puente nativo con el plugin de archivos
   const ctxAndroid = await browser.newContext({ viewport: { width: 1280, height: 800 }, hasTouch: true, serviceWorkers: 'allow' });
   await ctxAndroid.addInitScript(() => {
-    window.guardados = [];
-    window.Capacitor = { isNativePlatform: () => true, Plugins: { Filesystem: { writeFile: async o => {
+    window.guardados = []; window.compartidos = [];
+    window.Capacitor = { isNativePlatform: () => true, Plugins: { Share: { share: async o => { window.compartidos.push(o); throw new Error('cerraste el menú'); } }, Filesystem: { writeFile: async o => {
       if (window.guardados.length === 0 && window.pisarFalla) { window.pisarFalla = false; throw new Error('no es tuyo'); }
       window.guardados.push(o); return { uri: 'file:///storage/emulated/0/Documents/' + o.path };
     } } } };
@@ -489,6 +489,8 @@ function chequear(nombre, ok, detalle = '') {
   const enDocs = await pa.evaluate(() => window.guardados);
   chequear('android: «Bajar copia» la guarda en Documentos', enDocs.length === 1 && enDocs[0].directory === 'DOCUMENTS' && /^str3ak-copia-\d{4}-\d{2}-\d{2}\.json$/.test(enDocs[0].path) &&
     JSON.parse(enDocs[0].data).app === 'casa' && (await pa.textContent('#nota-copia')) === 'Copia guardada en Documentos: ' + enDocs[0].path, JSON.stringify(enDocs).slice(0, 120));
+  const compartida = await pa.evaluate(() => window.compartidos);
+  chequear('android: después abre el menú de compartir con ese archivo (cerrarlo no es un error)', compartida.length === 1 && compartida[0].files[0] === 'file:///storage/emulated/0/Documents/' + enDocs[0].path, JSON.stringify(compartida));
   await pa.evaluate(() => { window.guardados = []; window.pisarFalla = true; });
   await pa.tap('#bajar-copia');
   await pa.waitForTimeout(100);

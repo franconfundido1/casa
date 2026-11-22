@@ -98,7 +98,7 @@ Igual que en Akordia, que funcionó:
 
 - Compilar: `python3 codigo/build.py` (actualiza `salida/`; commitear `salida/` junto con el código). La versión que se ve en Ajustes es `VERSION_APP` de `build.py`: se sube en cada PR que cambia la app.
 - Reglas: `node --test codigo/tests/*.test.js` (sin dependencias; con Node 22 hay que pasar los archivos, no la carpeta). Las de fechas corren con la zona de Argentina.
-- Página: `python3 codigo/build.py && timeout 120 node codigo/test_pagina.js`. Sirve `salida/` y la abre a 1280×800 táctil (la tablet en horizontal) en Chromium, el mismo motor que el WebView de Android: carga, «se siente app», cambio de pestaña, datos, instalable, recarga sin red con el service worker y la app de Android simulada (copia a Documentos, sin service worker). Playwright ya está en el entorno; no correr `playwright install`.
+- Página: `python3 codigo/build.py && timeout 120 node codigo/test_pagina.js`. Sirve `salida/` y la abre a 1280×800 táctil (la tablet en horizontal) en Chromium, el mismo motor que el WebView de Android: carga, «se siente app», cambio de pestaña, datos, instalable, recarga sin red con el service worker y la app de Android simulada (copia a Documentos y al menú de compartir, sin service worker). Playwright ya está en el entorno; no correr `playwright install`.
 - APK: `npm ci && npx cap sync android && cd android && ./gradlew assembleRelease` (necesita el SDK de Android y Java 21; sin la clave sale sin firmar). Normalmente lo compila el workflow.
 - Lo que no se puede probar acá (instalar y actualizar el APK, modo avión en la tablet, el ícono, las barras del sistema) se lista en el reporte para que lo pruebe el usuario.
 - Resultado esperado (único lugar donde está; actualizarlo cuando cambie):
@@ -106,7 +106,7 @@ Igual que en Akordia, que funcionó:
   | Suite | Pasan |
   |---|---|
   | reglas (`node --test`) | 72 |
-  | página (`test_pagina.js`) | 108 |
+  | página (`test_pagina.js`) | 109 |
 
 - Publicar: solo con los workflows, que corren al fusionar en main. Nada se sube a mano.
   - «App de Android» (`.github/workflows/android.yml`): compila `str3ak.apk` firmado y crea el Release `v` + `VERSION_APP`. Si ese Release ya existe, se corta: hay que subir `VERSION_APP`.

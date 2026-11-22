@@ -7,7 +7,7 @@ La app de la tablet (Galaxy Tab S10 FE+) es la misma página (`salida/index.html
 - Versión: `VERSION_APP` de `codigo/build.py` (la de Ajustes). «1.2» pasa a ser la versión 10200 de Android. Tiene que subir en cada cambio: Android no instala una versión más vieja encima.
 - Workflow: «App de Android» (`.github/workflows/android.yml`). Corre al fusionar en main algo que cambie la app y crea el Release `v1.2` con `str3ak.apk`.
 - Datos: los de la app de Android son distintos de los de Chrome o de la web en Neocities. Se pasan con la copia de seguridad.
-- La copia de seguridad, en la app, se guarda en la carpeta **Documentos** de la tablet (Mis archivos › Almacenamiento interno › Documents).
+- La copia de seguridad, en la app, se guarda en la carpeta **Documentos** de la tablet (Mis archivos › Almacenamiento interno › Documents) y después abre el menú de compartir de Android, para mandarla a Drive. Si lo cerrás, igual queda en Documentos.
 - La versión web en Neocities sigue andando igual, para probar rápido.
 
 ## 1. La clave de firma (1 sola vez)
@@ -16,31 +16,44 @@ Android solo deja actualizar una app si la versión nueva está firmada con la m
 
 > **Guardá una copia de la clave (`str3ak.jks`) y de la contraseña fuera de GitHub** (en Drive o en un gestor de contraseñas). GitHub no deja volver a ver un secreto. Si la perdés, la próxima versión no se puede instalar encima: hay que desinstalar la app, y al desinstalar se borran los datos (bajá una copia antes).
 
-Hace falta `keytool`, que viene con Java. Si no tenés una compu con Java, sirve **Google Cloud Shell** (shell.cloud.google.com, gratis, se abre desde el navegador de la tablet y ya trae `keytool`).
+Se hace en **Google Cloud Shell** (gratis, desde el navegador, ya trae `keytool`). Conviene hacerlo en la compu o en la tablet con el navegador en modo escritorio.
 
-1. Generar la clave (pide una contraseña: elegí una larga y anotala; la usa 2 veces):
+1. Entrá a **shell.cloud.google.com** con tu cuenta de Google y esperá a que aparezca la terminal (la 1.ª vez tarda 1 minuto y puede pedir que aceptes las condiciones; no hace falta proyecto ni tarjeta).
+2. Generá la clave (pide la contraseña 2 veces; elegí una larga y anotala, no se ve mientras la escribís):
 
    ```
-   keytool -genkeypair -keystore str3ak.jks -alias str3ak -keyalg RSA -keysize 4096 -validity 36500 -dname "CN=str3ak"
+   keytool -genkeypair -keystore str3ak.jks -alias str3ak -keyalg RSA -keysize 4096 -validity 36500 -dname "CN=str3ak" -storetype PKCS12
    ```
 
-2. Pasarla a texto (base64), para poder pegarla como secreto:
+3. Chequeá que esté (tiene que decir `Alias name: str3ak`; pide la contraseña):
 
-   - Linux o Cloud Shell: `base64 -w0 str3ak.jks > str3ak.txt`
-   - Mac: `base64 -i str3ak.jks -o str3ak.txt`
-   - Windows (PowerShell): `[Convert]::ToBase64String([IO.File]::ReadAllBytes("str3ak.jks")) > str3ak.txt`
+   ```
+   keytool -list -keystore str3ak.jks
+   ```
 
-3. En GitHub: el repo › Settings › Secrets and variables › Actions › New repository secret. Crear 3:
+4. Pasala a texto para el secreto y mostrala:
+
+   ```
+   base64 -w0 str3ak.jks > str3ak.txt && cat str3ak.txt
+   ```
+
+   Copiá todo el texto que aparece (es 1 sola línea larga, sin el `$` del final). Si es incómodo copiar desde la terminal, bajá `str3ak.txt` como en el paso 6 y copiá desde el archivo.
+5. En GitHub: el repo › Settings › Secrets and variables › Actions › **New repository secret**. Creá 3:
 
    | Nombre | Valor |
    |---|---|
-   | `ANDROID_CLAVE` | todo el contenido de `str3ak.txt` |
-   | `ANDROID_CLAVE_CONTRASENA` | la contraseña del paso 1 |
+   | `ANDROID_CLAVE` | todo el texto del paso 4 |
+   | `ANDROID_CLAVE_CONTRASENA` | la contraseña del paso 2 |
    | `ANDROID_CLAVE_ALIAS` | `str3ak` |
 
-4. Guardar `str3ak.jks` y la contraseña en un lugar seguro (ver arriba) y borrar `str3ak.txt`. En Cloud Shell, bajá el `.jks` antes de cerrar (⋮ › Download).
+6. **Bajá el `.jks` para guardarlo:** en Cloud Shell, ⋮ (arriba a la derecha de la terminal) › **Download** › escribí `str3ak.jks` › Download. Queda en Descargas: subilo a Google Drive (a una carpeta tuya, no compartida) y guardá la contraseña en tu gestor de contraseñas. También podés usar `cloudshell download str3ak.jks` en la terminal.
+7. Borrá las copias de Cloud Shell (el `.jks` ya está en Drive y el texto en GitHub):
 
-5. Para la 1.ª versión: Actions › «App de Android» › Run workflow (rama main). Tarda unos 5 minutos y queda en Releases.
+   ```
+   rm str3ak.jks str3ak.txt
+   ```
+
+8. Para la 1.ª versión: Actions › «App de Android» › Run workflow (rama main). Tarda unos 5 minutos y queda en Releases.
 
 ## 2. Instalarla en la tablet
 
@@ -79,6 +92,6 @@ Desde ahí, la que vale es la tablet: lo que marques en el iPhone ya no pasa sol
 
 - Instalar el APK y actualizarlo encima (que diga «Actualizar» y no se pierdan los datos).
 - Que la barra de estado y la de navegación de Android no tapen nada (arriba y abajo).
-- Que «Bajar copia» deje el archivo en Documentos y «Cargar copia» lo encuentre.
+- Que «Bajar copia» deje el archivo en Documentos, abra el menú de compartir (y llegue a Drive) y «Cargar copia» lo encuentre.
 - El ícono en el cajón de apps (también con los íconos temáticos de 1 color, si los usás).
 - Abrirla en modo avión: tiene que andar igual (la página va adentro de la app).
