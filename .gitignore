@@ -6,3 +6,9 @@ vendor/
 # copias de seguridad de la app: tienen tus datos
 *.json
 !salida/*.json
+!package.json
+!package-lock.json
+!capacitor.config.json
+# la clave de firma de Android nunca va al repo (vive en los secretos de GitHub)
+*.jks
+*.keystore

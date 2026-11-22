@@ -4,10 +4,11 @@ Lo que hace falta para cualquier tarea. El detalle va en `docs/` (índice abajo)
 
 ## Qué es
 
-- **El nombre que se ve es «str3ak»** (en minúscula): en el manifest, el `<title>`, `apple-mobile-web-app-title` y el archivo de la copia (`str3ak-copia-AAAA-MM-DD.json`). Los nombres internos siguen siendo `casa` (abajo, en «Reglas de datos»).
+- **El nombre que se ve es «str3ak»** (en minúscula): en la app de Android, el manifest, el `<title>` y el archivo de la copia (`str3ak-copia-AAAA-MM-DD.json`). Los nombres internos siguen siendo `casa` (abajo, en «Reglas de datos»).
 - App personal para ordenar el día en la casa: tareas, ropa, comida y súper. **La app decide qué hacer y cuándo**; el usuario solo dice cuánto tiempo tiene y marca lo que hizo.
-- Se usa en un **iPhone, en vertical, instalada desde Safari** («Agregar a inicio»). No en la tablet ni en Chrome.
-- 1 solo archivo HTML, sin servidor. Funciona sin internet (service worker).
+- Se usa en una **tablet Android (Galaxy Tab S10 FE+), siempre en horizontal, apoyada en un soporte**, como **app nativa**: la misma página adentro de Capacitor (`android/`, detalle en `docs/android.md`). El iPhone quedó de lado.
+- 1 solo archivo HTML, sin servidor. Funciona sin internet (en la app va adentro; en la web, con el service worker).
+- La versión web en Neocities sigue andando, para probar rápido.
 - Los datos viven en el dispositivo (localStorage, clave `casa-v1`), con copia de seguridad para bajar y volver a cargar.
 - Es un proyecto aparte de Akordia (la app de piano, repo `atril`): no comparten código, datos ni sitio.
 - **Antes de proponer una feature, leé `docs/vision.md`.**
@@ -26,7 +27,7 @@ Lo que hace falta para cualquier tarea. El detalle va en `docs/` (índice abajo)
 Chequear siempre:
 
 - ¿Se entiende en 2 segundos qué hacer ahora? 1 tarea por vez, 1 botón principal.
-- ¿Se usa con 1 mano y el pulgar? Toques de 44 px como mínimo, lo importante en la mitad de abajo.
+- ¿Se usa de un vistazo, con la tablet apoyada en horizontal y mirándola de lejos? Toques de 44 px como mínimo, letra grande.
 - ¿Respeta `docs/diseno.md`? ¿Algo se ve hecho a mano (ícono de otra familia, botón propio, algo que aparece de golpe, una caja que no flota con sombra)?
 - ¿La misma información aparece en más de 1 lugar de la pantalla? Que aparezca en 1 solo.
 - ¿Algún texto se contradice con otro o sobreexplica? Textos cortos.
@@ -41,7 +42,7 @@ Corto, en 3 partes:
 2. **Pruebas:** los números de cada suite.
 3. **Preguntas.**
 
-Capturas solo si cambió algo que se ve o si las pido. Capturas a 390×844 (iPhone). Si cambió algo que se ve, decir qué mirar en el iPhone.
+Capturas solo si cambió algo que se ve o si las pido. Capturas a 1280×800 (la tablet en horizontal). Si cambió algo que se ve, decir qué mirar en la tablet.
 
 ### Gastar menos
 
@@ -56,11 +57,11 @@ Las reglas:
 
 1. **Referencias reales:** Recordatorios de Apple, Things 3, Todoist y Streaks. Lo que las hace sentir app está anotado en `docs/referencias.md`, con las capturas del usuario. Ante una duda de diseño, se mira cómo lo resuelven ellas.
 2. **Lo visual sale de la app de hábitos** (`docs/referencias/habitos-*.png`), dada vuelta a modo oscuro: blanco lleno sobre negro. Si choca con Apple, en lo visual manda la de hábitos. De Apple quedan solo:
-   - Zonas seguras: `env(safe-area-inset-*)` para la isla y la barra de inicio.
+   - Zonas seguras: `env(safe-area-inset-*)` para las barras del sistema (en Android, la de estado y la de navegación).
    - Hojas que suben desde abajo; se cierran con un botón o tocando afuera. Cerrarlas arrastrando, solo si queda igual que en iOS.
-   - Barra de pestañas fija abajo, con 3 pestañas (ícono y etiqueta): **Hoy, Tareas y Ajustes**. Nunca pestañas de relleno.
+   - 3 pestañas (ícono y etiqueta): **Hoy, Tareas y Ajustes**. Nunca pestañas de relleno. En la tablet van en una columna fina a la izquierda (se define en los bocetos de `bocetos/tablet/`).
    - Todo lo de «se siente app» (regla 4).
-   - Letra: League Spartan (embebida, SIL OFL) para todo. En el entorno de pruebas (Linux) las capturas de Playwright **no sirven para aprobar diseño**; lo que vale es lo que el usuario ve en su iPhone.
+   - Letra: League Spartan (embebida, SIL OFL) para todo. En el entorno de pruebas (Linux) las capturas de Playwright **no sirven para aprobar diseño**; lo que vale es lo que el usuario ve en su tablet.
 3. **1 sola familia de íconos, embebida: Phosphor** (MIT), relleno donde importa (la pestaña elegida) y contorno en lo chico. Nada de emojis ni íconos de otra familia. Los SF Symbols no se usan (su licencia no lo permite en una web).
 4. **Se siente app, no web:**
    - Transiciones cortas entre pantallas (unos 200 a 300 ms); con `prefers-reduced-motion`, sin animación.
@@ -76,7 +77,7 @@ Las reglas:
 Además:
 
 - **Solo modo oscuro** (decidido): no hay modo claro ni se sigue el modo del sistema. Fondo negro como Recordatorios.
-- iPhone en vertical, 390×844 de referencia; se usa con 1 mano, de pasada: lo importante en la mitad de abajo, poco texto, estados inequívocos (toca, hecha, salteada, a medias, esperando).
+- Tablet en horizontal, 1280×800 de referencia (nunca en vertical); apoyada en un soporte y mirada de lejos: letra más grande que en un teléfono, poco texto, estados inequívocos (toca, hecha, salteada, a medias, esperando).
 - Flujo lineal, pocos botones visibles. Lo que se usa poco va en un menú «⋯».
 
 ## Estructura del repo
@@ -88,36 +89,41 @@ Igual que en Akordia, que funcionó:
 - `codigo/recursos/`: la letra (League Spartan, `woff2`, va embebida en base64), los íconos de Phosphor (`iconos.svg`) y el ícono de la app (los 3 estados del círculo: aro, mitad y lleno; 180, 192 y 512 px).
 - `codigo/sw.js`: el service worker (primero la red; sin red, el caché `casa-v1`).
 - `codigo/build.py`: junta todo en 1 solo HTML en `salida/` (solo necesita `python3`).
+- `android/`: el proyecto de Android (Capacitor 8). `capacitor.config.json` y `package.json` van en la raíz. Los íconos de Android salen de `codigo/iconos_android.py` (se corre a mano solo si cambia el ícono).
 - `salida/`: lo que se publica (`index.html`, `sw.js`, `manifest.json`, íconos y la licencia de la letra). Se commitea compilado.
-- `bocetos/`: los bocetos aprobados (HTML que se abre en el iPhone).
+- `bocetos/`: los bocetos aprobados (HTML que se abre en la tablet).
 - `docs/`: el detalle (abajo).
 
 ## Compilar, probar y publicar
 
 - Compilar: `python3 codigo/build.py` (actualiza `salida/`; commitear `salida/` junto con el código). La versión que se ve en Ajustes es `VERSION_APP` de `build.py`: se sube en cada PR que cambia la app.
 - Reglas: `node --test codigo/tests/*.test.js` (sin dependencias; con Node 22 hay que pasar los archivos, no la carpeta). Las de fechas corren con la zona de Argentina.
-- Página: `python3 codigo/build.py && timeout 120 node codigo/test_pagina.js`. Sirve `salida/` y la abre a 390×844 táctil: carga, «se siente app», cambio de pestaña, datos, instalable y recarga sin red con el service worker. Usa WebKit si está; si no, Chromium, y el reporte avisa que falta probar en el iPhone de verdad (Playwright ya está en el entorno; no correr `playwright install`).
-- Lo que no se puede probar acá (instalar desde Safari, modo avión en el iPhone, el ícono) se lista en el reporte para que lo pruebe el usuario.
+- Página: `python3 codigo/build.py && timeout 120 node codigo/test_pagina.js`. Sirve `salida/` y la abre a 1280×800 táctil (la tablet en horizontal) en Chromium, el mismo motor que el WebView de Android: carga, «se siente app», cambio de pestaña, datos, instalable, recarga sin red con el service worker y la app de Android simulada (copia a Documentos y al menú de compartir, sin service worker). Playwright ya está en el entorno; no correr `playwright install`.
+- APK: `npm ci && npx cap sync android && cd android && ./gradlew assembleRelease` (necesita el SDK de Android y Java 21; sin la clave sale sin firmar). Normalmente lo compila el workflow.
+- Lo que no se puede probar acá (instalar y actualizar el APK, modo avión en la tablet, el ícono, las barras del sistema) se lista en el reporte para que lo pruebe el usuario.
 - Resultado esperado (único lugar donde está; actualizarlo cuando cambie):
 
   | Suite | Pasan |
   |---|---|
   | reglas (`node --test`) | 72 |
-  | página (`test_pagina.js`) | 105 |
+  | página (`test_pagina.js`) | 109 |
 
-- Publicar: solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), que corre al fusionar en main y sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`. Nada se sube a mano.
+- Publicar: solo con los workflows, que corren al fusionar en main. Nada se sube a mano.
+  - «App de Android» (`.github/workflows/android.yml`): compila `str3ak.apk` firmado y crea el Release `v` + `VERSION_APP`. Si ese Release ya existe, se corta: hay que subir `VERSION_APP`.
+  - «Publicar en Neocities» (`.github/workflows/publicar.yml`): sube `salida/` a la raíz de franketf2.neocities.org y `bocetos/` a `/bocetos/`.
 
 ## Reglas de datos
 
 - Los datos viven en el dispositivo: **cualquier cambio en la forma de guardarlos necesita una migración** (el estado tiene un número de versión; `cargar()` migra de una versión a la siguiente). Un campo nuevo opcional puede ir sin migración si `cargar()` lo limpia cuando no es válido.
-- **Nombres internos que no se renombran nunca** (cambiarlos rompe datos o la app instalada): `index.html`, `sw.js`, `start_url` y `scope` del manifest, la clave `casa-v1`, el caché del service worker y `app: 'casa'` en la copia. Por eso son neutros desde el día 1 (en Akordia quedó «atril-p45» para siempre).
+- **Nombres internos que no se renombran nunca** (cambiarlos rompe datos o la app instalada): el `appId` de Android (`io.neocities.franketf2.casa`) y su clave de firma, `index.html`, `sw.js`, `start_url` y `scope` del manifest, la clave `casa-v1`, el caché del service worker y `app: 'casa'` en la copia. Por eso son neutros desde el día 1 (en Akordia quedó «atril-p45» para siempre).
 - Las fechas se guardan como día local `AAAA-MM-DD`; las horas, como hora local. Nunca calcular «días que pasaron» con milisegundos en UTC.
 - El historial es aditivo: no se borra lo que el usuario hizo.
-- En el iPhone, los datos de la app instalada son distintos de los de Safari: si se instala de nuevo, arranca vacía. Por eso la copia de seguridad está desde el principio.
+- Los datos de la app de Android son distintos de los del navegador. Si se desinstala, arranca vacía: por eso la copia de seguridad (en la app, va a Documentos). Actualizar encima no borra nada.
 
 ## Índice de `docs/`
 
 - `vision.md`: para qué existe la app, principios, reglas de decisión, versión 1, versión 2 y plan de PRs. Leelo antes de proponer una feature.
 - `referencias.md`: lo que hace sentir app a Recordatorios, Things 3, Todoist y Streaks (con las capturas). Si tocás algo que se ve.
 - `diseno.md`: el sistema de diseño (colores, escala, componentes). Si tocás cualquier estilo.
-- `pendientes.md`: lo anotado para después (se crea cuando haga falta).
+- `android.md`: la app de Android: la clave de firma, instalar, actualizar y pasar los datos.
+- `pendientes.md`: lo anotado para después.

@@ -1,0 +1,12 @@
+{
+  "appId": "io.neocities.franketf2.casa",
+  "appName": "str3ak",
+  "webDir": "salida",
+  "backgroundColor": "#000000",
+  "plugins": {
+    "SystemBars": {
+      "style": "DARK",
+      "initialViewportFitValueHint": "cover"
+    }
+  }
+}
