@@ -1,0 +1,16 @@
+{
+  "name": "casa",
+  "private": true,
+  "description": "str3ak para Android: Capacitor envuelve salida/index.html en una app nativa.",
+  "scripts": {
+    "android": "python3 codigo/build.py && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.2",
+    "@capacitor/core": "8.6.2",
+    "@capacitor/filesystem": "8.1.5"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.2"
+  }
+}

@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+
+def versionApp() {
+    def m = (file('../../codigo/build.py').text =~ /(?m)^VERSION_APP = '([0-9.]+)'/)
+    if (!m.find()) throw new GradleException('no encuentro VERSION_APP en codigo/build.py')
+    return m.group(1)
+}
+
+// «1.2» → 10200, «1.2.3» → 10203
+def numeroVersion() {
+    def n = versionApp().tokenize('.').collect { it as int } + [0, 0]
+    return n[0] * 10000 + n[1] * 100 + n[2]
+}
+
+android {
+    namespace = "io.neocities.franketf2.casa"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "io.neocities.franketf2.casa"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        // la versión sale de VERSION_APP de codigo/build.py (la que se ve en Ajustes): «1.2» → versionCode 10200.
+        // Tiene que subir en cada versión: Android no instala encima una versión con un número menor.
+        versionCode numeroVersion()
+        versionName versionApp()
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    // la firma: el workflow «App de Android» deja la clave en app/str3ak.jks y las contraseñas en variables de entorno.
+    // Siempre la misma clave: con otra, Android no deja actualizar (hay que desinstalar y se pierden los datos).
+    signingConfigs {
+        release {
+            storeFile file('str3ak.jks')
+            storePassword System.getenv('FIRMA_CLAVE')
+            keyAlias System.getenv('FIRMA_ALIAS')
+            keyPassword System.getenv('FIRMA_CLAVE')
+        }
+    }
+    buildTypes {
+        release {
+            if (file('str3ak.jks').exists()) signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

@@ -12,10 +12,11 @@ La app ideal: la abro, le digo cuánto tiempo tengo, y me dice qué hacer, de a 
 - Poco por vez: 1 tarea en pantalla, 3 cosas por día.
 - Saltear no es fallar: salteo y la app se reacomoda, sin culpa ni rachas rotas.
 - Los números (frecuencias, minutos, demoras) los ajusto yo y se revisan con el uso real.
-- Mis datos viven en el celu y no se pierden (copia de seguridad).
-- Se usa en el iPhone, con 1 mano, de pasada.
+- Mis datos viven en la tablet y no se pierden (copia de seguridad).
+- Se usa en la tablet Android (Galaxy Tab S10 FE+), siempre en horizontal, apoyada en un soporte: la miro de lejos, de pasada.
+- Es una app nativa de Android (Capacitor) que se instala desde los Releases del repo, sin Play Store ni cuenta de Apple.
 - Solo modo oscuro.
-- Se ve y se siente como una app de iPhone desde el día 1: el diseño se define antes de programar, comparando con apps reales.
+- Se ve y se siente como una app desde el día 1: el diseño se define antes de programar, comparando con apps reales.
 
 ## Las tareas de arranque
 
@@ -69,12 +70,11 @@ Provisorias: se revisan con el uso.
    - Si no se hace, pasa al día siguiente marcada como atrasada, bien visible.
    - Hecha, desaparece de las listas y queda en el historial. En «tareas», las futuras van en «próximas», con la fecha.
 
-Avisos: en la versión 1 la app **no avisa sola** (en el iPhone, una app web sin servidor no puede mandar notificaciones con la app cerrada). Cuando la abro, me muestra lo que está esperando («Colgar la ropa: desde las 19:30»).
+Avisos: en la versión 1 la app **no avisa sola**. Cuando la abro, me muestra lo que está esperando («Colgar la ropa: desde las 19:30»). Con la app de Android ya se puede: va en el PR de notificaciones (abajo, «Android»).
 
 ## Versión 2
 
 - Comidas de la semana → lista del súper.
-- Avisos con Recordatorios del iPhone, usando un Atajo: un botón «avisarme» solo en lo que lo necesita (colgar la ropa, tareas de 1 vez con hora). Abre el atajo con el texto y la hora, y el atajo crea el recordatorio con alarma. Las repetitivas no se pasan.
 
 ## Después de usarla 1 o 2 semanas
 
@@ -94,7 +94,8 @@ Un estímulo visual que **recompensa y nunca reta**. Ya está: el círculo que s
 
 ## Dónde se publica (decidido)
 
-- La app va en la raíz de **franketf2.neocities.org**, un sitio aparte de Akordia (otro origen: no comparten datos del navegador ni service worker). Los bocetos, en `/bocetos/`.
+- **La app de la tablet:** el APK firmado que compila el workflow «App de Android» (`.github/workflows/android.yml`) y sube a los Releases del repo. Se instala y se actualiza bajándolo desde la tablet (`docs/android.md`).
+- **La versión web** (para probar rápido) va en la raíz de **franketf2.neocities.org**, un sitio aparte de Akordia (otro origen: no comparten datos del navegador ni service worker). Los bocetos, en `/bocetos/`.
 - Se publica solo con el workflow «Publicar en Neocities» (`.github/workflows/publicar.yml`), desde main, con el secreto `NEOCITIES_API_KEY`. Nada se sube a mano.
 
 ## Preguntas abiertas
@@ -120,3 +121,11 @@ Un estímulo visual que **recompensa y nunca reta**. Ya está: el círculo que s
 5. **Usarla 1 o 2 semanas** antes de seguir, y ajustar los números con lo que pasó.
 6. **La mañana:** las 3 de hoy.
 7. **La ropa como cadena.**
+
+## Android (cambio de plan)
+
+El iPhone queda de lado (no pago la cuenta de Apple). La app pasa a la tablet Android, en horizontal, como app nativa con Capacitor, reusando todo: reglas, datos, diseño y piezas. 1 PR por vez:
+
+1. **La app de Android:** Capacitor con el `index.html` de siempre adentro, sin cambiar reglas ni diseño. El workflow compila el APK firmado y lo sube como Release. `docs/android.md`: instalar, actualizar y pasar los datos del iPhone. La web en Neocities sigue andando.
+2. **Diseño para la tablet en horizontal:** primero bocetos en `bocetos/tablet/` (pestañas en una columna fina a la izquierda; «hoy» en 2 partes: la lista a la izquierda y los minutos y «Empezar» grandes a la derecha, que al empezar pasa a ser la tarea en curso con el círculo grande; «tareas» con la hoja de editar; letra más grande). Cuando estén aprobados, el código, con la app bloqueada en horizontal, y `docs/diseno.md` con lo de tablet.
+3. **Notificaciones locales, sin servidor:** 1 aviso por día a la hora que elija en Ajustes con lo que toca hoy («barrer, súper y 1 más»), que al tocarlo abre «hoy»; avisos de las tareas de 1 vez con hora. El permiso de Android se pide la 1.ª vez que se activan.

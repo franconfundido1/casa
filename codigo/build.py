@@ -36,7 +36,7 @@ fuente = base64.b64encode((RECURSOS / 'league-spartan-variable.woff2').read_byte
 assert pagina.count('__FUENTE__') == 1
 pagina = pagina.replace('__FUENTE__', fuente)
 # la versión que se ve en Ajustes: se sube a mano en cada PR que cambia la app
-VERSION_APP = '1.1'
+VERSION_APP = '1.2'
 assert pagina.count('__VERSION__') == 1
 pagina = pagina.replace('__VERSION__', VERSION_APP)
 

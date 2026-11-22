@@ -1,5 +1,6 @@
 // Ajustes › copia de seguridad: bajar todo el estado a un .json y volver a cargarlo.
 // En el iPhone, «Bajar copia» abre el menú de compartir (desde ahí, «Guardar en Archivos»); si no se puede, baja el archivo.
+// En la app de Android (Capacitor) no hay ni compartir ni descargas: la copia se guarda en la carpeta Documentos.
 
 const notaCopia = document.getElementById('nota-copia');
 const hojaCopia = document.getElementById('hoja-copia');
@@ -17,7 +18,19 @@ document.getElementById('bajar-copia').onclick = async () => {
   const ahora = new Date();
   const dia = diaLocal(ahora);
   const hora = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
-  const archivo = new File([armarCopia(estado, dia, hora)], nombreCopia(dia), { type: 'application/json' });
+  const texto = armarCopia(estado, dia, hora);
+  const archivos = window.Capacitor && Capacitor.isNativePlatform() && Capacitor.Plugins.Filesystem;
+  if (archivos) {
+    // si ya hay una copia de hoy que no hizo esta instalación, Android no deja pisarla: va con la hora en el nombre
+    for (const nombre of [nombreCopia(dia), nombreCopia(dia).replace('.json', '-' + hora.replace(':', '') + '.json')]) {
+      try {
+        await archivos.writeFile({ path: nombre, data: texto, directory: 'DOCUMENTS', encoding: 'utf8' });
+        return avisarCopia('Copia guardada en Documentos: ' + nombre);
+      } catch (e) { /* probar con el otro nombre */ }
+    }
+    return avisarCopia('No se pudo guardar la copia.');
+  }
+  const archivo = new File([texto], nombreCopia(dia), { type: 'application/json' });
   if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
     try {
       await navigator.share({ files: [archivo] });

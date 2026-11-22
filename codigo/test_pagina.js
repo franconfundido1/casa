@@ -1,5 +1,5 @@
-// Prueba de la página compilada (salida/) en un navegador con tamaño de iPhone: 390×844, táctil.
-// Uso: python3 codigo/build.py && node codigo/test_pagina.js   (usa WebKit si está instalado; si no, Chromium)
+// Prueba de la página compilada (salida/) en un navegador del tamaño de la tablet en horizontal: 1280×800, táctil.
+// Uso: python3 codigo/build.py && node codigo/test_pagina.js   (Chromium, el mismo motor que el WebView de Android)
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -28,10 +28,9 @@ function chequear(nombre, ok, detalle = '') {
 (async () => {
   const srv = await servir();
   const U = `http://127.0.0.1:${srv.address().port}/`;
-  let motor = 'webkit', browser;
-  try { browser = await pw.webkit.launch(); } catch (e) { motor = 'chromium'; browser = await pw.chromium.launch(); }
-  console.log('navegador: ' + motor + (motor === 'chromium' ? ' (falta probar en el iPhone de verdad)' : ''));
-  const ctx = await browser.newContext({ acceptDownloads: true, viewport: { width: 390, height: 844 }, isMobile: motor === 'chromium', hasTouch: true });
+  const browser = await pw.chromium.launch();
+  console.log('navegador: chromium (falta probar en la tablet de verdad)');
+  const ctx = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 800 }, isMobile: true, hasTouch: true });
   const p = await ctx.newPage();
   const errores = [];
   p.on('pageerror', e => errores.push(e.message));
@@ -391,7 +390,7 @@ function chequear(nombre, ok, detalle = '') {
   const alAbrir = await p.evaluate(() => !!document.getElementById('entrada') && getComputedStyle(document.getElementById('entrada')).pointerEvents === 'none');
   await p.waitForTimeout(900);
   chequear('entrada: al abrir aparece el logo, sin tapar los toques, y a los 700 ms se va', alAbrir && !(await p.$('#entrada')));
-  const ctxQuieto = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const ctxQuieto = await browser.newContext({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
   const pq = await ctxQuieto.newPage();
   await pq.goto(U);
   chequear('entrada: con «reducir movimiento», sin animación', await pq.evaluate(() => getComputedStyle(document.getElementById('entrada')).display === 'none'));
@@ -399,7 +398,7 @@ function chequear(nombre, ok, detalle = '') {
   await p.tap('.pestanas [data-pantalla="ajustes"]');
   const firmaApp = await p.evaluate(() => { const f = document.querySelector('.firma-app'); const r = f.getBoundingClientRect(), n = document.querySelector('.pestanas').getBoundingClientRect();
     return [[...f.children].map(c => c.textContent.trim()).filter(Boolean).join(' '), f.querySelector('use').getAttribute('href'), Math.round(n.top - r.bottom)]; });
-  chequear('ajustes: abajo de todo, el logo chico con «str3ak» y la versión', firmaApp[0] === 'str3ak 1.1' && firmaApp[1] === '#logo' && firmaApp[2] < 40, JSON.stringify(firmaApp));
+  chequear('ajustes: abajo de todo, el logo chico con «str3ak» y la versión', firmaApp[0] === 'str3ak 1.2' && firmaApp[1] === '#logo' && firmaApp[2] < 40, JSON.stringify(firmaApp));
   await p.tap('.pestanas [data-pantalla="hoy"]');
 
   // movimiento: premio, salida, entrada y día cumplido
@@ -434,7 +433,7 @@ function chequear(nombre, ok, detalle = '') {
   await p.waitForTimeout(900);
   const cumplido = await p.evaluate(() => { const c = document.querySelector('#lista-hoy .cumplido'); return c && [c.dataset.estado, getComputedStyle(c.querySelector('.estado i')).backgroundColor, c.textContent.trim()]; });
   chequear('movimiento: con todo hecho, «día cumplido» con el círculo grande lleno', !!cumplido && cumplido[0] === 'hecha' && cumplido[1] === 'rgb(255, 255, 255)' && cumplido[2] === 'día cumplido', JSON.stringify(cumplido));
-  const ctxQuieto2 = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const ctxQuieto2 = await browser.newContext({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
   const pq2 = await ctxQuieto2.newPage();
   await pq2.goto(U);
   chequear('movimiento: con «reducir movimiento», sin animaciones', await pq2.evaluate(() => {
@@ -470,6 +469,32 @@ function chequear(nombre, ok, detalle = '') {
   const reglaInstalada = await p.evaluate(() => [...document.styleSheets].some(h => [...h.cssRules].some(r =>
     r.media && /display-mode:\s*standalone/.test(r.media.mediaText) && /--abajo:\s*0px/.test(r.cssText))));
   chequear('instalada: la zona segura de abajo vale 0 (no se cuenta 2 veces)', reglaInstalada);
+
+  // la app de Android (Capacitor): se simula el puente nativo con el plugin de archivos
+  const ctxAndroid = await browser.newContext({ viewport: { width: 1280, height: 800 }, hasTouch: true, serviceWorkers: 'allow' });
+  await ctxAndroid.addInitScript(() => {
+    window.guardados = [];
+    window.Capacitor = { isNativePlatform: () => true, Plugins: { Filesystem: { writeFile: async o => {
+      if (window.guardados.length === 0 && window.pisarFalla) { window.pisarFalla = false; throw new Error('no es tuyo'); }
+      window.guardados.push(o); return { uri: 'file:///storage/emulated/0/Documents/' + o.path };
+    } } } };
+  });
+  const pa = await ctxAndroid.newPage();
+  await pa.goto(U);
+  await pa.waitForTimeout(500);
+  chequear('android: no registra el service worker', await pa.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).length === 0));
+  await pa.tap('.pestanas [data-pantalla="ajustes"]');
+  await pa.tap('#bajar-copia');
+  await pa.waitForTimeout(100);
+  const enDocs = await pa.evaluate(() => window.guardados);
+  chequear('android: «Bajar copia» la guarda en Documentos', enDocs.length === 1 && enDocs[0].directory === 'DOCUMENTS' && /^str3ak-copia-\d{4}-\d{2}-\d{2}\.json$/.test(enDocs[0].path) &&
+    JSON.parse(enDocs[0].data).app === 'casa' && (await pa.textContent('#nota-copia')) === 'Copia guardada en Documentos: ' + enDocs[0].path, JSON.stringify(enDocs).slice(0, 120));
+  await pa.evaluate(() => { window.guardados = []; window.pisarFalla = true; });
+  await pa.tap('#bajar-copia');
+  await pa.waitForTimeout(100);
+  const conHora = await pa.evaluate(() => window.guardados.map(o => o.path));
+  chequear('android: si no puede pisar la de hoy, la guarda con la hora en el nombre', conHora.length === 1 && /^str3ak-copia-\d{4}-\d{2}-\d{2}-\d{4}\.json$/.test(conHora[0]), conHora.join());
+  await ctxAndroid.close();
 
   chequear('sin errores en la consola', errores.length === 0, errores.join(' | '));
   console.log(`\n${pasan} de ${pasan + fallan} pasan`);

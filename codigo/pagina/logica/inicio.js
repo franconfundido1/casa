@@ -12,6 +12,7 @@ pedirQueNoSeBorren().then(si => {
   document.getElementById('persistente').textContent = si ? 'para siempre' : 'mientras haya lugar';
 });
 
-if ('serviceWorker' in navigator) {
+// en la app de Android la página ya viene adentro: el service worker es solo para la versión web
+if ('serviceWorker' in navigator && !(window.Capacitor && Capacitor.isNativePlatform())) {
   navigator.serviceWorker.register('sw.js').catch(() => { /* sin service worker: igual funciona con internet */ });
 }
