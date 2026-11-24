@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#000000">
+<title>Tablet · boceto</title>
+<link rel="stylesheet" href="../sistema.css">
+<link rel="stylesheet" href="tablet.css">
+</head>
+<body class="con-tres">
+
+<!-- El logo de str3ak (los 3 estados del círculo), para usarlo con <use href="#logo"> -->
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs><clipPath id="logo-mitad"><rect x="20" y="20" width="365" height="200"/></clipPath></defs>
+  <symbol id="logo" viewBox="0 0 770 240" fill="none">
+    <circle cx="120" cy="120" r="94" stroke="currentColor" stroke-width="24"/>
+    <circle cx="385" cy="120" r="94" stroke="currentColor" stroke-width="24"/>
+    <circle cx="385" cy="120" r="94" fill="currentColor" clip-path="url(#logo-mitad)"/>
+    <circle cx="650" cy="120" r="106" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<!-- Riel: el «+» arriba (anota 1 vez · hoy, igual en todas las pantallas) y los 3 destinos -->
+<nav class="riel">
+  <button class="riel-mas" id="anotar" aria-label="Anotar"></button>
+  <div class="destinos" id="destinos">
+    <button data-vista="hoy" aria-current="page"></button>
+    <button data-vista="tareas"></button>
+    <button data-vista="ajustes"></button>
+  </div>
+</nav>
+
+<main class="contenido">
+
+  <!-- Hoy: la lista que sigue a los minutos (apoyo) y el ahora (principal) -->
+  <section class="vista" id="hoy">
+    <div class="panel apoyo" id="hoy-lista"></div>
+    <div class="principal" id="principal">
+      <header class="cabeza-hoy">
+        <p class="fecha">miércoles 18 de noviembre</p>
+        <p class="espera" id="espera"></p>
+      </header>
+      <div class="tres" id="tres"><div class="tres-circulos" id="tres-circulos"></div><p class="tres-pie" id="tres-pie"></p></div>
+      <div class="tengo" id="tengo">
+        <div class="opciones num" id="minutos">
+          <button data-op="5">5</button>
+          <button data-op="10">10</button>
+          <button data-op="20">20</button>
+          <button data-op="30">30</button>
+          <button data-op="60">60</button>
+        </div>
+        <button class="boton" id="empezar">Empezar</button>
+      </div>
+      <div class="cumplido" id="cumplido" hidden></div>
+      <section class="curso" id="curso" aria-label="Tarea en curso">
+        <div class="curso-arriba">
+          <span class="cuenta num" id="cuenta"></span>
+          <button class="boton-circulo" id="cerrar-curso" aria-label="Cerrar"></button>
+        </div>
+        <div class="curso-cuerpo" id="curso-cuerpo"></div>
+      </section>
+      <div class="velo" id="velo-curso"></div>
+    </div>
+  </section>
+
+  <!-- Tareas: lista y detalle -->
+  <section class="vista" id="tareas" hidden>
+    <div class="panel apoyo" id="lista-tareas"></div>
+    <section class="detalle" id="detalle" aria-label="Tarea">
+      <div class="detalle-arriba"><button class="boton-circulo" id="cerrar-detalle" aria-label="Cerrar"></button></div>
+      <div class="detalle-cuerpo" id="detalle-cuerpo"></div>
+      <div class="pie">
+        <button class="boton" id="guardar" disabled>Guardar</button>
+        <button class="boton-texto borrar" id="borrar">Borrar</button>
+      </div>
+    </section>
+    <div class="velo" id="velo-detalle"></div>
+  </section>
+
+  <!-- Ajustes: 1 columna centrada -->
+  <section class="vista" id="ajustes" hidden>
+    <div class="columna">
+      <div class="grupo" id="avisos">
+        <div class="dato" data-aviso="plan">
+          <span class="que">Plan del día</span>
+          <button class="hora valor num" data-hora></button>
+          <button class="interruptor" role="switch" aria-checked="true" aria-label="Plan del día"><i></i></button>
+        </div>
+        <div class="dato" data-aviso="falta">
+          <span class="que">Lo que falta</span>
+          <button class="hora valor num" data-hora></button>
+          <button class="interruptor" role="switch" aria-checked="true" aria-label="Lo que falta"><i></i></button>
+        </div>
+        <div class="dato" id="permiso">
+          <span class="que">Alarmas y recordatorios</span>
+          <span class="valor">sin permiso</span>
+          <button class="boton-texto" id="permitir">Permitir</button>
+        </div>
+      </div>
+      <div class="grupo">
+        <div class="dato"><span class="que">Última copia</span><span class="valor" id="ultima-copia">hace 3 días</span></div>
+        <button class="dato" id="bajar-copia"><span class="que">Bajar copia</span><span class="ic-bajar"></span></button>
+        <button class="dato" id="cargar-copia"><span class="que">Cargar copia</span><span class="ic-cargar"></span></button>
+        <p class="nota-ajustes" id="nota-copia"></p>
+      </div>
+      <div class="firma-app"><svg aria-hidden="true"><use href="#logo"/></svg><b>str3ak</b><span class="num">1.2</span></div>
+    </div>
+  </section>
+</main>
+
+<!-- Anotar: la tarea nueva arranca en «1 vez · hoy», con el teclado en el nombre -->
+<section class="hoja" id="hoja-anotar" aria-label="Anotar">
+  <div class="hoja-arriba"><span></span><button class="boton-circulo" id="cerrar-anotar" aria-label="Cerrar"></button></div>
+  <div class="hoja-cuerpo" id="anotar-cuerpo"></div>
+  <div class="pie"><button class="boton" id="guardar-anotar" disabled>Guardar</button></div>
+</section>
+<div class="velo" id="velo-anotar"></div>
+
+<!-- El ícono de la tarea: los 16, sin nombre -->
+<section class="hoja chica" id="hoja-iconos" aria-label="Elegir ícono">
+  <div class="hoja-arriba"><span></span><button class="boton-circulo" id="cerrar-iconos" aria-label="Cerrar"></button></div>
+  <div class="hoja-cuerpo"><div class="grilla-iconos" id="grilla-iconos"></div></div>
+</section>
+<div class="velo" id="velo-iconos"></div>
+
+<!-- La hora de un aviso -->
+<section class="hoja chica hoja-hora" id="hoja-hora" aria-label="Hora">
+  <div class="hoja-arriba"><span></span><button class="boton-circulo" id="cerrar-hora" aria-label="Cerrar"></button></div>
+  <div class="hoja-cuerpo"><div class="contador" id="c-hora"></div></div>
+  <div class="pie"><button class="boton" id="listo-hora">Listo</button></div>
+</section>
+<div class="velo" id="velo-hora"></div>
+
+<!-- Cargar copia: antes de reemplazar, de qué día es y cuántas tareas tiene -->
+<section class="hoja chica" id="hoja-copia" aria-label="Cargar copia">
+  <div class="hoja-arriba"><span></span><button class="boton-circulo" id="cerrar-copia" aria-label="Cerrar"></button></div>
+  <div class="hoja-cuerpo"><p class="texto-hoja">Copia del lunes 16 de noviembre: 9 tareas y 112 hechas.</p></div>
+  <div class="pie"><button class="boton" id="reemplazar">Reemplazar mis datos</button></div>
+</section>
+<div class="velo" id="velo-copia"></div>
+
+<!-- Portada de los bocetos (no es parte de la app) -->
+<div class="portada" id="portada">
+  <div class="portada-centro">
+    <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
+    <h1>bocetos de la tablet</h1>
+    <div class="pastillas" id="variante">
+      <button data-op="con" aria-pressed="true">Con las 3 de hoy</button>
+      <button data-op="sin">Sin las 3 de hoy</button>
+    </div>
+    <button class="boton" id="abrir">Abrir</button>
+    <p>Girá la tablet para ver la vertical.</p>
+  </div>
+</div>
+
+<script src="tablet.js"></script>
+</body>
+</html>
