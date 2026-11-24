@@ -1,0 +1,311 @@
+/* Bocetos de la tablet (Galaxy Tab S10 FE+, 1280×800 en horizontal). Parte de ../sistema.css y cambia solo lo de la tablet:
+   la escala para mirar de lejos, el riel, los 2 paneles y la vertical (1 panel). Los números son provisorios: se ajustan en la tablet. */
+
+:root {
+  /* Escala para mirar de lejos, con la tablet en el soporte (Google pide lo principal grande y 1 sola cosa principal por vez) */
+  --toque: 48px;                 /* Android pide 48 dp */
+  --margen: 32px;
+  --alto-fila: 84px;
+  --alto-boton: 68px;
+  --alto-pastilla: 56px;
+  --circulo: 40px;
+  --circulo-opcion: 76px;
+  --circulo-tres: 104px;
+  --circulo-grande: 184px;
+  --icono: 28px;
+  --riel: 104px;
+  --panel-apoyo: 384px;          /* el panel de apoyo, unos 30 % del ancho */
+  --hoja-ancho: 640px;           /* Material 3: la hoja de abajo, 640 dp como máximo */
+
+  --letra-enorme: 700 64px/1.05 var(--letra);
+  --letra-titulo: 700 40px/1.1 var(--letra);
+  --letra-numero: 600 44px/1 var(--letra);
+  --letra-encabezado: 600 22px/28px var(--letra);
+  --letra-cuerpo: 500 24px/30px var(--letra);
+  --letra-secundaria: 400 19px/24px var(--letra);
+  --letra-seccion: 500 20px/26px var(--letra);
+  --letra-nota: 400 17px/22px var(--letra);
+  --letra-pestana: 600 15px/18px var(--letra);
+
+  --izquierda: env(safe-area-inset-left, 0px);
+  --derecha: env(safe-area-inset-right, 0px);
+}
+
+/* El riel a la izquierda y el contenido a la derecha */
+body { flex-direction: row; }
+input[type="date"] { color-scheme: dark; }
+
+/* ---- Riel: el «+» arriba; Hoy, Tareas y Ajustes con ícono y etiqueta; la elegida, cápsula blanca llena */
+.riel {
+  flex: none; width: calc(var(--riel) + var(--izquierda));
+  display: flex; flex-direction: column; align-items: center; gap: var(--esp-7);
+  padding: calc(var(--arriba) + var(--esp-5)) 0 calc(var(--abajo) + var(--esp-5)) var(--izquierda);
+  border-right: var(--trazo) solid var(--linea);
+}
+.riel-mas { width: 64px; height: 64px; display: grid; place-items: center; color: var(--texto); transition: opacity 100ms; }
+.riel-mas:active { opacity: .5; }
+.riel-mas svg { width: 40px; height: 40px; }
+.destinos { display: flex; flex-direction: column; gap: var(--esp-3); }
+.destinos button {
+  width: 88px; height: 68px; border-radius: var(--radio-capsula);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--esp-1);
+  color: var(--texto-2); font: var(--letra-pestana);
+  transition: background var(--t-corta), color var(--t-corta);
+}
+.destinos svg { width: 30px; height: 30px; }
+.destinos .lleno { display: none; }
+.destinos button[aria-current="page"] { background: var(--texto); color: var(--fondo); }
+.destinos button[aria-current="page"] .lleno { display: block; }
+.destinos button[aria-current="page"] .contorno { display: none; }
+
+/* ---- El contenido: 1 vista por vez, con un fundido al cambiar */
+.contenido { flex: 1; min-width: 0; position: relative; }
+.vista { position: absolute; inset: 0; animation: fundido var(--t-corta) ease-out; }
+.panel { min-height: 0; overflow-y: auto; overscroll-behavior: none; }
+.apoyo {
+  border-right: var(--trazo) solid var(--linea);
+  padding: calc(var(--arriba) + var(--esp-4)) 0 calc(var(--abajo) + var(--esp-6));
+}
+.lista.fundir { animation: fundido var(--t-corta) ease-out; }
+.nada { font: var(--letra-secundaria); color: var(--texto-2); padding: var(--esp-4) var(--margen); }
+
+/* Filas: las de la app, a la escala de la tablet. El ícono de la tarea va adentro de su círculo. */
+.fila .estado i .i-tarea { width: 55%; height: 55%; opacity: 1; color: var(--texto-2); }
+.fila[data-estado="toca"] .estado i .i-tarea { color: var(--texto); }
+.fila[data-estado="hecha"] .estado i .i-tarea, .fila[data-estado="salteada"] .estado i .i-tarea,
+.fila[data-estado="a-medias"] .estado i .i-tarea { opacity: 0; }
+.fila .linea .atraso { color: var(--texto); font-weight: 600; }
+/* La fila elegida (Tareas) y la que está en curso (Hoy): un contorno blanco, sin relleno */
+.fila[aria-selected="true"]::after, .fila[aria-current="true"]::after {
+  content: ""; position: absolute; inset: 6px 12px; border: var(--trazo-estado) solid var(--texto);
+  border-radius: var(--esp-5); pointer-events: none; animation: fundido var(--t-corta) ease-out;
+}
+.fila[aria-current="true"] .nombre { color: var(--texto); }
+.siguiendo .fila:not([aria-current="true"]) { pointer-events: none; }
+
+/* Movimiento (docs/diseno.md › Transiciones). Sin el rebote viejo de sistema.css: el premio es solo en lo que se acaba de marcar. */
+[data-estado] .estado i { animation: none; }
+.premio .estado i, .uno.premio .estado i { animation: premio 320ms var(--curva-ios); }
+@keyframes premio { 40% { transform: scale(1.25); } }
+.fila.sale {
+  overflow: hidden; opacity: 0; transform: scale(.96);
+  transition: height 300ms var(--curva-ios), min-height 300ms var(--curva-ios), opacity 240ms ease-out, transform 300ms var(--curva-ios);
+}
+.fila.entra { overflow: hidden; animation: fila-entra 300ms var(--curva-ios) both; }
+@keyframes fila-entra { from { opacity: 0; max-height: 0; min-height: 0; transform: scale(.96); } to { opacity: 1; max-height: 140px; transform: none; } }
+
+/* ---- Hoy, en horizontal: panel de apoyo (la lista que sigue a los minutos) y panel principal (ahora) */
+#hoy { display: grid; grid-template-columns: var(--panel-apoyo) 1fr; grid-template-areas: "lista principal"; }
+#hoy .apoyo { grid-area: lista; }
+.principal {
+  grid-area: principal; position: relative; min-height: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--esp-8);
+  padding: calc(var(--arriba) + 96px) calc(var(--margen) + var(--derecha)) calc(var(--abajo) + var(--esp-7)) var(--margen);
+}
+.cabeza-hoy { position: absolute; top: calc(var(--arriba) + var(--esp-5)); left: var(--margen); right: var(--margen); }
+.fecha { font: var(--letra-seccion); color: var(--texto-2); }
+.espera { display: flex; align-items: center; gap: var(--esp-2); font: var(--letra-secundaria); color: var(--texto-2); margin-top: var(--esp-2); }
+.espera svg { width: 22px; height: 22px; }
+
+/* Las 3 de hoy, a la vista (variante): 3 círculos que se llenan; al hacer las 3, «día cumplido» */
+.tres { display: flex; flex-direction: column; align-items: center; gap: var(--esp-4); }
+.tres-circulos { display: flex; gap: var(--esp-7); }
+.uno .estado { width: var(--circulo-tres); height: var(--circulo-tres); }
+.uno .estado i { --circulo: var(--circulo-tres); border-width: 3px; }
+.uno .estado i svg { width: 46%; height: 46%; }
+.uno .estado i .i-tarea { opacity: 1; color: var(--texto); z-index: 1; }
+.uno[data-estado="hecha"] .estado i .i-tarea, .uno[data-estado="salteada"] .estado i .i-tarea,
+.uno[data-estado="a-medias"] .estado i .i-tarea { opacity: 0; }
+.tres-pie { font: var(--letra-seccion); color: var(--texto-2); min-height: 26px; }
+.tres-pie:not(:empty) { animation: fundido 400ms ease-out; }
+body:not(.con-tres) .tres { display: none; }
+
+/* Los minutos y «Empezar» */
+.tengo { width: min(100%, 560px); display: flex; flex-direction: column; gap: var(--esp-6); }
+.tengo .opciones button { font-size: 26px; }
+.opciones button[disabled] { color: var(--texto-3); border-color: var(--gris-lleno); pointer-events: none; }
+
+/* Día cumplido sin las 3 a la vista: con todo lo del día hecho, el círculo grande en vez de los minutos */
+.cumplido { display: flex; flex-direction: column; align-items: center; gap: var(--esp-5); }
+.cumplido .estado { width: auto; height: auto; }
+.cumplido .estado i { --circulo: var(--circulo-grande); border-width: 3px; animation: cumplido 400ms var(--curva-ios) both; }
+.cumplido .estado i svg { width: 46%; height: 46%; }
+.cumplido p { font: var(--letra-seccion); color: var(--texto-2); animation: fundido 400ms ease-out both; }
+@keyframes cumplido {
+  from { transform: scale(.7); background: var(--gris-lleno); border-color: var(--texto); }
+  60% { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+
+/* La tarea en curso, en el panel principal (en vertical, en una hoja) */
+.curso {
+  position: absolute; inset: 0; z-index: 2; background: var(--fondo);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: calc(var(--arriba) + var(--esp-5)) var(--margen) calc(var(--abajo) + var(--esp-6));
+}
+.curso:not(.abierta) { display: none; }
+.curso.abierta { animation: fundido var(--t-corta) ease-out; }
+.curso-arriba { align-self: stretch; display: flex; align-items: center; justify-content: space-between; min-height: var(--toque); }
+.cuenta { font: var(--letra-seccion); color: var(--texto-2); }
+.curso-cuerpo { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; min-height: 0; }
+.tarea {
+  flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: transform var(--t-tarea) var(--curva-ios), opacity var(--t-tarea);
+}
+.tarea.sale { transform: translateX(-40%); opacity: 0; }
+.tarea.entra { transform: translateX(40%); opacity: 0; transition: none; }
+.tarea h3 { font: var(--letra-enorme); }
+.tarea p { font: var(--letra-encabezado); font-weight: 400; color: var(--texto-2); margin-top: var(--esp-3); }
+.tarea .estado { width: auto; height: auto; margin-top: var(--esp-8); }
+.tarea .estado i { --circulo: var(--circulo-grande); border-width: 3px; transition: background var(--t-corta), border-color var(--t-corta), transform 100ms; }
+.tarea .estado i svg { width: 50%; height: 50%; }
+.tarea .estado i .i-tarea { width: 46%; height: 46%; color: var(--texto); opacity: 0; z-index: 1; }
+.tarea[data-estado="toca"] .estado i .i-tarea { opacity: 1; }
+.tarea[data-estado="toca"] .estado:active i { transform: scale(.94); }
+.tarea[data-estado="hecha"] .estado i, .tarea[data-estado="a-medias"] .estado i,
+.tarea[data-estado="salteada"] .estado i { animation: premio 320ms var(--curva-ios); }
+.otras { display: flex; justify-content: center; gap: var(--esp-7); }
+.otras .boton-texto { font: var(--letra-encabezado); font-weight: 500; color: var(--texto-2); min-height: 56px; padding: 0 var(--esp-6); }
+.otras button[disabled], .tarea .estado[disabled] { pointer-events: none; }
+.fin { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--esp-7); animation: fundido var(--t-corta); }
+.fin h3 { font: var(--letra-titulo); }
+.fin .boton { width: 360px; }
+
+/* ---- Tareas, en horizontal: lista y detalle (la tarea elegida se edita a la derecha, sin hoja) */
+#tareas { display: grid; grid-template-columns: var(--panel-apoyo) 1fr; }
+.seccion { margin-bottom: var(--esp-6); }
+.detalle { position: relative; min-height: 0; display: flex; flex-direction: column; }
+.detalle-arriba { display: none; }
+.detalle-cuerpo { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: none; padding: calc(var(--arriba) + var(--esp-7)) var(--margen) var(--esp-4); }
+.detalle-cuerpo.fundir { animation: fundido var(--t-corta) ease-out; }
+.pie { flex: none; display: flex; flex-direction: column; align-items: center; gap: var(--esp-1); padding: var(--esp-4) var(--margen) calc(var(--abajo) + var(--esp-4)); }
+.pie .boton { max-width: 560px; }
+.pie .boton-texto { font-size: 19px; }
+
+/* La tarea: la hoja de «nuevo hábito» de la app, a la escala de la tablet */
+.form { max-width: 560px; margin: 0 auto; }
+.firma { position: relative; width: 96px; height: 96px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
+  background: var(--texto); color: var(--fondo); transition: transform 100ms; }
+.firma:active { transform: scale(.95); }
+.firma > svg { width: 48px; height: 48px; }
+.firma .lapiz { position: absolute; right: -2px; bottom: -2px; width: 36px; height: 36px; border-radius: 50%;
+  background: var(--texto); border: 2px solid var(--fondo); display: grid; place-items: center; }
+.firma .lapiz svg { width: 18px; height: 18px; }
+.nombre-tarea {
+  display: block; width: 100%; background: none; border: 0; outline: 0; text-align: center;
+  font: var(--letra-titulo); padding: var(--esp-5) 0 var(--esp-2); caret-color: var(--texto);
+}
+.nombre-tarea::placeholder { color: var(--texto-3); }
+.rayita { width: 64px; height: 2px; border-radius: 1px; background: var(--linea); margin: 0 auto var(--esp-7); }
+.bloque-hoja { margin-bottom: var(--esp-7); }
+.cabeza { display: flex; align-items: center; gap: var(--esp-2); color: var(--texto-2); margin-bottom: var(--esp-3); }
+.cabeza svg { width: 24px; height: 24px; }
+.bloque-hoja .pastillas { margin-bottom: var(--esp-5); }
+.par { display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-6); }
+.par.solo { grid-template-columns: 1fr; }
+.contadores { display: flex; justify-content: center; gap: var(--esp-7); }
+.contador .cifra { min-width: 76px; }
+.contador .cifra span { min-height: 22px; }
+.elegir-fecha {
+  position: relative; display: grid; place-items: center; height: var(--alto-pastilla); border-radius: var(--radio-capsula);
+  border: var(--trazo) solid var(--linea); color: var(--texto); font: var(--letra-encabezado);
+  transition: background var(--t-corta), color var(--t-corta), border-color var(--t-corta);
+}
+.elegir-fecha[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--fondo); }
+.elegir-fecha input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; -webkit-appearance: none; appearance: none; }
+
+/* ---- Ajustes: 1 columna centrada, de 640 como máximo */
+#ajustes { overflow-y: auto; overscroll-behavior: none; }
+.columna {
+  max-width: calc(var(--hoja-ancho) + 2 * var(--margen)); min-height: 100%; margin: 0 auto;
+  display: flex; flex-direction: column;
+  padding: calc(var(--arriba) + var(--esp-6)) var(--margen) calc(var(--abajo) + var(--esp-5));
+}
+.grupo { margin-bottom: var(--esp-8); }
+.dato { position: relative; width: 100%; min-height: var(--alto-fila); display: flex; align-items: center; gap: var(--esp-4); text-align: left; }
+.dato + .dato::before { content: ""; position: absolute; top: 0; left: 0; right: 0; border-top: var(--trazo) solid var(--linea); }
+.dato .que { flex: 1; font: var(--letra-cuerpo); }
+.dato .valor { font: var(--letra-secundaria); color: var(--texto-2); transition: color var(--t-corta); }
+.dato > svg { color: var(--texto-2); }
+button.dato { transition: opacity 100ms; }
+button.dato:active { opacity: .6; }
+.hora { min-height: var(--toque); display: flex; align-items: center; padding: 0 var(--esp-2); }
+.dato.apagado .valor { color: var(--texto-3); }
+.dato .boton-texto { color: var(--texto); font: var(--letra-encabezado); padding: 0 0 0 var(--esp-4); }
+.dato.sale { opacity: 0; transition: opacity 240ms ease-out; }
+.nota-ajustes { font: var(--letra-nota); color: var(--texto-2); min-height: 22px; padding-top: var(--esp-2); }
+.nota-ajustes:not(:empty) { animation: fundido var(--t-corta); }
+.firma-app { margin-top: auto; padding-top: var(--esp-6); display: flex; flex-direction: column; align-items: center; gap: var(--esp-2); }
+.firma-app svg { width: 90px; height: 28px; color: var(--texto); }
+.firma-app b { font: var(--letra-encabezado); }
+.firma-app span { font: var(--letra-nota); color: var(--texto-2); }
+
+/* Interruptor: prendido, blanco lleno (lo elegido); apagado, contorno gris */
+.interruptor { width: 72px; height: var(--toque); flex: none; display: grid; place-items: center; }
+.interruptor i { position: relative; width: 64px; height: 36px; border-radius: var(--radio-capsula); border: var(--trazo) solid var(--linea);
+  transition: background var(--t-corta), border-color var(--t-corta); }
+.interruptor i::after { content: ""; position: absolute; top: 5px; left: 5px; width: 24px; height: 24px; border-radius: 50%; background: var(--texto-2);
+  transition: transform var(--t-corta) var(--curva-ios), background var(--t-corta); }
+.interruptor[aria-checked="true"] i { background: var(--texto); border-color: var(--texto); }
+.interruptor[aria-checked="true"] i::after { transform: translateX(28px); background: var(--fondo); }
+
+/* ---- Hojas: centradas, de 640 como máximo (Material 3), con el borde fino; lo chico, a la altura justa */
+.hoja { width: min(var(--hoja-ancho), 100%); margin: 0 auto; border: var(--trazo) solid var(--linea); border-bottom: 0; }
+.hoja.chica { top: auto; max-height: 85%; z-index: 23; }
+.hoja.chica + .velo { z-index: 22; }
+.texto-hoja { font: var(--letra-secundaria); color: var(--texto-2); padding: var(--esp-2) 0 var(--esp-6); }
+.hoja .pie { padding-top: var(--esp-4); }
+.hoja-hora .contador { padding: var(--esp-4) 0 var(--esp-7); }
+.grilla-iconos { display: grid; grid-template-columns: repeat(8, 1fr); gap: var(--esp-2); padding: var(--esp-2) 0 var(--esp-5); }
+.grilla-iconos button { height: 64px; border-radius: var(--esp-5); border: 2px solid transparent; display: grid; place-items: center;
+  transition: border-color var(--t-corta), transform 100ms; }
+.grilla-iconos button svg { width: 34px; height: 34px; color: var(--texto); }
+.grilla-iconos button:active { transform: scale(.95); }
+.grilla-iconos button[aria-pressed="true"] { border-color: var(--texto); }
+
+/* ---- Portada de los bocetos (no es parte de la app): elegir la variante y abrir en pantalla completa */
+.portada { position: fixed; inset: 0; z-index: 50; background: var(--fondo); display: grid; place-items: center; transition: opacity 220ms ease-in; }
+.portada.sale { opacity: 0; pointer-events: none; }
+.portada-centro { width: min(520px, calc(100% - 2 * var(--margen))); display: flex; flex-direction: column; align-items: center; gap: var(--esp-6); text-align: center; }
+.portada .logo { width: 200px; height: 62px; color: var(--texto); }
+.portada h1 { font: var(--letra-titulo); }
+.portada .pastillas, .portada .boton { width: 100%; }
+.portada p { font: var(--letra-nota); color: var(--texto-2); }
+
+/* ---- En vertical (800 de ancho: ventana «mediana»), 1 panel; la tarea en curso y la tarea, en hojas */
+@media (max-width: 839px) {
+  #hoy { grid-template-columns: 1fr auto; grid-template-rows: auto 1fr auto; grid-template-areas: "cabeza tres" "lista lista" "tengo tengo"; }
+  #hoy .principal { display: contents; }
+  #hoy .apoyo { border-right: 0; padding-top: var(--esp-2); }
+  .cabeza-hoy { grid-area: cabeza; position: static; padding: calc(var(--arriba) + var(--esp-6)) 0 var(--esp-4) var(--margen); align-self: center; }
+  .tres { grid-area: tres; padding: calc(var(--arriba) + var(--esp-5)) var(--margen) var(--esp-3) 0; gap: var(--esp-1); }
+  .tres-circulos { gap: var(--esp-4); }
+  .uno .estado, .uno .estado i { --circulo-tres: 64px; }
+  .uno .estado i { border-width: 2px; }
+  .tres-pie { font: var(--letra-nota); min-height: 22px; }
+  .tengo { grid-area: tengo; width: auto; padding: var(--esp-5) var(--margen) calc(var(--abajo) + var(--esp-5)); border-top: var(--trazo) solid var(--linea); gap: var(--esp-5); }
+  .cumplido { grid-area: lista; align-self: start; padding-top: 14vh; }
+
+  .curso, .detalle {
+    position: fixed; z-index: 21; top: calc(var(--arriba) + var(--esp-3)); bottom: 0; left: var(--riel); right: 0;
+    width: min(var(--hoja-ancho), calc(100% - var(--riel))); margin: 0 auto;
+    border: var(--trazo) solid var(--linea); border-bottom: 0; border-radius: var(--radio-hoja) var(--radio-hoja) 0 0;
+    background: var(--fondo); transform: translateY(105%); transition: transform var(--t-hoja) var(--curva-ios);
+  }
+  .curso:not(.abierta) { display: flex; }
+  .curso.abierta, .detalle.abierta { transform: none; animation: none; }
+  .curso.abierta + .velo, .detalle.abierta + .velo { opacity: 1; pointer-events: auto; }
+  .curso .fin .boton { width: 100%; }
+  .tarea h3 { font-size: 52px; }
+
+  #tareas { grid-template-columns: 1fr; }
+  #tareas .apoyo { border-right: 0; }
+  .detalle-arriba { display: flex; align-items: center; justify-content: flex-end; padding: var(--esp-4) var(--margen) 0; }
+  .detalle-cuerpo { padding-top: 0; }
+}
+@media (min-width: 840px) {
+  #velo-curso, #velo-detalle { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portada { transition: none; }
+}
